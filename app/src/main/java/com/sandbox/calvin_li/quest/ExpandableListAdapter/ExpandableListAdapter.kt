@@ -1,6 +1,5 @@
 package com.sandbox.calvin_li.quest.ExpandableListAdapter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Typeface
 import android.view.LayoutInflater
@@ -10,12 +9,12 @@ import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
 import com.sandbox.calvin_li.quest.R
 
-import java.util.HashMap
+import kotlin.collections.HashMap
 
 class ExpandableListAdapter(
         private val _context: Context,
         private val _listDataHeader: List<String>,
-        private val _listDataChild: HashMap<String, List<String>>)
+        private val _listDataChild: HashMap<String, List<Pair<String, Any?>>>)
     : BaseExpandableListAdapter() {
 
     override fun getChild(groupPosition: Int, childPosition: Int): Any? {
@@ -33,13 +32,15 @@ class ExpandableListAdapter(
             convertView: View?,
             parent: ViewGroup)
             : View {
-        val childText: String = getChild(groupPosition, childPosition) as String
+        val child = getChild(groupPosition, childPosition) as Pair<*, *>
+
+        val childText: String = child.first as String
 
         val newConvertView: View = convertView ?: (this._context.getSystemService(Context
                 .LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.element, null)
 
         val textListChild: TextView =
-                (convertView ?: newConvertView).findViewById(R.id.element) as TextView
+                (convertView ?: newConvertView).findViewById(R.id.elementText) as TextView
 
         textListChild.text = childText
         return convertView ?: newConvertView
@@ -63,7 +64,7 @@ class ExpandableListAdapter(
         val returnedView: View = convertView ?: (this._context.getSystemService(Context
                 .LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.element, null)
 
-        val labelListHeader: TextView = convertView?.findViewById(R.id.element) as TextView
+        val labelListHeader: TextView = returnedView.findViewById(R.id.elementText) as TextView
         labelListHeader.setTypeface(null, Typeface.BOLD)
         labelListHeader.text = getGroup(groupPosition) as String
 
