@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        expandListView = findViewById(R.id.topView) as ExpandableListView
+        expandListView = findViewById(R.id.top_view) as ExpandableListView
         prepareListData()
         listAdapter = ExpandableListAdapter(this, listDataHeader, listDataChild)
         expandListView.setAdapter(listAdapter)
@@ -50,12 +50,17 @@ class MainActivity : AppCompatActivity() {
                 "The Canyons",
                 "Europa Report")
 
-        listDataChild.put(listDataHeader[0], cap(top250))
+        val top250Child: List<Pair<String, Any?>> = cap(top250)
+        top250Child[0].first 
+
+        listDataChild.put(listDataHeader[0], top250Child)
         listDataChild.put(listDataHeader[1], cap(nowShowing))
         listDataChild.put(listDataHeader[2], cap(comingSoon))
     }
 
-    private fun cap(list: List<String>): List<Pair<String, Any?>>{
-        return list.zip(List(list.size, {null}))
+    private fun cap(list: List<String>): List<Pair<String, Any?>> {
+        fun emptyHash(name: String): HashMap<String, List<Pair<String, Any?>>> =
+                hashMapOf(name to emptyList<Pair<String, Any?>>())
+        return list.map { Pair(it, emptyHash(it)) }
     }
 }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
+import android.widget.ExpandableListView
 import android.widget.TextView
 import com.sandbox.calvin_li.quest.R
 
@@ -32,18 +33,23 @@ class ExpandableListAdapter(
             convertView: View?,
             parent: ViewGroup)
             : View {
-        val child = getChild(groupPosition, childPosition) as Pair<*, *>
+        val elementBody = (this._context.getSystemService(Context
+                .LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.element_body, null)
+        val child: Pair<*, *> = getChild(groupPosition, childPosition) as Pair<*, *>
 
-        val childText: String = child.first as String
+        val childView: ExpandableListView = convertView as? ExpandableListView ?:
+                elementBody.findViewById(R.id.element_children) as ExpandableListView
 
-        val newConvertView: View = convertView ?: (this._context.getSystemService(Context
-                .LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.element, null)
+        val childList = child.second as HashMap<String, List<Pair<String, Any?>>>
 
-        val textListChild: TextView =
-                (convertView ?: newConvertView).findViewById(R.id.elementText) as TextView
+        val childAdapter = ExpandableListAdapter(
+                _context,
+                listOf(child.first as String),
+                childList)
 
-        textListChild.text = childText
-        return convertView ?: newConvertView
+        childView.setAdapter(childAdapter)
+
+        return childView
     }
 
     override fun getChildrenCount(groupPosition: Int): Int =
@@ -62,9 +68,9 @@ class ExpandableListAdapter(
             parent: ViewGroup
     ): View? {
         val returnedView: View = convertView ?: (this._context.getSystemService(Context
-                .LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.element, null)
+                .LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.element_header, null)
 
-        val labelListHeader: TextView = returnedView.findViewById(R.id.elementText) as TextView
+        val labelListHeader: TextView = returnedView.findViewById(R.id.element_header_text) as TextView
         labelListHeader.setTypeface(null, Typeface.BOLD)
         labelListHeader.text = getGroup(groupPosition) as String
 
