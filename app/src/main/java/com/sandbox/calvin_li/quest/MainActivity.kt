@@ -2,8 +2,17 @@ package com.sandbox.calvin_li.quest
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
 import android.widget.ExpandableListView
 import com.sandbox.calvin_li.quest.ExpandableListAdapter.ExpandableListAdapter
+import java.io.Console
+
+class TestClickListener: AdapterView.OnItemClickListener{
+    override fun onItemClick(p0: AdapterView<*>?, p1: View, p2: Int, p3: Long) {
+        System.out.println(p1.tag)
+    }
+}
 
 class MainActivity : AppCompatActivity() {
     lateinit var listAdapter: ExpandableListAdapter
@@ -18,6 +27,8 @@ class MainActivity : AppCompatActivity() {
         expandListView = findViewById(R.id.top_view) as ExpandableListView
         prepareListData()
         listAdapter = ExpandableListAdapter(this, listDataHeader, listDataChild)
+
+        expandListView.onItemClickListener = TestClickListener()
         expandListView.setAdapter(listAdapter)
     }
 
@@ -50,17 +61,19 @@ class MainActivity : AppCompatActivity() {
                 "The Canyons",
                 "Europa Report")
 
-        val top250Child: List<Pair<String, Any?>> = cap(top250)
-        top250Child[0].first 
-
-        listDataChild.put(listDataHeader[0], top250Child)
+        listDataChild.put(listDataHeader[0], cap(top250))
         listDataChild.put(listDataHeader[1], cap(nowShowing))
         listDataChild.put(listDataHeader[2], cap(comingSoon))
     }
 
     private fun cap(list: List<String>): List<Pair<String, Any?>> {
+        val level3 = listOf("sub1", "sub2", "sub3")
         fun emptyHash(name: String): HashMap<String, List<Pair<String, Any?>>> =
-                hashMapOf(name to emptyList<Pair<String, Any?>>())
+                if (name == "Europa Report") {
+                    hashMapOf(name to cap(level3))
+                } else {
+                    hashMapOf(name to emptyList<Pair<String, Any?>>())
+                }
         return list.map { Pair(it, emptyHash(it)) }
     }
 }

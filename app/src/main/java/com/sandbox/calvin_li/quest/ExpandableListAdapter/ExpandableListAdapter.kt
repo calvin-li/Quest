@@ -9,6 +9,7 @@ import android.widget.BaseExpandableListAdapter
 import android.widget.ExpandableListView
 import android.widget.TextView
 import com.sandbox.calvin_li.quest.R
+import com.sandbox.calvin_li.quest.TestClickListener
 
 import kotlin.collections.HashMap
 
@@ -47,6 +48,7 @@ class ExpandableListAdapter(
                 listOf(child.first as String),
                 childList)
 
+        childView.onItemClickListener = TestClickListener()
         childView.setAdapter(childAdapter)
 
         return childView
