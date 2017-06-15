@@ -10,6 +10,7 @@ import android.widget.ExpandableListView
 import android.widget.TextView
 import com.sandbox.calvin_li.quest.R
 import com.sandbox.calvin_li.quest.TestClickListener
+import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
 
 import kotlin.collections.HashMap
 
@@ -38,8 +39,8 @@ class ExpandableListAdapter(
                 .LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.element_body, null)
         val child: Pair<*, *> = getChild(groupPosition, childPosition) as Pair<*, *>
 
-        val childView: ExpandableListView = convertView as? ExpandableListView ?:
-                elementBody.findViewById(R.id.element_children) as ExpandableListView
+        val childView: MultiLevelListView = convertView as? MultiLevelListView ?:
+                elementBody.findViewById(R.id.element_children) as MultiLevelListView
 
         val childList = child.second as HashMap<String, List<Pair<String, Any?>>>
 

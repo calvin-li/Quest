@@ -4,9 +4,8 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
-import android.widget.ExpandableListView
 import com.sandbox.calvin_li.quest.ExpandableListAdapter.ExpandableListAdapter
-import java.io.Console
+import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
 
 class TestClickListener: AdapterView.OnItemClickListener{
     override fun onItemClick(p0: AdapterView<*>?, p1: View, p2: Int, p3: Long) {
@@ -16,7 +15,7 @@ class TestClickListener: AdapterView.OnItemClickListener{
 
 class MainActivity : AppCompatActivity() {
     lateinit var listAdapter: ExpandableListAdapter
-    lateinit var expandListView: ExpandableListView
+    lateinit var expandListView: MultiLevelListView
     lateinit var listDataHeader: List<String>
     lateinit var listDataChild: HashMap<String, List<Pair<String, Any?>>>
 
@@ -24,7 +23,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        expandListView = findViewById(R.id.top_view) as ExpandableListView
+        expandListView = findViewById(R.id.top_view) as MultiLevelListView
         prepareListData()
         listAdapter = ExpandableListAdapter(this, listDataHeader, listDataChild)
 

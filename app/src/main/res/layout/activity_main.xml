@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.sandbox.calvin_li.quest.MainActivity">
 
-    <ExpandableListView
+    <com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
         style="@style/ExpandableList"
         android:id="@+id/top_view"
         android:layout_width="match_parent"
