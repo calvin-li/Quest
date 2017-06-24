@@ -1,4 +1,4 @@
-package com.sandbox.calvin_li.quest.ExpandableListAdapter
+package com.sandbox.calvin_li.quest
 
 import android.content.Context
 import android.graphics.Typeface
@@ -9,7 +9,6 @@ import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
 import com.beust.klaxon.JsonObject
 import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
-import com.sandbox.calvin_li.quest.R
 import org.json.JSONObject
 
 class ExpandableListAdapter(

@@ -4,9 +4,9 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
-import com.sandbox.calvin_li.quest.ExpandableListAdapter.ExpandableListAdapter
 import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
 import java.io.FileInputStream
+import java.io.InputStream
 
 class MainActivity : AppCompatActivity() {
     lateinit var listAdapter: ExpandableListAdapter
@@ -22,8 +22,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun prepareListData(): JsonObject {
-        val questFileName = "quests.json"
-        val questStream: FileInputStream = openFileInput(questFileName)
+        //val questFileName = "quests.json"
+        val questStream: InputStream = resources.openRawResource(R.raw.quests)
         val quests: JsonObject = Parser().parse(questStream) as JsonObject
         return quests
     }
