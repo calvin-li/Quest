@@ -6,22 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
-import android.widget.ExpandableListView
 import android.widget.TextView
-import com.sandbox.calvin_li.quest.R
-import com.sandbox.calvin_li.quest.TestClickListener
+import com.beust.klaxon.JsonObject
 import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
-
-import kotlin.collections.HashMap
+import com.sandbox.calvin_li.quest.R
+import org.json.JSONObject
 
 class ExpandableListAdapter(
         private val _context: Context,
-        private val _listDataHeader: List<String>,
-        private val _listDataChild: HashMap<String, List<Pair<String, Any?>>>)
+        private val _questSubList: JsonObject)
     : BaseExpandableListAdapter() {
 
     override fun getChild(groupPosition: Int, childPosition: Int): Any? {
-        return this._listDataChild[this._listDataHeader[groupPosition]]?.get(childPosition)
+        return this.getGroup(groupPosition) as JSONObject
     }
 
     override fun getChildId(groupPosition: Int, childPosition: Int): Long {
@@ -46,21 +43,20 @@ class ExpandableListAdapter(
 
         val childAdapter = ExpandableListAdapter(
                 _context,
-                listOf(child.first as String),
-                childList)
+                this.getGroup(groupPosition) as JsonObject)
 
-        childView.onItemClickListener = TestClickListener()
         childView.setAdapter(childAdapter)
 
         return childView
     }
 
     override fun getChildrenCount(groupPosition: Int): Int =
-            this._listDataChild[this._listDataHeader[groupPosition]]?.size as Int
+            (this.getGroup(groupPosition) as JSONObject).length()
 
-    override fun getGroup(groupPosition: Int): Any? = this._listDataHeader[groupPosition]
+    override fun getGroup(groupPosition: Int): Any? =
+            this._questSubList.values.toTypedArray()[groupPosition]
 
-    override fun getGroupCount(): Int = this._listDataHeader.size
+    override fun getGroupCount(): Int = this._questSubList.size
 
     override fun getGroupId(groupPosition: Int): Long = groupPosition.toLong()
 
