@@ -7,53 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.TextView
+import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
-import org.json.JSONObject
 
 class ExpandableListAdapter(
         private val _context: Context,
-        private val _questSubList: JsonObject)
+        private val _questSubList: JsonArray<JsonObject>)
     : BaseExpandableListAdapter() {
 
-    override fun getChild(groupPosition: Int, childPosition: Int): Any? {
-        return this.getGroup(groupPosition) as JSONObject
+    private companion object {
+        val nameLabel: String = "name"
+        val childLabel: String = "child"
     }
 
-    override fun getChildId(groupPosition: Int, childPosition: Int): Long {
-        return childPosition.toLong()
-    }
-
-    override fun getChildView(
-            groupPosition: Int,
-            childPosition: Int,
-            isLastChild: Boolean,
-            convertView: View?,
-            parent: ViewGroup)
-            : View {
-        val elementBody = (this._context.getSystemService(Context
-                .LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.element_body, null)
-        val child: Pair<*, *> = getChild(groupPosition, childPosition) as Pair<*, *>
-
-        val childView: MultiLevelListView = convertView as? MultiLevelListView ?:
-                elementBody.findViewById(R.id.element_children) as MultiLevelListView
-
-        val childList = child.second as HashMap<String, List<Pair<String, Any?>>>
-
-        val childAdapter = ExpandableListAdapter(
-                _context,
-                this.getGroup(groupPosition) as JsonObject)
-
-        childView.setAdapter(childAdapter)
-
-        return childView
-    }
-
-    override fun getChildrenCount(groupPosition: Int): Int =
-            (this.getGroup(groupPosition) as JSONObject).length()
-
-    override fun getGroup(groupPosition: Int): Any? =
-            this._questSubList.values.toTypedArray()[groupPosition]
+    override fun getGroup(groupPosition: Int): JsonObject =
+            this._questSubList[groupPosition]
 
     override fun getGroupCount(): Int = this._questSubList.size
 
@@ -70,10 +39,44 @@ class ExpandableListAdapter(
 
         val labelListHeader: TextView = returnedView.findViewById(R.id.element_header_text) as TextView
         labelListHeader.setTypeface(null, Typeface.BOLD)
-        labelListHeader.text = getGroup(groupPosition) as String
+        labelListHeader.text = getGroup(groupPosition)[nameLabel] as String
 
         return returnedView
     }
+
+    override fun getChild(groupPosition: Int, childPosition: Int): JsonObject {
+        val group: JsonObject = this.getGroup(groupPosition)
+        return (group[childLabel] as JsonArray<JsonObject>)[childPosition]
+    }
+
+    override fun getChildId(groupPosition: Int, childPosition: Int): Long {
+        return childPosition.toLong()
+    }
+
+    override fun getChildView(
+            groupPosition: Int,
+            childPosition: Int,
+            isLastChild: Boolean,
+            convertView: View?,
+            parent: ViewGroup)
+            : View {
+        val elementBody = (this._context.getSystemService(Context
+                .LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.element_body, null)
+        val childView: MultiLevelListView = convertView as? MultiLevelListView ?:
+                elementBody.findViewById(R.id.element_children) as MultiLevelListView
+
+        val child: JsonObject = getChild(groupPosition, childPosition)
+
+        val childAdapter = ExpandableListAdapter(_context, JsonArray(child))
+        childView.setAdapter(childAdapter)
+
+        return childView
+    }
+
+    override fun getChildrenCount(groupPosition: Int): Int =
+            // If child is not present, `getGroup(groupPosition)[childLabel]` is null,
+            // which is is bubbled to the `?:` operator.
+            (this.getGroup(groupPosition)[childLabel] as? JsonArray<JsonObject>)?.size ?: 0
 
     override fun hasStableIds(): Boolean = false
 
