@@ -2,14 +2,17 @@ package com.sandbox.calvin_li.quest
 
 import android.content.Context
 import android.graphics.Typeface
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
-import android.widget.TextView
+import android.widget.EditText
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
+import java.io.FileOutputStream
 
 class ExpandableListAdapter(
         private val _context: Context,
@@ -37,9 +40,20 @@ class ExpandableListAdapter(
         val returnedView: View = convertView ?: (this._context.getSystemService(Context
                 .LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.element_header, null)
 
-        val labelListHeader: TextView = returnedView.findViewById(R.id.element_header_text) as TextView
+        val labelListHeader = returnedView.findViewById(R.id.element_header_text) as EditText
         labelListHeader.setTypeface(null, Typeface.BOLD)
-        labelListHeader.text = getGroup(groupPosition)[nameLabel] as String
+
+        labelListHeader.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(sequence: Editable?) {}
+            override fun beforeTextChanged(sequence: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun onTextChanged(sequence: CharSequence?, start: Int, before: Int, count: Int) {
+                getGroup(labelListHeader.tag as Int)[nameLabel] = sequence.toString()
+                saveJson(_questSubList)
+            }
+        })
+
+        labelListHeader.tag = groupPosition
+        labelListHeader.setText(getGroup(groupPosition)[nameLabel] as String)
 
         return returnedView
     }
@@ -81,4 +95,11 @@ class ExpandableListAdapter(
     override fun hasStableIds(): Boolean = false
 
     override fun isChildSelectable(i: Int, i1: Int): Boolean = true
+
+    fun saveJson(json: JsonArray<JsonObject>){
+        val writeStream: FileOutputStream = _context.openFileOutput(MainActivity.questFileName, Context
+                .MODE_PRIVATE)
+        writeStream.write(json.toJsonString().toByteArray())
+        writeStream.close()
+    }
 }
