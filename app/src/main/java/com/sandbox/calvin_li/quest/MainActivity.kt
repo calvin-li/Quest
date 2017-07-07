@@ -30,8 +30,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun prepareListData(): JsonArray<JsonObject> {
-        //val questStream: InputStream = resources.openRawResource(R.raw.quests)
-        val questStream: FileInputStream = openFileInput(questFileName)
+        val questStream: InputStream = resources.openRawResource(R.raw.quests)
+        //val questStream: FileInputStream = openFileInput(questFileName)
         val quests = Parser().parse(questStream) as JsonArray<JsonObject>
         questStream.close()
         return quests

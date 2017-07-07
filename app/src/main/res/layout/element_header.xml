@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<EditText xmlns:android="http://schemas.android.com/apk/res/android"
-          android:id="@+id/element_header_text"
-          android:inputType="text"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content" />
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/element_header_container"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:clickable="false"
+              android:focusable="false" >
+
+    <View xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@+id/element_header_expand"
+          android:background="#000"
+          android:visibility="visible"
+          android:layout_width="50dp"
+          android:layout_height="match_parent"
+          android:clickable="false"
+          android:focusable="false"/>
+
+    <EditText xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/element_header_text"
+              android:clickable="false"
+              android:focusable="false"
+              android:layout_weight="1"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content" />
+</LinearLayout>
 
