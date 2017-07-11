@@ -7,8 +7,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseExpandableListAdapter
-import android.widget.EditText
+import android.widget.*
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
@@ -40,7 +39,7 @@ class ExpandableListAdapter(
         val returnedView: View = convertView ?: (this._context.getSystemService(Context
                 .LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.element_header, null)
 
-        val labelListHeader = returnedView.findViewById(R.id.element_header_text) as EditText
+        val labelListHeader = returnedView.findViewById(R.id.element_header_text) as TextView
         labelListHeader.setTypeface(null, Typeface.BOLD)
 
         labelListHeader.addTextChangedListener(object : TextWatcher {
@@ -53,7 +52,7 @@ class ExpandableListAdapter(
         })
 
         labelListHeader.tag = groupPosition
-        labelListHeader.setText(getGroup(groupPosition)[nameLabel] as String)
+        labelListHeader.text = getGroup(groupPosition)[nameLabel] as String
 
         return returnedView
     }
