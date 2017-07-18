@@ -11,10 +11,7 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
 import de.jupf.staticlog.Log
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.OutputStream
+import java.io.*
 
 class MainActivity : AppCompatActivity() {
     lateinit var listAdapter: ExpandableListAdapter
@@ -22,6 +19,13 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         val questFileName = "quests.json"
+        lateinit var questJson: JsonArray<JsonObject>
+        fun saveJson(_context: Context){
+            val writeStream: FileOutputStream = _context.openFileOutput(MainActivity.questFileName, Context
+                    .MODE_PRIVATE)
+            writeStream.write(questJson.toJsonString().toByteArray())
+            writeStream.close()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,20 +33,20 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         expandListView = findViewById(R.id.top_view) as MultiLevelListView
-        listAdapter = ExpandableListAdapter(this, prepareListData())
-        expandListView.setOnGroupClickListener { _, _, position, id ->
-            val message = "List clicked $position $id"
-            Toast.makeText(this@MainActivity, message, Toast.LENGTH_LONG).show()
-            false
-        }
+        prepareListData()
+        listAdapter = ExpandableListAdapter(this, questJson)
         expandListView.setAdapter(listAdapter)
     }
 
-    private fun prepareListData(): JsonArray<JsonObject> {
-        val questStream: InputStream = resources.openRawResource(R.raw.quests)
-        //val questStream: FileInputStream = openFileInput(questFileName)
-        val quests = Parser().parse(questStream) as JsonArray<JsonObject>
+    private fun prepareListData() {
+        var questStream: InputStream
+        try{
+            questStream = openFileInput(questFileName)
+        } catch (ex: IOException){
+            questStream = resources.openRawResource(R.raw.quests)
+        }
+        //questStream = resources.openRawResource(R.raw.quests)
+        questJson = Parser().parse(questStream) as JsonArray<JsonObject>
         questStream.close()
-        return quests
     }
 }
