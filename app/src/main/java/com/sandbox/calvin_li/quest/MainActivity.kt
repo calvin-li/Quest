@@ -26,6 +26,11 @@ class MainActivity : AppCompatActivity() {
             writeStream.write(questJson.toJsonString().toByteArray())
             writeStream.close()
         }
+        fun deleteQuest(coordinates: List<Int>) {
+            coordinates.forEach {
+                print(it)
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +39,7 @@ class MainActivity : AppCompatActivity() {
 
         expandListView = findViewById(R.id.top_view) as MultiLevelListView
         prepareListData()
-        listAdapter = ExpandableListAdapter(this, questJson)
+        listAdapter = ExpandableListAdapter(this, questJson, emptyList())
         expandListView.setAdapter(listAdapter)
     }
 

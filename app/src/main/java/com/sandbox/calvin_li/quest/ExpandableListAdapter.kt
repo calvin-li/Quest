@@ -9,11 +9,11 @@ import android.widget.*
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
-import java.io.FileOutputStream
 
 class ExpandableListAdapter(
-        private val _context: Context,
-        private val _questSubList: JsonArray<JsonObject>)
+        private val context: Context,
+        private val questSubList: JsonArray<JsonObject>,
+        val index: List<Int>)
     : BaseExpandableListAdapter() {
 
     private companion object {
@@ -22,9 +22,9 @@ class ExpandableListAdapter(
     }
 
     override fun getGroup(groupPosition: Int): JsonObject =
-            this._questSubList[groupPosition]
+            this.questSubList[groupPosition]
 
-    override fun getGroupCount(): Int = this._questSubList.size
+    override fun getGroupCount(): Int = this.questSubList.size
 
     override fun getGroupId(groupPosition: Int): Long = groupPosition.toLong()
 
@@ -34,22 +34,17 @@ class ExpandableListAdapter(
             convertView: View?,
             parent: ViewGroup
     ): View? {
-        val returnedView: View = convertView ?: (this._context.getSystemService(Context
+        val returnedView: View = convertView ?: (this.context.getSystemService(Context
                 .LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.element_header, null)
 
         val labelListHeader = returnedView.findViewById(R.id.element_header_text) as TextView
         labelListHeader.setTypeface(null, Typeface.BOLD)
 
-        /*
-        getGroup(labelListHeader.tag as Int)[nameLabel] = sequence.toString()
-        saveJson(_questSubList
-         */
-
         labelListHeader.tag = groupPosition
         labelListHeader.text = getGroup(groupPosition)[nameLabel] as String
 
         val deleteButton = returnedView.findViewById(R.id.element_header_delete) as Button
-        questOptionsDialogFragment.setDeleteButton(deleteButton, _context, _questSubList, groupPosition)
+        questOptionsDialogFragment.setDeleteButton(deleteButton, context, adjustedIndex(groupPosition))
 
         return returnedView
     }
@@ -70,16 +65,17 @@ class ExpandableListAdapter(
             convertView: View?,
             parent: ViewGroup)
             : View {
-        val elementBody = (this._context.getSystemService(Context
+        val elementBody = (this.context.getSystemService(Context
                 .LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.element_body, null)
         val childView: MultiLevelListView = convertView as? MultiLevelListView ?:
                 elementBody.findViewById(R.id.element_children) as MultiLevelListView
 
         val child: JsonObject = getChild(groupPosition, childPosition)
 
-        val childAdapter = ExpandableListAdapter(_context, JsonArray(child))
-        childView.setAdapter(childAdapter)
+        val childAdapter = ExpandableListAdapter(
+                context, JsonArray(child), adjustedIndex(groupPosition).plusElement(childPosition))
 
+        childView.setAdapter(childAdapter)
         return childView
     }
 
@@ -91,4 +87,14 @@ class ExpandableListAdapter(
     override fun hasStableIds(): Boolean = false
 
     override fun isChildSelectable(i: Int, i1: Int): Boolean = true
+
+    private fun adjustedIndex(groupPosition: Int): List<Int> {
+        if(index.size == 0){
+            return listOf(groupPosition)
+        }
+        else{
+            return index
+        }
+    }
+
 }
