@@ -33,13 +33,17 @@
 }, {
   "name": "Coming Soon",
   "child": [{
-    "name": "2 Guns"
+    "name": "2 Guns",
+    "child": []
   }, {
-    "name": "The Smurfs 2"
+    "name": "The Smurfs 2",
+    "child": []
   }, {
-    "name": "The Spectacular Now"
+    "name": "The Spectacular Now",
+    "child": []
   }, {
-    "name": "The Canyons"
+    "name": "The Canyons",
+    "child": []
   }, {
     "name": "Europa Report",
     "child": [{

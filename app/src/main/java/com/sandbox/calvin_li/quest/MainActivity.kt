@@ -24,15 +24,14 @@ class MainActivity : AppCompatActivity() {
             writeStream.close()
         }
 
-        fun deleteQuest(indices: List<Int>) {
-            var toDelete: JsonArray<JsonObject> = questJson
+        fun getNestedArray(indices: List<Int>): JsonArray<JsonObject> {
+            var nestedArray: JsonArray<JsonObject> = questJson
 
-            // Last index is deleted instead of traversed
-            for (i in 0 until indices.size-1){
-                toDelete = toDelete[indices[indices[i]]]["child"] as JsonArray<JsonObject>
+            for (i in 0 until indices.size){
+                nestedArray =
+                        nestedArray[indices[i]]["child"] as JsonArray<JsonObject>
             }
-
-            toDelete.removeAt(indices.last())
+            return nestedArray
         }
     }
 
@@ -42,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         expandListView = findViewById(R.id.top_view) as MultiLevelListView
         prepareListData()
-        listAdapter = ExpandableListAdapter(this, questJson, emptyList())
+        listAdapter = ExpandableListAdapter(this, null, null, emptyList())
         expandListView.setAdapter(listAdapter)
     }
 
@@ -53,8 +52,9 @@ class MainActivity : AppCompatActivity() {
         } catch (ex: IOException){
             questStream = resources.openRawResource(R.raw.quests)
         }
-        //questStream = resources.openRawResource(R.raw.quests)
+        questStream = resources.openRawResource(R.raw.quests)
         questJson = Parser().parse(questStream) as JsonArray<JsonObject>
         questStream.close()
+        saveJson(this)
     }
 }

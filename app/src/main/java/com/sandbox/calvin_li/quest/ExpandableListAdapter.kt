@@ -11,9 +11,10 @@ import com.beust.klaxon.JsonObject
 import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
 
 class ExpandableListAdapter(
-        private val context: Context,
-        private val questSubList: JsonArray<JsonObject>,
-        val index: List<Int>)
+        internal val context: Context,
+        private val parent: ExpandableListAdapter?,
+        private val leafIndex: Int?,
+        private val index: List<Int>)
     : BaseExpandableListAdapter() {
 
     private companion object {
@@ -21,10 +22,21 @@ class ExpandableListAdapter(
         val childLabel: String = "child"
     }
 
-    override fun getGroup(groupPosition: Int): JsonObject =
-            this.questSubList[groupPosition]
+    override fun getGroup(groupPosition: Int): JsonObject{
+        if(index.isEmpty()){
+            return MainActivity.questJson[groupPosition]
+        } else{
+            return MainActivity.getNestedArray(index)[leafIndex!!]
+        }
+    }
 
-    override fun getGroupCount(): Int = this.questSubList.size
+    override fun getGroupCount(): Int {
+        if(index.isEmpty()){
+            return MainActivity.questJson.size
+        } else{
+            return 1
+        }
+    }
 
     override fun getGroupId(groupPosition: Int): Long = groupPosition.toLong()
 
@@ -44,7 +56,8 @@ class ExpandableListAdapter(
         labelListHeader.text = getGroup(groupPosition)[nameLabel] as String
 
         val deleteButton = returnedView.findViewById(R.id.element_header_delete) as Button
-        questOptionsDialogFragment.setDeleteButton(deleteButton, context, adjustedIndex(groupPosition))
+        questOptionsDialogFragment.setDeleteButton(this.parent?: this, deleteButton, index,
+                leafIndex?:groupPosition)
 
         return returnedView
     }
@@ -70,10 +83,8 @@ class ExpandableListAdapter(
         val childView: MultiLevelListView = convertView as? MultiLevelListView ?:
                 elementBody.findViewById(R.id.element_children) as MultiLevelListView
 
-        val child: JsonObject = getChild(groupPosition, childPosition)
-
         val childAdapter = ExpandableListAdapter(
-                context, JsonArray(child), adjustedIndex(groupPosition).plusElement(childPosition))
+                context, this, childPosition, index.plusElement(leafIndex?:groupPosition))
 
         childView.setAdapter(childAdapter)
         return childView
@@ -87,14 +98,4 @@ class ExpandableListAdapter(
     override fun hasStableIds(): Boolean = false
 
     override fun isChildSelectable(i: Int, i1: Int): Boolean = true
-
-    private fun adjustedIndex(groupPosition: Int): List<Int> {
-        if(index.size == 0){
-            return listOf(groupPosition)
-        }
-        else{
-            return index
-        }
-    }
-
 }
