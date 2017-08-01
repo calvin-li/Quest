@@ -55,6 +55,9 @@ class ExpandableListAdapter(
         labelListHeader.tag = groupPosition
         labelListHeader.text = getGroup(groupPosition)[nameLabel] as String
 
+        val editButton = returnedView.findViewById(R.id.element_header_edit) as Button
+        questOptionsDialogFragment.setEditButton(this, editButton, labelListHeader.text)
+
         val deleteButton = returnedView.findViewById(R.id.element_header_delete) as Button
         questOptionsDialogFragment.setDeleteButton(this.parent?: this, deleteButton, index,
                 leafIndex?:groupPosition)
