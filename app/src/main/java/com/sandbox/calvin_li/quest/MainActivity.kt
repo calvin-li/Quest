@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
         } catch (ex: IOException){
             questStream = resources.openRawResource(R.raw.quests)
         }
-        questStream = resources.openRawResource(R.raw.quests)
+        //questStream = resources.openRawResource(R.raw.quests)
         questJson = Parser().parse(questStream) as JsonArray<JsonObject>
         questStream.close()
         saveJson(this)

@@ -9,6 +9,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
+import com.beust.klaxon.JsonArray
+import com.beust.klaxon.JsonObject
 
 class questOptionsDialogFragment: DialogFragment() {
     companion object {
@@ -23,19 +25,56 @@ class questOptionsDialogFragment: DialogFragment() {
         }
 
         fun setEditButton(adapter: ExpandableListAdapter, editButton: Button, currentQuest:
-        CharSequence) {
+        CharSequence, index: List<Int>, leafIndex: Int) {
             editButton.setOnClickListener {
-                val layoutInflater: LayoutInflater = adapter.context.getSystemService(Context
-                        .LAYOUT_INFLATER_SERVICE) as LayoutInflater
-                val editView = layoutInflater.inflate(R.layout.element_dialog, null) as EditText
+                val editView = getDialogView(adapter.context)
                 editView.append(currentQuest)
-                val builder = AlertDialog.Builder(adapter.context)
-                builder.setTitle("Edit quest")
-                        .setView(editView)
-                        .setPositiveButton("Confirm", DialogInterface.OnClickListener { dialogInterface, i -> })
-                        .setNegativeButton("Cancel", DialogInterface.OnClickListener { dialogInterface, i -> })
+                val builder = createBuilder(adapter.context, editView, "Edit quest", {
+                    _, _ ->
+                    val nestedArray = MainActivity.getNestedArray(index)
+                    nestedArray[leafIndex][ExpandableListAdapter.nameLabel] = editView.text.toString()
+                    MainActivity.saveJson(adapter.context)
+                })
                 builder.show()
             }
+        }
+
+        fun setAddButton(adapter: ExpandableListAdapter, button: Button, index: List<Int>,
+                         leafIndex: Int) {
+            button.setOnClickListener {
+                val editView = getDialogView(adapter.context)
+                editView.hint = "Add new subquest here"
+                val builder = createBuilder(adapter.context, editView, "Add subquest", {
+                    _, _ ->
+                    val currentObject = MainActivity.getNestedArray(index)[leafIndex]
+                    val childObject: JsonArray<JsonObject>? =
+                            currentObject[ExpandableListAdapter.childLabel] as JsonArray<JsonObject>?
+                    val newObject = JsonObject()
+                    newObject.put(ExpandableListAdapter.nameLabel, editView.text.toString())
+                    if (childObject == null) {
+                        currentObject.put(ExpandableListAdapter.childLabel, JsonArray(newObject))
+                    } else {
+                        childObject.add(newObject)
+                    }
+                    MainActivity.saveJson(adapter.context)
+                })
+                builder.show()
+            }
+        }
+
+        private fun  createBuilder(context: Context, view: EditText, title: String,
+                                   positiveAction: (DialogInterface, Int) -> Unit):
+                AlertDialog.Builder {
+            return AlertDialog.Builder(context).setTitle(title)
+                    .setView(view)
+                    .setPositiveButton("Confirm", positiveAction)
+                    .setNegativeButton("Cancel", { _, _ -> })
+        }
+
+        private fun getDialogView(context: Context): EditText {
+            val layoutInflater: LayoutInflater = context.getSystemService(Context
+                    .LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            return layoutInflater.inflate(R.layout.element_dialog, null) as EditText
         }
     }
 

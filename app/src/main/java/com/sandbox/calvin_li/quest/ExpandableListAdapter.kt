@@ -17,7 +17,7 @@ class ExpandableListAdapter(
         private val index: List<Int>)
     : BaseExpandableListAdapter() {
 
-    private companion object {
+    internal companion object {
         val nameLabel: String = "name"
         val childLabel: String = "child"
     }
@@ -56,11 +56,15 @@ class ExpandableListAdapter(
         labelListHeader.text = getGroup(groupPosition)[nameLabel] as String
 
         val editButton = returnedView.findViewById(R.id.element_header_edit) as Button
-        questOptionsDialogFragment.setEditButton(this, editButton, labelListHeader.text)
+        questOptionsDialogFragment.setEditButton(this, editButton, labelListHeader.text, index,
+                leafIndex?:groupPosition)
 
         val deleteButton = returnedView.findViewById(R.id.element_header_delete) as Button
         questOptionsDialogFragment.setDeleteButton(this.parent?: this, deleteButton, index,
                 leafIndex?:groupPosition)
+
+        val addQuestButton = returnedView.findViewById(R.id.element_header_add) as Button
+        questOptionsDialogFragment.setAddButton(this, addQuestButton, index, leafIndex?:groupPosition)
 
         return returnedView
     }
