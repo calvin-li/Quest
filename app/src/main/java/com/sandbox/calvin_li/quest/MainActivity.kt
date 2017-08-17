@@ -2,9 +2,12 @@ package com.sandbox.calvin_li.quest
 
 import android.app.Notification
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.widget.RemoteViews
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
@@ -48,25 +51,22 @@ class MainActivity : AppCompatActivity() {
         listAdapter = ExpandableListAdapter(this, null, null, emptyList())
         expandListView.setAdapter(listAdapter)
 
-        val notBuild = Notification.Builder(this)
-            .setContentTitle("5 New mails from " + "sender")
-            .setContentText("subject")
-            .setSmallIcon(R.drawable.notification_template_icon_bg)
-            .setStyle(Notification.InboxStyle()
-                .addLine("str1")
-                .addLine("str2")
-                .addLine("str3")
-                .addLine("str4")
-                .addLine("str5")
-                .setBigContentTitle("Big Title")
-                .setSummaryText("+3 more"))
-            .build()
+        setNotifications()
+    }
 
-        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(0, notBuild)
-        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(1, notBuild)
-        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(2, notBuild)
-        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(3, notBuild)
-        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(4, notBuild)
+    private fun setNotifications() {
+         questJson.forEachIndexed { index, jsonObject ->
+             val remoteView = RemoteViews(this.packageName, R.layout.notification_view)
+             val notBuild = Notification.Builder(this)
+                 .setSmallIcon(R.drawable.notification_template_icon_bg)
+                 .setContentTitle(index.toString() + "New mails from " + "sender")
+                 .setContentText("subject")
+                 .setCustomBigContentView(remoteView)
+                 .setStyle(Notification.DecoratedCustomViewStyle())
+                 .build()
+
+            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(index, notBuild)
+        }
     }
 
     private fun prepareListData() {
