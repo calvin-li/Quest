@@ -17,11 +17,6 @@ class ExpandableListAdapter(
         private val index: List<Int>)
     : BaseExpandableListAdapter() {
 
-    internal companion object {
-        val nameLabel: String = "name"
-        val childLabel: String = "child"
-    }
-
     override fun getGroup(groupPosition: Int): JsonObject{
         if(index.isEmpty()){
             return MainActivity.questJson[groupPosition]
@@ -53,7 +48,7 @@ class ExpandableListAdapter(
         labelListHeader.setTypeface(null, Typeface.BOLD)
 
         labelListHeader.tag = groupPosition
-        labelListHeader.text = getGroup(groupPosition)[nameLabel] as String
+        labelListHeader.text = getGroup(groupPosition)[MultiLevelListView.nameLabel] as String
 
         val editButton = returnedView.findViewById(R.id.element_header_edit) as Button
         questOptionsDialogFragment.setEditButton(this, editButton, labelListHeader.text, index,
@@ -71,7 +66,7 @@ class ExpandableListAdapter(
 
     override fun getChild(groupPosition: Int, childPosition: Int): JsonObject {
         val group: JsonObject = this.getGroup(groupPosition)
-        return (group[childLabel] as JsonArray<JsonObject>)[childPosition]
+        return (group[MultiLevelListView.childLabel] as JsonArray<JsonObject>)[childPosition]
     }
 
     override fun getChildId(groupPosition: Int, childPosition: Int): Long {
@@ -97,10 +92,12 @@ class ExpandableListAdapter(
         return childView
     }
 
-    override fun getChildrenCount(groupPosition: Int): Int =
-            // If child is not present, `getGroup(groupPosition)[childLabel]` is null,
-            // which is is bubbled to the `?:` operator.
-            (this.getGroup(groupPosition)[childLabel] as? JsonArray<JsonObject>)?.size ?: 0
+    override fun getChildrenCount(groupPosition: Int): Int {
+        val child: Any? = this.getGroup(groupPosition)[MultiLevelListView.childLabel]
+        // If child is not present, `getGroup(groupPosition)[childLabel]` is null, which is is bubbled
+        // to the `?:` operator.
+        return (child as? JsonArray<JsonObject>)?.size ?: 0
+    }
 
     override fun hasStableIds(): Boolean = false
 

@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.RemoteViews
+import android.widget.TextView
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
@@ -20,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var listAdapter: ExpandableListAdapter
     lateinit var expandListView: MultiLevelListView
 
-    companion object {
+    internal companion object {
         val questFileName = "quests.json"
         lateinit var questJson: JsonArray<JsonObject>
 
@@ -55,24 +56,52 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setNotifications() {
-         questJson.forEachIndexed { index, jsonObject ->
-             val remoteView = RemoteViews(this.packageName, R.layout.notification_view)
-             val notBuild = Notification.Builder(this)
-                 .setSmallIcon(R.drawable.notification_template_icon_bg)
-                 .setContentTitle(index.toString() + "New mails from " + "sender")
-                 .setContentText("subject")
-                 .setCustomBigContentView(remoteView)
-                 .setStyle(Notification.DecoratedCustomViewStyle())
-                 .build()
+        val notManager = (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
 
-            (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(index, notBuild)
+        val groupNotification: Notification.Builder = Notification.Builder(this)
+            .setOngoing(true)
+            .setShowWhen(false)
+            .setSmallIcon(R.drawable.notification_template_icon_bg)
+            .setContentTitle("Summary")
+            .setContentText("subject")
+            .setGroupSummary(true)
+            .setGroup("g1")
+        notManager.notify(-1, groupNotification.build())
+
+        questJson.forEachIndexed { index, jsonObject ->
+            val quest: String = jsonObject[MultiLevelListView.nameLabel] as String
+            @Suppress("UNCHECKED_CAST")
+            val subQuests: JsonArray<JsonObject> =
+                (jsonObject[MultiLevelListView.childLabel] as? JsonArray<JsonObject>) ?: JsonArray()
+            var subQuestString: String = ""
+            subQuests.forEach {
+                subQuestString += it[MultiLevelListView.nameLabel] as String + ".\n"
+                // Newline displays as space.
+            }
+
+            val remoteView: RemoteViews = RemoteViews(this.packageName, R.layout.notification_view)
+            val remoteQuest = RemoteViews(this.packageName, R.layout.notification_main_quest)
+            remoteQuest.setTextViewText(R.id.notification_quest, quest)
+            remoteView.addView(R.id.notification_base, remoteQuest)
+
+            val notBuild: Notification.Builder = Notification.Builder(this)
+                .setOngoing(true)
+                .setShowWhen(false)
+                .setSmallIcon(R.drawable.notification_template_icon_bg)
+                .setContentTitle(quest)
+                .setContentText("+${subQuests.count()} $subQuestString")
+                .setCustomBigContentView(remoteView)
+                .setGroup("g1")
+                .setStyle(Notification.DecoratedCustomViewStyle())
+
+            notManager.notify(index, notBuild.build())
         }
     }
 
     private fun prepareListData() {
         var questStream: InputStream
         try {
-            questStream = openFileInput(questFileName)
+            questStream = openFileInput(questFileName)!!
         } catch (ex: IOException) {
             questStream = resources.openRawResource(R.raw.quests)
         }

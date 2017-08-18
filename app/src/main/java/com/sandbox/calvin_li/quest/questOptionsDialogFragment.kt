@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
+import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
 
 class questOptionsDialogFragment: DialogFragment() {
     companion object {
@@ -32,7 +33,7 @@ class questOptionsDialogFragment: DialogFragment() {
                 val builder = createBuilder(adapter.context, editView, "Edit quest", {
                     _, _ ->
                     val nestedArray = MainActivity.getNestedArray(index)
-                    nestedArray[leafIndex][ExpandableListAdapter.nameLabel] = editView.text.toString()
+                    nestedArray[leafIndex][MultiLevelListView.nameLabel] = editView.text.toString()
                     MainActivity.saveJson(adapter.context)
                 })
                 builder.show()
@@ -48,11 +49,11 @@ class questOptionsDialogFragment: DialogFragment() {
                     _, _ ->
                     val currentObject = MainActivity.getNestedArray(index)[leafIndex]
                     val childObject: JsonArray<JsonObject>? =
-                            currentObject[ExpandableListAdapter.childLabel] as JsonArray<JsonObject>?
+                            currentObject[MultiLevelListView.childLabel] as JsonArray<JsonObject>?
                     val newObject = JsonObject()
-                    newObject.put(ExpandableListAdapter.nameLabel, editView.text.toString())
+                    newObject.put(MultiLevelListView.nameLabel, editView.text.toString())
                     if (childObject == null) {
-                        currentObject.put(ExpandableListAdapter.childLabel, JsonArray(newObject))
+                        currentObject.put(MultiLevelListView.childLabel, JsonArray(newObject))
                     } else {
                         childObject.add(newObject)
                     }
