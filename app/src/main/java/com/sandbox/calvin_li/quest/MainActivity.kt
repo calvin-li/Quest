@@ -79,8 +79,12 @@ class MainActivity : AppCompatActivity() {
                 // Newline displays as space.
             }
 
-            val remoteView: RemoteViews = RemoteViews(this.packageName, R.layout.notification_view)
+            val mainIntent = Intent(this, MainActivity::class.java)
+            val pendingIntent = PendingIntent.getActivity(this, 0, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+            val remoteView = RemoteViews(this.packageName, R.layout.notification_view)
             val remoteQuest = RemoteViews(this.packageName, R.layout.notification_main_quest)
+            remoteQuest.setOnClickPendingIntent(R.id.notification_quest, pendingIntent)
             remoteQuest.setTextViewText(R.id.notification_quest, quest)
             remoteView.addView(R.id.notification_base, remoteQuest)
 
@@ -88,6 +92,7 @@ class MainActivity : AppCompatActivity() {
                 .setOngoing(true)
                 .setShowWhen(false)
                 .setSmallIcon(R.drawable.notification_template_icon_bg)
+                .setContentIntent(pendingIntent)
                 .setContentTitle(quest)
                 .setContentText("+${subQuests.count()} $subQuestString")
                 .setCustomBigContentView(remoteView)
