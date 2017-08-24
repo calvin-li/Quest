@@ -12,10 +12,14 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name=".NotificationActionReceiver"  android:exported="true">
+            <intent-filter>
+                <action android:name="notification_action" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

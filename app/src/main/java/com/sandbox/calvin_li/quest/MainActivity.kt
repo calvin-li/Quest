@@ -8,7 +8,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.RemoteViews
-import android.widget.TextView
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
@@ -41,6 +40,68 @@ class MainActivity : AppCompatActivity() {
             }
             return nestedArray
         }
+
+        fun setNotifications(context: Context) {
+            val mainIntent = Intent(context, MainActivity::class.java)
+            val pendingIntent =
+                PendingIntent.getActivity(context, 0, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+            val groupNotification: Notification.Builder = Notification.Builder(context)
+                .setOngoing(true)
+                .setShowWhen(false)
+                .setSmallIcon(R.drawable.notification_template_icon_bg)
+                .setContentIntent(pendingIntent)
+                .setGroupSummary(true)
+                .setGroup("g1")
+            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(
+                -1, groupNotification.build())
+
+            questJson.forEachIndexed { index, jsonObject ->
+                val questPendingIntent =
+                    NotificationActionReceiver.PendingIntentForAction(context)
+
+                @Suppress("UNCHECKED_CAST")
+                val subQuests: JsonArray<JsonObject> =
+                    (jsonObject[MultiLevelListView.childLabel] as? JsonArray<JsonObject>) ?: JsonArray()
+                var quest: String = jsonObject[MultiLevelListView.nameLabel] as String
+                if(subQuests.count() > 0) {
+                    quest = "$quest (+${subQuests.count()})"
+                }
+
+                val remoteView = RemoteViews(context.packageName, R.layout.notification_view)
+                remoteView.setOnClickPendingIntent(R.id.notification_main_quest, questPendingIntent)
+                remoteView.setTextViewText(R.id.notification_main_quest, quest)
+
+                var allSubQuests = ""
+                subQuests.forEach {
+                    val subPendingIntent =
+                        NotificationActionReceiver.PendingIntentForAction(context)
+
+                    val subQuest: String = it[MultiLevelListView.nameLabel] as String
+                    val subQuestRemote = RemoteViews(context.packageName, R.layout.notification_subquest)
+
+                    subQuestRemote.setTextViewText(R.id.notification_subquest, subQuest)
+                    subQuestRemote.setOnClickPendingIntent(R.id.notification_subquest, subPendingIntent)
+                    remoteView.addView(R.id.notification_base, subQuestRemote)
+
+                    // Newline displays as space.
+                    allSubQuests +=  subQuest + ".\n"
+                }
+
+                val notBuild: Notification.Builder = Notification.Builder(context)
+                    .setOngoing(true)
+                    .setShowWhen(false)
+                    .setSmallIcon(R.drawable.notification_template_icon_bg)
+                    .setContentTitle(quest)
+                    .setContentText(allSubQuests)
+                    .setCustomBigContentView(remoteView)
+                    .setGroup("g1")
+                    .setStyle(Notification.DecoratedCustomViewStyle())
+
+                (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+                    .notify(index, notBuild.build())
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,63 +113,14 @@ class MainActivity : AppCompatActivity() {
         listAdapter = ExpandableListAdapter(this, null, null, emptyList())
         expandListView.setAdapter(listAdapter)
 
-        setNotifications()
-    }
-
-    private fun setNotifications() {
-        val notManager = (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-
-        val groupNotification: Notification.Builder = Notification.Builder(this)
-            .setOngoing(true)
-            .setShowWhen(false)
-            .setSmallIcon(R.drawable.notification_template_icon_bg)
-            .setContentTitle("Summary")
-            .setContentText("subject")
-            .setGroupSummary(true)
-            .setGroup("g1")
-        notManager.notify(-1, groupNotification.build())
-
-        questJson.forEachIndexed { index, jsonObject ->
-            val quest: String = jsonObject[MultiLevelListView.nameLabel] as String
-            @Suppress("UNCHECKED_CAST")
-            val subQuests: JsonArray<JsonObject> =
-                (jsonObject[MultiLevelListView.childLabel] as? JsonArray<JsonObject>) ?: JsonArray()
-            var subQuestString: String = ""
-            subQuests.forEach {
-                subQuestString += it[MultiLevelListView.nameLabel] as String + ".\n"
-                // Newline displays as space.
-            }
-
-            val mainIntent = Intent(this, MainActivity::class.java)
-            val pendingIntent = PendingIntent.getActivity(this, 0, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-            val remoteView = RemoteViews(this.packageName, R.layout.notification_view)
-            val remoteQuest = RemoteViews(this.packageName, R.layout.notification_main_quest)
-            remoteQuest.setOnClickPendingIntent(R.id.notification_quest, pendingIntent)
-            remoteQuest.setTextViewText(R.id.notification_quest, quest)
-            remoteView.addView(R.id.notification_base, remoteQuest)
-
-            val notBuild: Notification.Builder = Notification.Builder(this)
-                .setOngoing(true)
-                .setShowWhen(false)
-                .setSmallIcon(R.drawable.notification_template_icon_bg)
-                .setContentIntent(pendingIntent)
-                .setContentTitle(quest)
-                .setContentText("+${subQuests.count()} $subQuestString")
-                .setCustomBigContentView(remoteView)
-                .setGroup("g1")
-                .setStyle(Notification.DecoratedCustomViewStyle())
-
-            notManager.notify(index, notBuild.build())
-        }
+        setNotifications(this)
     }
 
     private fun prepareListData() {
-        var questStream: InputStream
-        try {
-            questStream = openFileInput(questFileName)!!
+        var questStream: InputStream = try {
+            openFileInput(questFileName)!!
         } catch (ex: IOException) {
-            questStream = resources.openRawResource(R.raw.quests)
+            resources.openRawResource(R.raw.quests)
         }
         //questStream = resources.openRawResource(R.raw.quests)
         questJson = Parser().parse(questStream) as JsonArray<JsonObject>
