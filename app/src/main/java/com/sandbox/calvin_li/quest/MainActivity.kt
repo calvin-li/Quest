@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.widget.RemoteViews
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
@@ -56,50 +55,8 @@ class MainActivity : AppCompatActivity() {
             (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(
                 -1, groupNotification.build())
 
-            questJson.forEachIndexed { index, jsonObject ->
-                val questPendingIntent =
-                    NotificationActionReceiver.PendingIntentForAction(context)
-
-                @Suppress("UNCHECKED_CAST")
-                val subQuests: JsonArray<JsonObject> =
-                    (jsonObject[MultiLevelListView.childLabel] as? JsonArray<JsonObject>) ?: JsonArray()
-                var quest: String = jsonObject[MultiLevelListView.nameLabel] as String
-                if(subQuests.count() > 0) {
-                    quest = "$quest (+${subQuests.count()})"
-                }
-
-                val remoteView = RemoteViews(context.packageName, R.layout.notification_view)
-                remoteView.setOnClickPendingIntent(R.id.notification_main_quest, questPendingIntent)
-                remoteView.setTextViewText(R.id.notification_main_quest, quest)
-
-                var allSubQuests = ""
-                subQuests.forEach {
-                    val subPendingIntent =
-                        NotificationActionReceiver.PendingIntentForAction(context)
-
-                    val subQuest: String = it[MultiLevelListView.nameLabel] as String
-                    val subQuestRemote = RemoteViews(context.packageName, R.layout.notification_subquest)
-
-                    subQuestRemote.setTextViewText(R.id.notification_subquest, subQuest)
-                    subQuestRemote.setOnClickPendingIntent(R.id.notification_subquest, subPendingIntent)
-                    remoteView.addView(R.id.notification_base, subQuestRemote)
-
-                    // Newline displays as space.
-                    allSubQuests +=  subQuest + ".\n"
-                }
-
-                val notBuild: Notification.Builder = Notification.Builder(context)
-                    .setOngoing(true)
-                    .setShowWhen(false)
-                    .setSmallIcon(R.drawable.notification_template_icon_bg)
-                    .setContentTitle(quest)
-                    .setContentText(allSubQuests)
-                    .setCustomBigContentView(remoteView)
-                    .setGroup("g1")
-                    .setStyle(Notification.DecoratedCustomViewStyle())
-
-                (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-                    .notify(index, notBuild.build())
+            for(index in 0 until questJson.size){
+                NotificationActionReceiver.createNotification(context, emptyList(), index)
             }
         }
     }
