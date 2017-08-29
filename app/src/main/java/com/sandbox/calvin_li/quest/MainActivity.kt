@@ -1,10 +1,6 @@
 package com.sandbox.calvin_li.quest
 
-import android.app.Notification
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.beust.klaxon.JsonArray
@@ -39,38 +35,21 @@ class MainActivity : AppCompatActivity() {
             }
             return nestedArray
         }
-
-        fun setNotifications(context: Context) {
-            val mainIntent = Intent(context, MainActivity::class.java)
-            val pendingIntent =
-                PendingIntent.getActivity(context, 0, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-            val groupNotification: Notification.Builder = Notification.Builder(context)
-                .setOngoing(true)
-                .setShowWhen(false)
-                .setSmallIcon(R.drawable.notification_template_icon_bg)
-                .setContentIntent(pendingIntent)
-                .setGroupSummary(true)
-                .setGroup("g1")
-            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(
-                -1, groupNotification.build())
-
-            for(index in 0 until questJson.size){
-                NotificationActionReceiver.createNotification(context, emptyList(), index)
-            }
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.main)
 
         expandListView = findViewById(R.id.top_view) as MultiLevelListView
         prepareListData()
         listAdapter = ExpandableListAdapter(this, null, null, emptyList())
         expandListView.setAdapter(listAdapter)
 
-        setNotifications(this)
+        NotificationActionReceiver.createOverallNotification(this)
+        for(index in 0 until questJson.size){
+            NotificationActionReceiver.createQuestNotification(this, emptyList(), index)
+        }
     }
 
     private fun prepareListData() {

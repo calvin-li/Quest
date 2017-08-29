@@ -1,17 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/notification_base"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content">
-
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-              android:textColor="@android:color/black"
-              android:id="@+id/notification_main_quest"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:clickable="true"
-              android:focusable="false">
-    </TextView>
+              android:orientation="vertical">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:id="@+id/notification_main_base"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:clickable="true"
+                  android:focusable="false"
+                  android:orientation="horizontal">
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:id="@+id/notification_main_quest"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textColor="@android:color/black">
+        </TextView>
+
+        <TextView
+            android:id="@+id/notification_main_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/backward">
+        </TextView>
+
+    </LinearLayout>
 
 </LinearLayout>

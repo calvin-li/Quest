@@ -11,7 +11,7 @@ import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
 
-class NotificationActionReceiver: BroadcastReceiver() {
+class NotificationActionReceiver : BroadcastReceiver() {
 
     companion object {
         private fun PendingIntentForAction(context: Context, indices: List<Int>, next: Int):
@@ -22,7 +22,18 @@ class NotificationActionReceiver: BroadcastReceiver() {
             return PendingIntent.getBroadcast(context, 0, questIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
-        internal fun createNotification(context: Context, indices: List<Int>, next: Int) {
+        internal fun createOverallNotification(context: Context) {
+            val groupNotification: Notification.Builder = Notification.Builder(context)
+                .setOngoing(true)
+                .setShowWhen(false)
+                .setSmallIcon(R.drawable.notification_template_icon_bg)
+                .setGroupSummary(true)
+                .setGroup("g1")
+            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(
+                -1, groupNotification.build())
+        }
+
+        internal fun createQuestNotification(context: Context, indices: List<Int>, next: Int) {
             val jsonObject = MainActivity.getNestedArray(indices)[next]
 
             @Suppress("UNCHECKED_CAST")
@@ -35,22 +46,35 @@ class NotificationActionReceiver: BroadcastReceiver() {
 
             val remoteView = RemoteViews(context.packageName, R.layout.notification_view)
             remoteView.setTextViewText(R.id.notification_main_quest, quest)
-            if(!indices.isEmpty()) {
+            remoteView.setTextViewText(
+                R.id.notification_main_arrow,
+                context.resources.getString(R.string.backward))
+            if (!indices.isEmpty()) {
                 val questPendingIntent =
                     PendingIntentForAction(context, indices.dropLast(1), indices.last())
-                remoteView.setOnClickPendingIntent(R.id.notification_main_quest, questPendingIntent)
+                remoteView.setOnClickPendingIntent(R.id.notification_main_base, questPendingIntent)
+                remoteView.setTextViewText(
+                    R.id.notification_main_arrow,
+                    context.resources.getString(R.string.backward))
+            } else {
+                remoteView.setTextViewText(R.id.notification_main_arrow, "")
             }
 
             var allSubQuests = ""
-            subQuests.forEachIndexed {index, subQuestJson ->
+            subQuests.forEachIndexed { index, subQuestJson ->
                 val subQuest: String = subQuestJson[MultiLevelListView.nameLabel] as String
                 val subQuestRemote = RemoteViews(context.packageName, R.layout.notification_subquest)
-                subQuestRemote.setTextViewText(R.id.notification_subquest, subQuest)
+                subQuestRemote.setTextViewText(R.id.notification_subquest_text, subQuest)
 
-                if(subQuestJson.containsKey(MultiLevelListView.childLabel)) {
+                if (subQuestJson.containsKey(MultiLevelListView.childLabel)) {
                     val subPendingIntent =
                         PendingIntentForAction(context, indices.plus(next), index)
-                    subQuestRemote.setOnClickPendingIntent(R.id.notification_subquest, subPendingIntent)
+                    subQuestRemote.setOnClickPendingIntent(R.id.notification_subquest_base, subPendingIntent)
+                    subQuestRemote.setTextViewText(
+                        R.id.notification_subquest_arrow,
+                        context.resources.getString(R.string.forward))
+                } else {
+                    subQuestRemote.setTextViewText(R.id.notification_subquest_arrow, "")
                 }
                 remoteView.addView(R.id.notification_base, subQuestRemote)
 
@@ -76,6 +100,6 @@ class NotificationActionReceiver: BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val indices = intent.getIntArrayExtra("indices").toList()
         val next = intent.getIntExtra("next", -1)
-        createNotification(context, indices, next)
+        createQuestNotification(context, indices, next)
     }
 }
