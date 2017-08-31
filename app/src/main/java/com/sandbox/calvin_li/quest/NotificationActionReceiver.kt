@@ -14,11 +14,13 @@ import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
 class NotificationActionReceiver : BroadcastReceiver() {
 
     companion object {
-        private fun PendingIntentForAction(context: Context, indices: List<Int>, next: Int):
+        private fun PendingIntentForAction(context: Context, indices: List<Int>, next: Int, s: String
+        = ""):
             PendingIntent {
             val questIntent = Intent("notification_action")
             questIntent.putExtra("indices", indices.toIntArray())
             questIntent.putExtra("next", next)
+            questIntent.putExtra("level", s)
             return PendingIntent.getBroadcast(context, 0, questIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
@@ -45,34 +47,26 @@ class NotificationActionReceiver : BroadcastReceiver() {
             }
 
             val remoteView = RemoteViews(context.packageName, R.layout.notification_view)
-            remoteView.setTextViewText(R.id.notification_main_quest, quest)
-            remoteView.setTextViewText(
-                R.id.notification_main_arrow,
-                context.resources.getString(R.string.backward))
-            if (!indices.isEmpty()) {
-                val questPendingIntent =
-                    PendingIntentForAction(context, indices.dropLast(1), indices.last())
-                remoteView.setOnClickPendingIntent(R.id.notification_main_base, questPendingIntent)
-                remoteView.setTextViewText(
-                    R.id.notification_main_arrow,
-                    context.resources.getString(R.string.backward))
-            } else {
-                remoteView.setTextViewText(R.id.notification_main_arrow, "")
-            }
-
             var allSubQuests = ""
             subQuests.forEachIndexed { index, subQuestJson ->
                 val subQuest: String = subQuestJson[MultiLevelListView.nameLabel] as String
                 val subQuestRemote = RemoteViews(context.packageName, R.layout.notification_subquest)
                 subQuestRemote.setTextViewText(R.id.notification_subquest_text, subQuest)
 
+                remoteView.setTextViewText(R.id.notification_main_quest, quest)
+                if (!indices.isEmpty()) {
+                    val questPendingIntent =
+                        PendingIntentForAction(context, indices.dropLast(1), indices.last(), "main")
+                    remoteView.setOnClickPendingIntent(R.id.notification_main_base, questPendingIntent)
+                    remoteView.setTextViewText(R.id.notification_main_arrow, context.resources.getString(R.string.backward))
+                } else {
+                    remoteView.setTextViewText(R.id.notification_main_arrow, "")
+                }
+
                 if (subQuestJson.containsKey(MultiLevelListView.childLabel)) {
-                    val subPendingIntent =
-                        PendingIntentForAction(context, indices.plus(next), index)
+                    val subPendingIntent = PendingIntentForAction(context, indices.plus(next), index, "sub")
                     subQuestRemote.setOnClickPendingIntent(R.id.notification_subquest_base, subPendingIntent)
-                    subQuestRemote.setTextViewText(
-                        R.id.notification_subquest_arrow,
-                        context.resources.getString(R.string.forward))
+                    subQuestRemote.setTextViewText( R.id.notification_subquest_arrow, context.resources.getString(R.string.forward))
                 } else {
                     subQuestRemote.setTextViewText(R.id.notification_subquest_arrow, "")
                 }
