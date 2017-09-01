@@ -13,7 +13,7 @@ import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
 
-class questOptionsDialogFragment: DialogFragment() {
+class questOptionsDialogFragment : DialogFragment() {
     companion object {
         fun setDeleteButton(parentAdapter: ExpandableListAdapter, deleteButton: Button, index:
         List<Int>, leafIndex: Int) {
