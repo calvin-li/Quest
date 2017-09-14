@@ -14,13 +14,14 @@ import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
 class NotificationActionReceiver : BroadcastReceiver() {
 
     companion object {
-        private fun PendingIntentForAction(context: Context, indices: List<Int>, next: Int, s: String
-        = ""):
+        private val numActions: Int = 100
+        private var notificationMap = arrayOfNulls<Int?>(numActions)
+
+        private fun PendingIntentForAction(context: Context, indices: List<Int>, next: Int, actionNumber: Int):
             PendingIntent {
-            val questIntent = Intent("notification_action")
+            val questIntent = Intent("notification_action$actionNumber")
             questIntent.putExtra("indices", indices.toIntArray())
             questIntent.putExtra("next", next)
-            questIntent.putExtra("level", s)
             return PendingIntent.getBroadcast(context, 0, questIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
@@ -35,8 +36,27 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 -1, groupNotification.build())
         }
 
+        private fun clearNotificationActions(index: Int){
+            notificationMap = notificationMap.mapIndexed({ _, mapping ->
+                if(mapping == index){
+                    null
+                } else{
+                    mapping
+                }
+            }).toTypedArray()
+        }
+
+        private fun nextActionNumber(notificationNumber: Int): Int {
+            val nextNumber = notificationMap.indexOf(null) // -1 if no elements are null
+            notificationMap[nextNumber] = notificationNumber
+            return nextNumber
+        }
+
         internal fun createQuestNotification(context: Context, indices: List<Int>, next: Int) {
             val jsonObject = MainActivity.getNestedArray(indices)[next]
+            val notificationNumber = indices.firstOrNull() ?: next
+
+            clearNotificationActions(notificationNumber)
 
             @Suppress("UNCHECKED_CAST")
             val subQuests: JsonArray<JsonObject> =
@@ -47,24 +67,31 @@ class NotificationActionReceiver : BroadcastReceiver() {
             }
 
             val remoteView = RemoteViews(context.packageName, R.layout.notification_view)
+
+            remoteView.setTextViewText(R.id.notification_main_quest, quest)
+            if (!indices.isEmpty()) {
+                val questPendingIntent =
+                    PendingIntentForAction(
+                        context, 
+                        indices.dropLast(1),
+                        indices.last(),
+                        nextActionNumber(notificationNumber))
+                remoteView.setOnClickPendingIntent(R.id.notification_main_base, questPendingIntent)
+                remoteView.setTextViewText(R.id.notification_main_arrow, context.resources.getString(R.string.backward))
+            } else {
+                remoteView.setTextViewText(R.id.notification_main_arrow, "")
+            }
+
+
             var allSubQuests = ""
             subQuests.forEachIndexed { index, subQuestJson ->
                 val subQuest: String = subQuestJson[MultiLevelListView.nameLabel] as String
                 val subQuestRemote = RemoteViews(context.packageName, R.layout.notification_subquest)
                 subQuestRemote.setTextViewText(R.id.notification_subquest_text, subQuest)
 
-                remoteView.setTextViewText(R.id.notification_main_quest, quest)
-                if (!indices.isEmpty()) {
-                    val questPendingIntent =
-                        PendingIntentForAction(context, indices.dropLast(1), indices.last(), "main")
-                    remoteView.setOnClickPendingIntent(R.id.notification_main_base, questPendingIntent)
-                    remoteView.setTextViewText(R.id.notification_main_arrow, context.resources.getString(R.string.backward))
-                } else {
-                    remoteView.setTextViewText(R.id.notification_main_arrow, "")
-                }
-
                 if (subQuestJson.containsKey(MultiLevelListView.childLabel)) {
-                    val subPendingIntent = PendingIntentForAction(context, indices.plus(next), index, "sub")
+                    val subPendingIntent =
+                        PendingIntentForAction(context, indices.plus(next), index, nextActionNumber(notificationNumber))
                     subQuestRemote.setOnClickPendingIntent(R.id.notification_subquest_base, subPendingIntent)
                     subQuestRemote.setTextViewText( R.id.notification_subquest_arrow, context.resources.getString(R.string.forward))
                 } else {
@@ -87,7 +114,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 .setStyle(Notification.DecoratedCustomViewStyle())
 
             (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-                .notify(indices.firstOrNull() ?: next, notBuild.build())
+                .notify(notificationNumber, notBuild.build())
         }
     }
 
