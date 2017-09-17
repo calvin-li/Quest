@@ -50,8 +50,9 @@ class MainActivity : AppCompatActivity() {
         NotificationActionReceiver.createOverallNotification(this)
 
         for(index in 0 until questJson.size){
-            NotificationActionReceiver.createQuestNotification(this, emptyList(), index)
+            NotificationActionReceiver.notificationIndexList.add(listOf(index))
         }
+        NotificationActionReceiver.refreshNotifications(this)
     }
 
     private fun prepareListData() {

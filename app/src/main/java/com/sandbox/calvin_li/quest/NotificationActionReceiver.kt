@@ -18,12 +18,24 @@ class NotificationActionReceiver : BroadcastReceiver() {
     companion object {
         private val numActions: Int = 100
         private var notificationMap = arrayOfNulls<Int?>(numActions)
+        private val add_action = "add_action"
+        private val edit_action = "edit_action"
+        private val delete_action = "delete_action"
+        internal val notificationIndexList = mutableListOf<List<Int>>()
 
-        private fun PendingIntentForAction(context: Context, indices: List<Int>, next: Int, actionNumber: Int):
+        private fun NavigationPendingIntent(context: Context, indices: List<Int>, actionNumber: Int):
             PendingIntent {
             val questIntent = Intent("notification_action$actionNumber")
+            questIntent.putExtra("isNav", true)
             questIntent.putExtra("indices", indices.toIntArray())
-            questIntent.putExtra("next", next)
+            return PendingIntent.getBroadcast(context, 0, questIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+
+        private fun ButtonPendingIntent(context: Context, indices: List<Int>, actionNumber: Int)
+            :PendingIntent {
+            val questIntent = Intent("notification_action$actionNumber")
+            questIntent.putExtra("isNav", false)
+            questIntent.putExtra("indices", indices.toIntArray())
             return PendingIntent.getBroadcast(context, 0, questIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
@@ -56,24 +68,31 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
         private fun createButtonAction(context: Context, intent: PendingIntent, key: String, label: String)
                 : Notification.Action {
-            val deleteInput =
-                    RemoteInput.Builder(key)
-                            .setLabel(label)
-                            .build()
-            val deleteAction: Notification.Action =
-                Notification.Action.Builder(
-                    Icon.createWithResource(context, R.drawable.abc_ic_arrow_drop_right_black_24dp),
-                    label,
-                    intent)
-                    .addRemoteInput(deleteInput)
-                .build()
+            val action = Notification.Action.Builder(
+                Icon.createWithResource(context, R.drawable.abc_ic_arrow_drop_right_black_24dp),
+                label,
+                intent)
 
-            return deleteAction
+            if(!key.equals(delete_action, false)){
+                val input: RemoteInput =
+                    RemoteInput.Builder(key)
+                        .setLabel(label)
+                        .build()
+                action.addRemoteInput(input)
+            }
+
+            return action.build()
         }
 
-        internal fun createQuestNotification(context: Context, indices: List<Int>, next: Int) {
-            val jsonObject = MainActivity.getNestedArray(indices)[next]
-            val notificationNumber = indices.firstOrNull() ?: next
+        internal fun refreshNotifications(context: Context) {
+            for (index in MainActivity.questJson.size - 1 downTo 0) {
+                createQuestNotification(context, notificationIndexList[index])
+            }
+        }
+
+        private fun createQuestNotification(context: Context, indices: List<Int>) {
+            val jsonObject = MainActivity.getNestedArray(indices.dropLast(1))[indices.last()]
+            val notificationNumber = indices.first()
 
             clearNotificationActions(notificationNumber)
 
@@ -89,16 +108,13 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
             remoteView.setTextViewText(R.id.notification_main_quest, quest)
 
-            var questPendingIntent: PendingIntent
             val actionNumber = nextActionNumber(notificationNumber)
-            if (!indices.isEmpty()) {
-                questPendingIntent = PendingIntentForAction(
-                    context, indices.dropLast(1), indices.last(), actionNumber)
+            if (indices.size > 1) {
+                val questPendingIntent = NavigationPendingIntent(
+                    context, indices.dropLast(1), actionNumber)
                 remoteView.setOnClickPendingIntent(R.id.notification_main_base, questPendingIntent)
                 remoteView.setTextViewText(R.id.notification_main_arrow, context.resources.getString(R.string.backward))
             } else {
-                questPendingIntent = PendingIntentForAction(
-                    context, indices, next, actionNumber)
                 remoteView.setTextViewText(R.id.notification_main_arrow, "")
             }
 
@@ -110,7 +126,8 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
                 if (subQuestJson.containsKey(MultiLevelListView.childLabel)) {
                     val subPendingIntent =
-                        PendingIntentForAction(context, indices.plus(next), index, nextActionNumber(notificationNumber))
+                        NavigationPendingIntent(context, indices.plus(index), nextActionNumber
+                        (notificationNumber))
                     subQuestRemote.setOnClickPendingIntent(R.id.notification_subquest_base, subPendingIntent)
                     subQuestRemote.setTextViewText( R.id.notification_subquest_arrow, context.resources.getString(R.string.forward))
                 } else {
@@ -122,8 +139,11 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 allSubQuests += subQuest + ".\n"
             }
 
-            val deleteAction = createButtonAction(context, questPendingIntent, "delete", "delete")
-            val editAction = createButtonAction(context, questPendingIntent, "edit", "edit")
+            val buttonPendingIntent =
+                ButtonPendingIntent(context, indices, nextActionNumber(notificationNumber))
+            val deleteAction = createButtonAction(context, buttonPendingIntent, delete_action, "delete")
+            val editAction = createButtonAction(context, buttonPendingIntent, edit_action, "edit")
+            val addAction = createButtonAction(context, buttonPendingIntent, add_action, "add")
 
             val notBuild: Notification.Builder = Notification.Builder(context)
                 .setOngoing(true)
@@ -132,7 +152,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 .setContentTitle(quest)
                 .setContentText(allSubQuests)
                 .setCustomBigContentView(remoteView)
-                .setActions(deleteAction, editAction)
+                .setActions(addAction, editAction, deleteAction)
                 .setGroup("g1")
                 .setStyle(Notification.DecoratedCustomViewStyle())
 
@@ -142,8 +162,14 @@ class NotificationActionReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        val indices = intent.getIntArrayExtra("indices").toList()
-        val next = intent.getIntExtra("next", -1)
-        createQuestNotification(context, indices, next)
+        val isNavi = intent.getBooleanExtra("isNav", false)
+        if(isNavi) {
+            val indices = intent.getIntArrayExtra("indices").toList()
+            notificationIndexList[indices.first()] = indices
+            refreshNotifications(context)
+        }
+        else{
+
+        }
     }
 }
