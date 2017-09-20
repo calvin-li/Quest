@@ -22,7 +22,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
     companion object {
         private val numActions: Int = 100
-        private var notificationMap = arrayOfNulls<Int?>(numActions)
+        private var notificationMap: Int = 0
         private val add_action = "add_action"
         private val edit_action = "edit_action"
         private val delete_action = "delete_action"
@@ -77,20 +77,8 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 -1, groupNotification.build())
         }
 
-        private fun clearNotificationActions(index: Int){
-            notificationMap = notificationMap.mapIndexed({ _, mapping ->
-                if(mapping == index){
-                    null
-                } else{
-                    mapping
-                }
-            }).toTypedArray()
-        }
-
         private fun nextActionNumber(notificationNumber: Int): Int {
-            val nextNumber = notificationMap.indexOf(null) // -1 if no elements are null
-            notificationMap[nextNumber] = notificationNumber
-            return nextNumber
+            return notificationMap++
         }
 
         private fun createButtonAction(context: Context, intent: PendingIntent, key: String, label: String)
@@ -112,21 +100,17 @@ class NotificationActionReceiver : BroadcastReceiver() {
         }
 
         internal fun refreshNotifications(context: Context) {
+            notificationMap = 0
             MainActivity.loadQuestJson(context)
             for (index in MainActivity.questJson.size - 1 downTo 0) {
                 createQuestNotification(context, getIndexList(context)[index])
             }
-            notificationMap = arrayOfNulls(numActions)
+            notificationMap = 0
         }
 
         private fun createQuestNotification(context: Context, indices: List<Int>) {
             val jsonObject = MainActivity.getNestedArray(indices.dropLast(1))[indices.last()]
             val notificationNumber = indices.first()
-
-            //clearNotificationActions(notificationNumber)
-            var str = ""
-            notificationMap.forEach { str += it.toString() + " " }
-            Log.i("map", str)
             
             @Suppress("UNCHECKED_CAST")
             val subQuests: JsonArray<JsonObject> =
