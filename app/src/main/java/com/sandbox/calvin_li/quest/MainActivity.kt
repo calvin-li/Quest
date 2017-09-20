@@ -1,7 +1,6 @@
 package com.sandbox.calvin_li.quest
 
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.beust.klaxon.JsonArray
@@ -17,12 +16,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var expandListView: MultiLevelListView
 
     internal companion object {
-        val questFileName = "quests.json"
+        private val questFileName = "quests.json"
         lateinit var questJson: JsonArray<JsonObject>
 
-        fun saveJson(_context: Context) {
-            val writeStream: FileOutputStream = _context.openFileOutput(MainActivity.questFileName, Context
-                .MODE_PRIVATE)
+        fun saveJson(context: Context) {
+            val writeStream: FileOutputStream = context.openFileOutput(questFileName, Context.MODE_PRIVATE)
             writeStream.write(questJson.toJsonString().toByteArray())
             writeStream.close()
         }
@@ -36,6 +34,17 @@ class MainActivity : AppCompatActivity() {
             }
             return nestedArray
         }
+
+        internal fun loadQuestJson(context: Context){
+            var questStream: InputStream = try {
+                context.openFileInput(questFileName)!!
+            } catch (ex: IOException) {
+                context.resources.openRawResource(R.raw.quests)
+            }
+            //questStream = resources.openRawResource(R.raw.quests)
+            questJson = Parser().parse(questStream) as JsonArray<JsonObject>
+            questStream.close()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,27 +52,19 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.main)
 
         expandListView = findViewById(R.id.top_view) as MultiLevelListView
-        prepareListData()
+
+        loadQuestJson(this)
+        saveJson(this)
+
         listAdapter = ExpandableListAdapter(this, null, null, emptyList())
         expandListView.setAdapter(listAdapter)
 
         NotificationActionReceiver.createOverallNotification(this)
 
-        for(index in 0 until questJson.size){
-            NotificationActionReceiver.notificationIndexList.add(listOf(index))
-        }
-        NotificationActionReceiver.refreshNotifications(this)
-    }
+        val notificationIndexList = NotificationActionReceiver.getIndexList(this)
+        (0 until questJson.size).mapTo(notificationIndexList) { listOf(it) }
+        NotificationActionReceiver.saveIndexList(this, notificationIndexList)
 
-    private fun prepareListData() {
-        var questStream: InputStream = try {
-            openFileInput(questFileName)!!
-        } catch (ex: IOException) {
-            resources.openRawResource(R.raw.quests)
-        }
-        //questStream = resources.openRawResource(R.raw.quests)
-        questJson = Parser().parse(questStream) as JsonArray<JsonObject>
-        questStream.close()
-        saveJson(this)
+        NotificationActionReceiver.refreshNotifications(this)
     }
 }

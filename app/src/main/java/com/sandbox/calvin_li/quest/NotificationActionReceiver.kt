@@ -8,10 +8,15 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Icon
+import android.util.Log
 import android.widget.RemoteViews
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
+import com.beust.klaxon.Parser
 import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.InputStream
 
 class NotificationActionReceiver : BroadcastReceiver() {
 
@@ -21,7 +26,29 @@ class NotificationActionReceiver : BroadcastReceiver() {
         private val add_action = "add_action"
         private val edit_action = "edit_action"
         private val delete_action = "delete_action"
-        internal val notificationIndexList = mutableListOf<List<Int>>()
+        private val indexListFileName = "notificationIndexList.json"
+
+        internal fun saveIndexList(context: Context, notificationIndexList: List<List<Int>>){
+            val indexArray = JsonArray<JsonArray<Int>>()
+            notificationIndexList.forEach {
+                indexArray.add(JsonArray(it))
+            }
+            val writeStream: FileOutputStream = context.openFileOutput(indexListFileName, Context.MODE_PRIVATE)
+            writeStream.write(indexArray.toJsonString().toByteArray())
+            writeStream.close()
+        }
+
+        internal fun getIndexList(context: Context): MutableList<List<Int>> {
+            var indexStream: InputStream = try {
+                context.openFileInput(indexListFileName)!!
+            } catch (ex: IOException) {
+                return mutableListOf()
+            }
+            val indexArray = Parser().parse(indexStream) as JsonArray<JsonArray<Int>>
+            indexStream.close()
+
+            return indexArray.map { it.toList() }.toMutableList()
+        }
 
         private fun NavigationPendingIntent(context: Context, indices: List<Int>, actionNumber: Int):
             PendingIntent {
@@ -85,17 +112,22 @@ class NotificationActionReceiver : BroadcastReceiver() {
         }
 
         internal fun refreshNotifications(context: Context) {
+            MainActivity.loadQuestJson(context)
             for (index in MainActivity.questJson.size - 1 downTo 0) {
-                createQuestNotification(context, notificationIndexList[index])
+                createQuestNotification(context, getIndexList(context)[index])
             }
+            notificationMap = arrayOfNulls(numActions)
         }
 
         private fun createQuestNotification(context: Context, indices: List<Int>) {
             val jsonObject = MainActivity.getNestedArray(indices.dropLast(1))[indices.last()]
             val notificationNumber = indices.first()
 
-            clearNotificationActions(notificationNumber)
-
+            //clearNotificationActions(notificationNumber)
+            var str = ""
+            notificationMap.forEach { str += it.toString() + " " }
+            Log.i("map", str)
+            
             @Suppress("UNCHECKED_CAST")
             val subQuests: JsonArray<JsonObject> =
                 (jsonObject[MultiLevelListView.childLabel] as? JsonArray<JsonObject>) ?: JsonArray()
@@ -165,7 +197,11 @@ class NotificationActionReceiver : BroadcastReceiver() {
         val isNavi = intent.getBooleanExtra("isNav", false)
         if(isNavi) {
             val indices = intent.getIntArrayExtra("indices").toList()
+
+            val notificationIndexList = getIndexList(context)
             notificationIndexList[indices.first()] = indices
+            saveIndexList(context, notificationIndexList)
+
             refreshNotifications(context)
         }
         else{
