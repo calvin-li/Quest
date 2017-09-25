@@ -11,9 +11,8 @@ import android.widget.Button
 import android.widget.EditText
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
-import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
 
-class questOptionsDialogFragment: DialogFragment() {
+class QuestOptionsDialogFragment : DialogFragment() {
     companion object {
         fun setDeleteButton(parentAdapter: ExpandableListAdapter, deleteButton: Button, index:
         List<Int>, leafIndex: Int) {

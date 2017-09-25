@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.*
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
-import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
 
 class ExpandableListAdapter(
         internal val context: Context,
@@ -51,15 +50,15 @@ class ExpandableListAdapter(
         labelListHeader.text = getGroup(groupPosition)[MultiLevelListView.nameLabel] as String
 
         val editButton = returnedView.findViewById(R.id.element_header_edit) as Button
-        questOptionsDialogFragment.setEditButton(this, editButton, labelListHeader.text, index,
+        QuestOptionsDialogFragment.setEditButton(this, editButton, labelListHeader.text, index,
                 leafIndex?:groupPosition)
 
         val deleteButton = returnedView.findViewById(R.id.element_header_delete) as Button
-        questOptionsDialogFragment.setDeleteButton(this.parent?: this, deleteButton, index,
+        QuestOptionsDialogFragment.setDeleteButton(this.parent?: this, deleteButton, index,
                 leafIndex?:groupPosition)
 
         val addQuestButton = returnedView.findViewById(R.id.element_header_add) as Button
-        questOptionsDialogFragment.setAddButton(this, addQuestButton, index, leafIndex?:groupPosition)
+        QuestOptionsDialogFragment.setAddButton(this, addQuestButton, index, leafIndex?:groupPosition)
 
         return returnedView
     }

@@ -8,12 +8,11 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Icon
-import android.util.Log
+import android.os.Bundle
 import android.widget.RemoteViews
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
-import com.sandbox.calvin_li.quest.MultiLevelListView.MultiLevelListView
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -21,12 +20,15 @@ import java.io.InputStream
 class NotificationActionReceiver : BroadcastReceiver() {
 
     companion object {
-        private val numActions: Int = 100
         private var notificationMap: Int = 0
         private val add_action = "add_action"
         private val edit_action = "edit_action"
         private val delete_action = "delete_action"
         private val indexListFileName = "notificationIndexList.json"
+
+        private fun nextActionNumber(): Int {
+            return notificationMap++
+        }
 
         internal fun saveIndexList(context: Context, notificationIndexList: List<List<Int>>){
             val indexArray = JsonArray<JsonArray<Int>>()
@@ -50,7 +52,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
             return indexArray.map { it.toList() }.toMutableList()
         }
 
-        private fun NavigationPendingIntent(context: Context, indices: List<Int>, actionNumber: Int):
+        private fun navigationPendingIntent(context: Context, indices: List<Int>, actionNumber: Int):
             PendingIntent {
             val questIntent = Intent("notification_action$actionNumber")
             questIntent.putExtra("isNav", true)
@@ -58,7 +60,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
             return PendingIntent.getBroadcast(context, 0, questIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
-        private fun ButtonPendingIntent(context: Context, indices: List<Int>, actionNumber: Int)
+        private fun buttonPendingIntent(context: Context, indices: List<Int>, actionNumber: Int)
             :PendingIntent {
             val questIntent = Intent("notification_action$actionNumber")
             questIntent.putExtra("isNav", false)
@@ -66,23 +68,8 @@ class NotificationActionReceiver : BroadcastReceiver() {
             return PendingIntent.getBroadcast(context, 0, questIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
-        internal fun createOverallNotification(context: Context) {
-            val groupNotification: Notification.Builder = Notification.Builder(context)
-                .setOngoing(true)
-                .setShowWhen(false)
-                .setSmallIcon(R.drawable.notification_template_icon_bg)
-                .setGroupSummary(true)
-                .setGroup("g1")
-            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(
-                -1, groupNotification.build())
-        }
-
-        private fun nextActionNumber(notificationNumber: Int): Int {
-            return notificationMap++
-        }
-
         private fun createButtonAction(context: Context, intent: PendingIntent, key: String, label: String)
-                : Notification.Action {
+            : Notification.Action {
             val action = Notification.Action.Builder(
                 Icon.createWithResource(context, R.drawable.abc_ic_arrow_drop_right_black_24dp),
                 label,
@@ -91,7 +78,6 @@ class NotificationActionReceiver : BroadcastReceiver() {
             if(!key.equals(delete_action, false)){
                 val input: RemoteInput =
                     RemoteInput.Builder(key)
-                        .setLabel(label)
                         .build()
                 action.addRemoteInput(input)
             }
@@ -108,10 +94,21 @@ class NotificationActionReceiver : BroadcastReceiver() {
             notificationMap = 0
         }
 
+        internal fun createOverallNotification(context: Context) {
+            val groupNotification: Notification.Builder = Notification.Builder(context)
+                .setOngoing(true)
+                .setShowWhen(false)
+                .setSmallIcon(R.drawable.notification_template_icon_bg)
+                .setGroupSummary(true)
+                .setGroup("g1")
+            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(
+                -1, groupNotification.build())
+        }
+
         private fun createQuestNotification(context: Context, indices: List<Int>) {
             val jsonObject = MainActivity.getNestedArray(indices.dropLast(1))[indices.last()]
             val notificationNumber = indices.first()
-            
+
             @Suppress("UNCHECKED_CAST")
             val subQuests: JsonArray<JsonObject> =
                 (jsonObject[MultiLevelListView.childLabel] as? JsonArray<JsonObject>) ?: JsonArray()
@@ -124,9 +121,9 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
             remoteView.setTextViewText(R.id.notification_main_quest, quest)
 
-            val actionNumber = nextActionNumber(notificationNumber)
+            val actionNumber = nextActionNumber()
             if (indices.size > 1) {
-                val questPendingIntent = NavigationPendingIntent(
+                val questPendingIntent = navigationPendingIntent(
                     context, indices.dropLast(1), actionNumber)
                 remoteView.setOnClickPendingIntent(R.id.notification_main_base, questPendingIntent)
                 remoteView.setTextViewText(R.id.notification_main_arrow, context.resources.getString(R.string.backward))
@@ -142,8 +139,8 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
                 if (subQuestJson.containsKey(MultiLevelListView.childLabel)) {
                     val subPendingIntent =
-                        NavigationPendingIntent(context, indices.plus(index), nextActionNumber
-                        (notificationNumber))
+                        navigationPendingIntent(context, indices.plus(index), nextActionNumber
+                        ())
                     subQuestRemote.setOnClickPendingIntent(R.id.notification_subquest_base, subPendingIntent)
                     subQuestRemote.setTextViewText( R.id.notification_subquest_arrow, context.resources.getString(R.string.forward))
                 } else {
@@ -156,7 +153,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
             }
 
             val buttonPendingIntent =
-                ButtonPendingIntent(context, indices, nextActionNumber(notificationNumber))
+                buttonPendingIntent(context, indices, nextActionNumber())
             val deleteAction = createButtonAction(context, buttonPendingIntent, delete_action, "delete")
             val editAction = createButtonAction(context, buttonPendingIntent, edit_action, "edit")
             val addAction = createButtonAction(context, buttonPendingIntent, add_action, "add")
@@ -178,18 +175,26 @@ class NotificationActionReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        val isNavi = intent.getBooleanExtra("isNav", false)
-        if(isNavi) {
-            val indices = intent.getIntArrayExtra("indices").toList()
+        val indices = intent.getIntArrayExtra("indices").toList()
 
+        if(intent.getBooleanExtra("isNav", false)) {
             val notificationIndexList = getIndexList(context)
             notificationIndexList[indices.first()] = indices
             saveIndexList(context, notificationIndexList)
-
-            refreshNotifications(context)
         }
         else{
+            val remoteInputBundle: Bundle? = RemoteInput.getResultsFromIntent(intent)
+            if (remoteInputBundle == null) {
 
+            } else {
+                var input: String? = remoteInputBundle.getCharSequence(add_action).toString()
+                if(input == null){
+                    input = remoteInputBundle.getCharSequence(edit_action).toString()
+                } else{
+
+                }
+            }
         }
+        refreshNotifications(context)
     }
 }
