@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
             } catch (ex: IOException) {
                 context.resources.openRawResource(R.raw.quests)
             }
-            //questStream = resources.openRawResource(R.raw.quests)
+            // questStream = context.resources.openRawResource(R.raw.quests)
             questJson = Parser().parse(questStream) as JsonArray<JsonObject>
             questStream.close()
         }
@@ -60,8 +60,8 @@ class MainActivity : AppCompatActivity() {
 
         NotificationActionReceiver.createOverallNotification(this)
 
-        val notificationIndexList = NotificationActionReceiver.getIndexList(this)
-        (0 until questJson.size).mapTo(notificationIndexList) { listOf(it) }
+        val notificationIndexList: MutableList<List<Int>> = mutableListOf()
+        (0 until questJson.size).forEach { notificationIndexList.add(listOf(it)) }
         NotificationActionReceiver.saveIndexList(this, notificationIndexList)
 
         NotificationActionReceiver.refreshNotifications(this)

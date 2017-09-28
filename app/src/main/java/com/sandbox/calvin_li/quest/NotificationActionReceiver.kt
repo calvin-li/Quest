@@ -48,7 +48,6 @@ class NotificationActionReceiver : BroadcastReceiver() {
             }
             val indexArray = Parser().parse(indexStream) as JsonArray<JsonArray<Int>>
             indexStream.close()
-
             return indexArray.map { it.toList() }.toMutableList()
         }
 
@@ -176,16 +175,19 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val indices = intent.getIntArrayExtra("indices").toList()
+        val notificationIndexList = getIndexList(context)
 
         if(intent.getBooleanExtra("isNav", false)) {
-            val notificationIndexList = getIndexList(context)
             notificationIndexList[indices.first()] = indices
             saveIndexList(context, notificationIndexList)
         }
         else{
             val remoteInputBundle: Bundle? = RemoteInput.getResultsFromIntent(intent)
             if (remoteInputBundle == null) {
-
+                // delete chosen
+                QuestOptionsDialogFragment.deleteQuest(indices.dropLast(1), indices.last(), context)
+                notificationIndexList[indices.first()] = indices.dropLast(1)
+                saveIndexList(context, notificationIndexList)
             } else {
                 var input: String? = remoteInputBundle.getCharSequence(add_action).toString()
                 if(input == null){
