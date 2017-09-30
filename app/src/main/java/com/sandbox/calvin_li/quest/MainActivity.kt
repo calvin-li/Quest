@@ -24,14 +24,13 @@ class MainActivity : AppCompatActivity() {
             writeStream.close()
         }
 
-        fun getNestedArray(indices: List<Int>): JsonArray<JsonObject> {
-            var nestedArray: JsonArray<JsonObject> = questJson
+        fun getNestedArray(indices: List<Int>): JsonObject {
+            var nestedObject: JsonObject = questJson[indices[0]]
 
-            for (i in 0 until indices.size) {
-                nestedArray =
-                    nestedArray[indices[i]]["child"] as JsonArray<JsonObject>
+            for (i in 1 until indices.size) {
+                nestedObject = (nestedObject[MultiLevelListView.childLabel] as JsonArray<JsonObject>)[indices[i]]
             }
-            return nestedArray
+            return nestedObject
         }
 
         internal fun loadQuestJson(context: Context){

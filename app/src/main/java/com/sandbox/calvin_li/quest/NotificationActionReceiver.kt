@@ -93,6 +93,18 @@ class NotificationActionReceiver : BroadcastReceiver() {
             notificationMap = 0
         }
 
+        internal fun removeAndShiftNotification(context: Context, indices: List<Int>) {
+            val notificationIndexList = getIndexList(context)
+            (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+                .cancel(notificationIndexList.size - 1)
+            (indices[0] + 1 until notificationIndexList.size).forEach {
+                val newList: MutableList<Int> = notificationIndexList[it].toMutableList()
+                newList[0] = newList[0] - 1
+                notificationIndexList[it] = newList
+            }
+            notificationIndexList.removeAt(indices[0])
+        }
+
         internal fun createOverallNotification(context: Context) {
             val groupNotification: Notification.Builder = Notification.Builder(context)
                 .setOngoing(true)
@@ -105,7 +117,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
         }
 
         private fun createQuestNotification(context: Context, indices: List<Int>) {
-            val jsonObject = MainActivity.getNestedArray(indices.dropLast(1))[indices.last()]
+            val jsonObject = MainActivity.getNestedArray(indices)
             val notificationNumber = indices.first()
 
             @Suppress("UNCHECKED_CAST")
@@ -136,14 +148,16 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 val subQuestRemote = RemoteViews(context.packageName, R.layout.notification_subquest)
                 subQuestRemote.setTextViewText(R.id.notification_subquest_text, subQuest)
 
-                if (subQuestJson.containsKey(MultiLevelListView.childLabel)) {
-                    val subPendingIntent =
-                        navigationPendingIntent(context, indices.plus(index), nextActionNumber
-                        ())
-                    subQuestRemote.setOnClickPendingIntent(R.id.notification_subquest_base, subPendingIntent)
-                    subQuestRemote.setTextViewText( R.id.notification_subquest_arrow, context.resources.getString(R.string.forward))
-                } else {
+                val subPendingIntent = navigationPendingIntent(context, indices.plus(index),
+                    nextActionNumber())
+                subQuestRemote.setOnClickPendingIntent(R.id.notification_subquest_base, subPendingIntent)
+
+                val child = (subQuestJson[MultiLevelListView.childLabel] as? JsonArray<JsonObject>)
+                    ?: JsonArray()
+                if (child.isEmpty()) {
                     subQuestRemote.setTextViewText(R.id.notification_subquest_arrow, "")
+                } else {
+                    subQuestRemote.setTextViewText(R.id.notification_subquest_arrow, context.resources.getString(R.string.forward))
                 }
                 remoteView.addView(R.id.notification_base, subQuestRemote)
 
@@ -175,7 +189,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val indices = intent.getIntArrayExtra("indices").toList()
-        val notificationIndexList = getIndexList(context)
+        val notificationIndexList: MutableList<List<Int>> = getIndexList(context)
 
         if(intent.getBooleanExtra("isNav", false)) {
             notificationIndexList[indices.first()] = indices
@@ -185,18 +199,24 @@ class NotificationActionReceiver : BroadcastReceiver() {
             val remoteInputBundle: Bundle? = RemoteInput.getResultsFromIntent(intent)
             if (remoteInputBundle == null) {
                 // delete chosen
-                QuestOptionsDialogFragment.deleteQuest(indices.dropLast(1), indices.last(), context)
-                notificationIndexList[indices.first()] = indices.dropLast(1)
+                if(indices.size == 1){
+                    removeAndShiftNotification(context, indices)
+                }else {
+                    notificationIndexList[indices.first()] = indices.dropLast(1)
+                }
                 saveIndexList(context, notificationIndexList)
-            } else {
-                var input: String? = remoteInputBundle.getCharSequence(add_action).toString()
-                if(input == null){
-                    input = remoteInputBundle.getCharSequence(edit_action).toString()
-                } else{
 
+                QuestOptionsDialogFragment.deleteQuest(indices, context)
+            } else {
+                var input: CharSequence? = remoteInputBundle.getCharSequence(add_action)
+                if(input == null){
+                    input = remoteInputBundle.getCharSequence(edit_action)
+                    QuestOptionsDialogFragment.editQuest(indices, input.toString(), context)
+                } else{
+                    QuestOptionsDialogFragment.addSubQuest(indices, input.toString(), context)
                 }
             }
         }
         refreshNotifications(context)
     }
-}
+ }

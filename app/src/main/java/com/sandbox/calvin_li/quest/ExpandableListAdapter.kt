@@ -17,10 +17,11 @@ class ExpandableListAdapter(
     : BaseExpandableListAdapter() {
 
     override fun getGroup(groupPosition: Int): JsonObject{
-        if(index.isEmpty()){
-            return MainActivity.questJson[groupPosition]
+        return if(index.isEmpty()){
+            MainActivity.questJson[groupPosition]
         } else{
-            return MainActivity.getNestedArray(index)[leafIndex!!]
+            (MainActivity.getNestedArray(index)[MultiLevelListView.childLabel]
+                as JsonArray<JsonObject>)[leafIndex!!]
         }
     }
 
@@ -50,15 +51,16 @@ class ExpandableListAdapter(
         labelListHeader.text = getGroup(groupPosition)[MultiLevelListView.nameLabel] as String
 
         val editButton = returnedView.findViewById(R.id.element_header_edit) as Button
-        QuestOptionsDialogFragment.setEditButton(this, editButton, labelListHeader.text, index,
-                leafIndex?:groupPosition)
+        QuestOptionsDialogFragment.setEditButton(this, editButton, labelListHeader.text, index.plus(
+                leafIndex?:groupPosition))
 
         val deleteButton = returnedView.findViewById(R.id.element_header_delete) as Button
-        QuestOptionsDialogFragment.setDeleteButton(this.parent?: this, deleteButton, index,
-                leafIndex?:groupPosition)
+        QuestOptionsDialogFragment.setDeleteButton(this.parent?: this, deleteButton, index.plus(
+                leafIndex?:groupPosition))
 
         val addQuestButton = returnedView.findViewById(R.id.element_header_add) as Button
-        QuestOptionsDialogFragment.setAddButton(this, addQuestButton, index, leafIndex?:groupPosition)
+        QuestOptionsDialogFragment.setAddButton(this, addQuestButton, index.plus(
+            leafIndex?:groupPosition))
 
         return returnedView
     }
