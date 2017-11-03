@@ -3,7 +3,6 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.sandbox.calvin_li.quest"
         minSdkVersion 24
