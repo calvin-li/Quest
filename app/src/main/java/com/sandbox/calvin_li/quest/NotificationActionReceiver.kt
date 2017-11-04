@@ -70,7 +70,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
         private fun createButtonAction(context: Context, intent: PendingIntent, key: String, label: String)
             : Notification.Action {
             val action = Notification.Action.Builder(
-                Icon.createWithResource(context, R.drawable.abc_ic_arrow_drop_right_black_24dp),
+                Icon.createWithResource(context, R.mipmap.quest_notification),
                 label,
                 intent)
 
@@ -109,8 +109,9 @@ class NotificationActionReceiver : BroadcastReceiver() {
             val groupNotification: Notification.Builder = Notification.Builder(context)
                 .setOngoing(true)
                 .setShowWhen(false)
-                .setSmallIcon(R.drawable.notification_template_icon_bg)
-                .setGroupSummary(true)
+                .setSmallIcon(R.mipmap.quest_notification)
+                .setColor(context.getColor(R.color.goldStandard))
+            .setGroupSummary(true)
                 .setGroup("g1")
             (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(
                 -1, groupNotification.build())
@@ -174,7 +175,8 @@ class NotificationActionReceiver : BroadcastReceiver() {
             val notBuild: Notification.Builder = Notification.Builder(context)
                 .setOngoing(true)
                 .setShowWhen(false)
-                .setSmallIcon(R.drawable.notification_template_icon_bg)
+                .setSmallIcon(R.mipmap.quest_notification)
+                .setColor(context.getColor(R.color.goldStandard))
                 .setContentTitle(quest)
                 .setContentText(allSubQuests)
                 .setCustomBigContentView(remoteView)
