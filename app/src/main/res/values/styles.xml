@@ -12,4 +12,8 @@
         <item name="android:layout_margin">8dp</item>
     </style>
 
+    <style name="NotificationView">
+
+    </style>
+
 </resources>
