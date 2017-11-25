@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
               android:id="@+id/element_header_container"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
@@ -23,6 +24,7 @@
         style="@style/ButtonFrame">
         <ImageView
             style="@style/ButtonBg"/>
+
         <Button
             android:id="@+id/element_header_add"
             style="@style/ButtonFg"
@@ -33,19 +35,25 @@
         style="@style/ButtonFrame">
         <ImageView
             style="@style/ButtonBg"/>
+
         <Button
             android:id="@+id/element_header_edit"
             style="@style/ButtonFg"
-            android:text="@string/edit_quest"/>
+            android:scaleX="0.666"
+            android:scaleY="0.9"
+            android:text="@string/edit_quest"
+            android:translationY="-2dp"/>
     </RelativeLayout>
 
     <RelativeLayout
         style="@style/ButtonFrame">
         <ImageView
             style="@style/ButtonBg"/>
+
         <Button
             android:id="@+id/element_header_delete"
             style="@style/ButtonFg"
+            android:scaleX="0.5"
             android:text="@string/delete_quest"/>
     </RelativeLayout>
 
