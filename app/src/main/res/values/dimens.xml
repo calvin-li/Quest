@@ -4,5 +4,6 @@
     <dimen name="standard_margins">0dp</dimen>
     <dimen name="standard_padding">0dp</dimen>
     <dimen name="button_y_padding">10dp</dimen>
+    <dimen name="button_x_margins">4dp</dimen>
     <dimen name="button_text_size">22sp</dimen>
 </resources>
