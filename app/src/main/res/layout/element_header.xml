@@ -3,6 +3,8 @@
               android:id="@+id/element_header_container"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
+              android:layout_margin="@dimen/standard_margins"
+              android:padding="@dimen/standard_padding"
               android:orientation="horizontal"
               android:clickable="false"
               android:focusable="false" >
@@ -12,30 +14,40 @@
               android:clickable="false"
               android:focusable="false"
               android:layout_weight="1"
+              android:layout_margin="@dimen/standard_margins"
+              android:padding="@dimen/standard_padding"
               android:layout_width="wrap_content"
-              android:layout_height="wrap_content" />
+              android:layout_height="match_parent" />
 
-    <Button
-        android:id="@+id/element_header_add"
-        android:text="@string/add_subquest"
-        android:clickable="true"
-        android:focusable="false"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <Button
-        android:id="@+id/element_header_edit"
-        android:text="@string/edit_quest"
-        android:clickable="true"
-        android:focusable="false"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-    <Button
-        android:id="@+id/element_header_delete"
-        android:text="@string/delete_quest"
-        android:clickable="true"
-        android:focusable="false"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+    <RelativeLayout
+        style="@style/ButtonFrame">
+        <ImageView
+            style="@style/ButtonBg"/>
+        <Button
+            android:id="@+id/element_header_add"
+            style="@style/ButtonFg"
+            android:text="@string/add_subquest"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        style="@style/ButtonFrame">
+        <ImageView
+            style="@style/ButtonBg"/>
+        <Button
+            android:id="@+id/element_header_edit"
+            style="@style/ButtonFg"
+            android:text="@string/edit_quest"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        style="@style/ButtonFrame">
+        <ImageView
+            style="@style/ButtonBg"/>
+        <Button
+            android:id="@+id/element_header_delete"
+            style="@style/ButtonFg"
+            android:text="@string/delete_quest"/>
+    </RelativeLayout>
 
 </LinearLayout>
 

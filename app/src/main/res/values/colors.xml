@@ -4,4 +4,5 @@
     <color name="goldStandard_dark">#e2c455</color>
     <color name="colorPrimaryDark">#212121</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="buttonBackground">#20000000</color>
 </resources>
