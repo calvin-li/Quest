@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/notification_subquest_base"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
               android:orientation="horizontal"
-              android:clickable="true"
-              android:focusable="false">
+              style="@style/notification.wrapper">
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
               android:id="@+id/notification_subquest_text"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content">
-    </TextView>
+              style="@style/notification.text"/>
 
     <TextView
         android:id="@+id/notification_subquest_arrow"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="@string/forward">
-    </TextView>
+        android:text="@string/forward"
+        style="@style/notification.arrow"/>
 
 </LinearLayout>
