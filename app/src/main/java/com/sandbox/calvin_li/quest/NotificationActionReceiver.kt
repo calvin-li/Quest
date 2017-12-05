@@ -117,8 +117,11 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 .setShowWhen(false)
                 .setSmallIcon(R.mipmap.quest_notification)
                 .setColor(context.getColor(R.color.goldStandard))
-            .setGroupSummary(true)
+                .setGroupSummary(true)
                 .setGroup("g1")
+                .setContentIntent(PendingIntent.getActivity(
+                    context, 0, Intent(context, MainActivity::class.java), 0))
+
             (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(
                 -1, groupNotification.build())
         }
@@ -136,7 +139,6 @@ class NotificationActionReceiver : BroadcastReceiver() {
             }
 
             val remoteView = RemoteViews(context.packageName, R.layout.notification_view)
-
             remoteView.setTextViewText(R.id.notification_main_quest, quest)
 
             if (indices.size > 1) {
