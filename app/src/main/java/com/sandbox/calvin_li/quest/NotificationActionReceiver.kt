@@ -41,11 +41,12 @@ class NotificationActionReceiver : BroadcastReceiver() {
         }
 
         internal fun getIndexList(context: Context): MutableList<List<Int>> {
-            var indexStream: InputStream = try {
+            val indexStream: InputStream = try {
                 context.openFileInput(indexListFileName)!!
             } catch (ex: IOException) {
                 return mutableListOf()
             }
+            @Suppress("UNCHECKED_CAST")
             val indexArray = Parser().parse(indexStream) as JsonArray<JsonArray<Int>>
             indexStream.close()
             return indexArray.map { it.toList() }.toMutableList()
@@ -87,22 +88,27 @@ class NotificationActionReceiver : BroadcastReceiver() {
         internal fun refreshNotifications(context: Context) {
             notificationMap = 0
             MainActivity.loadQuestJson(context)
-            for (index in MainActivity.questJson.size - 1 downTo 0) {
-                createQuestNotification(context, getIndexList(context)[index])
+            val indexList = getIndexList(context)
+            // notifications appear in reverse order of creation
+            MainActivity.questJson.reversed().forEachIndexed{
+                i, _ -> createQuestNotification(context, indexList.reversed()[i])
             }
             notificationMap = 0
         }
 
-        internal fun removeAndShiftNotification(context: Context, indices: List<Int>) {
+        internal fun removeAndShiftNotification(context: Context, index: Int) {
             val notificationIndexList = getIndexList(context)
             (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
                 .cancel(notificationIndexList.size - 1)
-            (indices[0] + 1 until notificationIndexList.size).forEach {
+
+            (index + 1 until notificationIndexList.size).forEach {
                 val newList: MutableList<Int> = notificationIndexList[it].toMutableList()
-                newList[0] = newList[0] - 1
+                newList[0] = newList.first() - 1
                 notificationIndexList[it] = newList
             }
-            notificationIndexList.removeAt(indices[0])
+
+            notificationIndexList.removeAt(index)
+            saveIndexList(context, notificationIndexList)
         }
 
         internal fun createOverallNotification(context: Context) {
@@ -133,10 +139,9 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
             remoteView.setTextViewText(R.id.notification_main_quest, quest)
 
-            val actionNumber = nextActionNumber()
             if (indices.size > 1) {
                 val questPendingIntent = navigationPendingIntent(
-                    context, indices.dropLast(1), actionNumber)
+                    context, indices.dropLast(1), nextActionNumber())
                 remoteView.setOnClickPendingIntent(R.id.notification_main_base, questPendingIntent)
                 remoteView.setTextViewText(R.id.notification_main_arrow, context.resources.getString(R.string.backward))
             } else {
@@ -200,14 +205,6 @@ class NotificationActionReceiver : BroadcastReceiver() {
         else{
             val remoteInputBundle: Bundle? = RemoteInput.getResultsFromIntent(intent)
             if (remoteInputBundle == null) {
-                // delete chosen
-                if(indices.size == 1){
-                    removeAndShiftNotification(context, indices)
-                }else {
-                    notificationIndexList[indices.first()] = indices.dropLast(1)
-                }
-                saveIndexList(context, notificationIndexList)
-
                 QuestOptionsDialogFragment.deleteQuest(indices, context)
             } else {
                 var input: CharSequence? = remoteInputBundle.getCharSequence(add_action)

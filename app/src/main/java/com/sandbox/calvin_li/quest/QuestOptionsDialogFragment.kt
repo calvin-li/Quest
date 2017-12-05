@@ -47,27 +47,26 @@ class QuestOptionsDialogFragment : DialogFragment() {
             }
         }
 
-        fun deleteQuest(index: List<Int>, context: Context) {
-            val leafIndex = index.last()
+        fun deleteQuest(indices: List<Int>, context: Context) {
+            val leafIndex = indices.last()
             MainActivity.loadQuestJson(context)
 
             var toDelete: JsonArray<JsonObject> = MainActivity.questJson
-            if (index.size > 1) {
-                toDelete = MainActivity.getNestedArray(index.dropLast(1))[MultiLevelListView.childLabel]
-                    as JsonArray<JsonObject>
+            @Suppress("UNCHECKED_CAST")
+            if (indices.size > 1) {
+                toDelete =
+                    MainActivity.getNestedArray(indices.dropLast(1))[MultiLevelListView.childLabel]
+                        as JsonArray<JsonObject>
             }
             toDelete.removeAt(leafIndex)
             MainActivity.saveJson(context)
 
-            if(index.size == 1){
-                NotificationActionReceiver.removeAndShiftNotification(context, index)
+            if(indices.size == 1){
+                NotificationActionReceiver.removeAndShiftNotification(context, indices.first())
             } else{
                 val notificationIndices = NotificationActionReceiver.getIndexList(context)
-                val notificationIndex = notificationIndices[index[0]]
-                if(notificationIndex.size > index.size-1){
-                    notificationIndices[index[0]] = notificationIndex.take(index.size-1)
-                    NotificationActionReceiver.saveIndexList(context, notificationIndices)
-                }
+                notificationIndices[indices.first()] = indices.dropLast(1)
+                NotificationActionReceiver.saveIndexList(context, notificationIndices)
             }
             NotificationActionReceiver.refreshNotifications(context)
         }
