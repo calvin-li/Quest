@@ -27,7 +27,10 @@
 
         <Button
             android:id="@+id/element_header_add"
-            style="@style/ButtonFg"
+            style="@style/ButtonFg"/>
+
+        <TextView
+            style="@style/ButtonText"
             android:text="@string/add_subquest"/>
     </RelativeLayout>
 
@@ -38,11 +41,14 @@
 
         <Button
             android:id="@+id/element_header_edit"
-            style="@style/ButtonFg"
+            style="@style/ButtonFg"/>
+
+        <TextView
+            style="@style/ButtonText"
             android:scaleX="0.666"
             android:scaleY="0.9"
-            android:text="@string/edit_quest"
-            android:translationY="-2dp"/>
+            android:translationY="-2dp"
+            android:text="@string/edit_quest"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -52,7 +58,10 @@
 
         <Button
             android:id="@+id/element_header_delete"
-            style="@style/ButtonFg"
+            style="@style/ButtonFg"/>
+
+        <TextView
+            style="@style/ButtonText"
             android:scaleX="0.5"
             android:text="@string/delete_quest"/>
     </RelativeLayout>

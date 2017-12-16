@@ -41,12 +41,21 @@
         <item name="android:focusable">false</item>
         <item name="android:paddingTop">@dimen/button_y_padding</item>
         <item name="android:paddingBottom">@dimen/button_y_padding</item>
-        <item name="android:paddingLeft">@dimen/standard_padding</item>
-        <item name="android:paddingRight">@dimen/standard_padding</item>
+        <item name="android:paddingLeft">@dimen/button_x_padding</item>
+        <item name="android:paddingRight">@dimen/button_x_padding</item>
+        <item name="android:layout_margin">@dimen/standard_margins</item>
         <item name="android:minWidth">0dp</item>
         <item name="android:minHeight">0dp</item>
         <item name="android:backgroundTint">@color/goldStandard_dark</item>
         <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="ButtonText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/standard_margins</item>
+        <item name="android:padding">@dimen/standard_padding</item>
+        <item name="android:layout_centerInParent">true</item>
         <item name="android:typeface">monospace</item>
         <item name="android:textSize">@dimen/button_text_size</item>
         <item name="android:textColor">@android:color/white</item>
