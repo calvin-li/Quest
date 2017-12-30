@@ -25,13 +25,14 @@ class NotificationActionReceiver : BroadcastReceiver() {
         private val edit_action = "edit_action"
         private val delete_action = "delete_action"
         private val indexListFileName = "notificationIndexList.json"
+        private val subQuestsPerPage: Int = 7
 
         private fun nextActionNumber(): Int {
             return notificationMap++
         }
 
-        internal fun saveIndexList(context: Context, notificationIndexList: List<List<Int>>){
-            val indexArray = JsonArray<JsonArray<Int>>()
+        internal fun saveIndexList(context: Context, notificationIndexList: List<List<QuestState>>){
+            val indexArray = JsonArray<JsonArray<QuestState>>()
             notificationIndexList.forEach {
                 indexArray.add(JsonArray(it))
             }
@@ -40,31 +41,32 @@ class NotificationActionReceiver : BroadcastReceiver() {
             writeStream.close()
         }
 
-        internal fun getIndexList(context: Context): MutableList<List<Int>> {
+        internal fun getIndexList(context: Context): MutableList<List<QuestState>> {
             val indexStream: InputStream = try {
                 context.openFileInput(indexListFileName)!!
             } catch (ex: IOException) {
                 return mutableListOf()
             }
             @Suppress("UNCHECKED_CAST")
-            val indexArray = Parser().parse(indexStream) as JsonArray<JsonArray<Int>>
+            val indexArray = Parser().parse(indexStream) as JsonArray<JsonArray<JsonObject>>
             indexStream.close()
-            return indexArray.map { it.toList() }.toMutableList()
+            return indexArray.map { it.toList().map { QuestState.fromJsonObject(it) } }.toMutableList()
         }
 
-        private fun navigationPendingIntent(context: Context, indices: List<Int>, actionNumber: Int):
+        private fun navigationPendingIntent(context: Context, indices: List<QuestState>, actionNumber: Int):
             PendingIntent {
             val questIntent = Intent("notification_action$actionNumber")
             questIntent.putExtra("isNav", true)
-            questIntent.putExtra("indices", indices.toIntArray())
+            questIntent.putExtra("indices", indices.map { it.index }.toIntArray())
+            questIntent.putExtra("pages", indices.map { it.page }.toIntArray())
             return PendingIntent.getBroadcast(context, 0, questIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
-        private fun buttonPendingIntent(context: Context, indices: List<Int>, actionNumber: Int)
+        private fun buttonPendingIntent(context: Context, indices: List<QuestState>, actionNumber: Int)
             :PendingIntent {
             val questIntent = Intent("notification_action$actionNumber")
             questIntent.putExtra("isNav", false)
-            questIntent.putExtra("indices", indices.toIntArray())
+            questIntent.putExtra("indices", indices.map { it.index }.toIntArray())
             return PendingIntent.getBroadcast(context, 0, questIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
@@ -102,8 +104,8 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 .cancel(notificationIndexList.size - 1)
 
             (index + 1 until notificationIndexList.size).forEach {
-                val newList: MutableList<Int> = notificationIndexList[it].toMutableList()
-                newList[0] = newList.first() - 1
+                val newList: MutableList<QuestState> = notificationIndexList[it].toMutableList()
+                newList[0].index = newList.first().index - 1
                 notificationIndexList[it] = newList
             }
 
@@ -126,9 +128,9 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 -1, groupNotification.build())
         }
 
-        private fun createQuestNotification(context: Context, indices: List<Int>) {
-            val jsonObject = MainActivity.getNestedArray(indices)
-            val notificationNumber = indices.first()
+        private fun createQuestNotification(context: Context, indices: List<QuestState>) {
+            val jsonObject = MainActivity.getNestedArray(indices.map { it.index })
+            val notificationNumber = indices.first().index
 
             @Suppress("UNCHECKED_CAST")
             val subQuests: JsonArray<JsonObject> =
@@ -156,8 +158,8 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 val subQuestRemote = RemoteViews(context.packageName, R.layout.notification_subquest)
                 subQuestRemote.setTextViewText(R.id.notification_subquest_text, subQuest)
 
-                val subPendingIntent = navigationPendingIntent(context, indices.plus(index),
-                    nextActionNumber())
+                val subPendingIntent = navigationPendingIntent(
+                        context, indices.plus(QuestState(index,0)), nextActionNumber())
                 subQuestRemote.setOnClickPendingIntent(R.id.notification_subquest_base, subPendingIntent)
 
                 val child = (subQuestJson[MultiLevelListView.childLabel] as? JsonArray<JsonObject>)
@@ -198,10 +200,12 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         val indices = intent.getIntArrayExtra("indices").toList()
-        val notificationIndexList: MutableList<List<Int>> = getIndexList(context)
+        val pages = intent.getIntArrayExtra("pages").toList()
+        val notificationIndexList = getIndexList(context)
 
         if(intent.getBooleanExtra("isNav", false)) {
-            notificationIndexList[indices.first()] = indices
+            notificationIndexList[indices.first()] =
+                    indices.zip(pages).map { QuestState(it.first, it.second) }
             saveIndexList(context, notificationIndexList)
         }
         else{

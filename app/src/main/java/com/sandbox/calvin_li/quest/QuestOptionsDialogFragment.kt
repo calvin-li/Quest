@@ -65,7 +65,8 @@ class QuestOptionsDialogFragment : DialogFragment() {
                 NotificationActionReceiver.removeAndShiftNotification(context, indices.first())
             } else{
                 val notificationIndices = NotificationActionReceiver.getIndexList(context)
-                notificationIndices[indices.first()] = indices.dropLast(1)
+                notificationIndices[indices.first()] =
+                    notificationIndices[indices.first()].take(indices.size-1)
                 NotificationActionReceiver.saveIndexList(context, notificationIndices)
             }
             NotificationActionReceiver.refreshNotifications(context)

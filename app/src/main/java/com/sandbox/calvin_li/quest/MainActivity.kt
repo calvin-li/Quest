@@ -59,8 +59,8 @@ class MainActivity : AppCompatActivity() {
 
         NotificationActionReceiver.createOverallNotification(this)
 
-        val notificationIndexList: MutableList<List<Int>> = mutableListOf()
-        (0 until questJson.size).forEach { notificationIndexList.add(listOf(it)) }
+        val notificationIndexList: MutableList<List<QuestState>> = mutableListOf()
+        (0 until questJson.size).forEach { notificationIndexList.add(listOf(QuestState(it, 0))) }
         NotificationActionReceiver.saveIndexList(this, notificationIndexList)
 
         NotificationActionReceiver.refreshNotifications(this)
