@@ -6,17 +6,17 @@ import com.beust.klaxon.json
 
 class QuestState(
         var index: Int,
-        val page: Int
+        val offset: Int
 ) {
     internal companion object {
         private val indexLabel = "index"
-        private val pageLabel = "page"
+        private val offsetLabel = "offset"
 
         fun fromJsonObject(json: JsonObject): QuestState =
-            QuestState(json[indexLabel] as Int, json[pageLabel] as Int)
+            QuestState(json[indexLabel] as Int, json[offsetLabel] as Int)
     }
 
     override fun toString(): String {
-        return json { JsonObject(mapOf(indexLabel to index, pageLabel to page)) }.toJsonString()
+        return json { JsonObject(mapOf(indexLabel to index, offsetLabel to offset)) }.toJsonString()
     }
 }

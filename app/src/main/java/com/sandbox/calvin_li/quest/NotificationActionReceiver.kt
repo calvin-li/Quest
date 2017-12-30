@@ -53,20 +53,23 @@ class NotificationActionReceiver : BroadcastReceiver() {
             return indexArray.map { it.toList().map { QuestState.fromJsonObject(it) } }.toMutableList()
         }
 
-        private fun navigationPendingIntent(context: Context, indices: List<QuestState>, actionNumber: Int):
-            PendingIntent {
-            val questIntent = Intent("notification_action$actionNumber")
-            questIntent.putExtra("isNav", true)
+        private fun setIntentExtras(questIntent: Intent, indices: List<QuestState>) {
             questIntent.putExtra("indices", indices.map { it.index }.toIntArray())
-            questIntent.putExtra("pages", indices.map { it.page }.toIntArray())
+            questIntent.putExtra("offsets", indices.map { it.offset }.toIntArray())
+        }
+
+        private fun navigationPendingIntent(context: Context, indices: List<QuestState>, actionNumber: Int):
+                PendingIntent {
+            val questIntent = Intent("notification_action$actionNumber")
+            setIntentExtras(questIntent, indices)
+            questIntent.putExtra("isNav", true)
             return PendingIntent.getBroadcast(context, 0, questIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
         private fun buttonPendingIntent(context: Context, indices: List<QuestState>, actionNumber: Int)
             :PendingIntent {
             val questIntent = Intent("notification_action$actionNumber")
-            questIntent.putExtra("isNav", false)
-            questIntent.putExtra("indices", indices.map { it.index }.toIntArray())
+            setIntentExtras(questIntent, indices)
             return PendingIntent.getBroadcast(context, 0, questIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
@@ -133,11 +136,32 @@ class NotificationActionReceiver : BroadcastReceiver() {
             val notificationNumber = indices.first().index
 
             @Suppress("UNCHECKED_CAST")
-            val subQuests: JsonArray<JsonObject> =
-                (jsonObject[MultiLevelListView.childLabel] as? JsonArray<JsonObject>) ?: JsonArray()
+            val subQuestsNonPaged =
+                    (jsonObject[MultiLevelListView.childLabel] as? JsonArray<JsonObject>) ?: JsonArray()
+
+            val offset = indices.last().offset
+            val previousPageExists = offset > 0
+            val nextPageExists = offset + subQuestsPerPage < subQuestsNonPaged.size
+
+            val subQuests: List<JsonObject> = if(subQuestsNonPaged.size > subQuestsPerPage){
+                val preSubQuests = subQuestsNonPaged.subList(
+                        offset,
+                        minOf(offset + subQuestsPerPage, subQuestsNonPaged.size)
+                )
+                if(previousPageExists){
+                    preSubQuests.removeAt(0)
+                }
+                if(nextPageExists){
+                    preSubQuests.remove(preSubQuests.last())
+                }
+                preSubQuests.toList()
+            } else{
+                subQuestsNonPaged
+            }
+
             var quest: String = jsonObject[MultiLevelListView.nameLabel] as String
             if (subQuests.count() > 0) {
-                quest = "$quest (+${subQuests.count()})"
+                quest = "$quest (+${subQuestsNonPaged.count()})"
             }
 
             val remoteView = RemoteViews(context.packageName, R.layout.notification_view)
@@ -152,6 +176,16 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 remoteView.setTextViewText(R.id.notification_main_arrow, "")
             }
 
+            if(previousPageExists){
+                var newOffset = subQuestsNonPaged.indexOf(subQuests.first()) - subQuestsPerPage + 1
+                if(newOffset > 0){
+                    newOffset += 1
+                } else{
+                    newOffset = 0
+                }
+                addPagingQuest(context, indices, remoteView, newOffset)
+            }
+
             var allSubQuests = ""
             subQuests.forEachIndexed { index, subQuestJson ->
                 val subQuest: String = subQuestJson[MultiLevelListView.nameLabel] as String
@@ -162,8 +196,9 @@ class NotificationActionReceiver : BroadcastReceiver() {
                         context, indices.plus(QuestState(index,0)), nextActionNumber())
                 subQuestRemote.setOnClickPendingIntent(R.id.notification_subquest_base, subPendingIntent)
 
-                val child = (subQuestJson[MultiLevelListView.childLabel] as? JsonArray<JsonObject>)
-                    ?: JsonArray()
+                @Suppress("UNCHECKED_CAST")
+                val child =
+                        subQuestJson[MultiLevelListView.childLabel] as? JsonArray<JsonObject> ?: JsonArray()
                 if (child.isEmpty()) {
                     subQuestRemote.setTextViewText(R.id.notification_subquest_arrow, "")
                 } else {
@@ -173,6 +208,11 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
                 // Newline displays as space.
                 allSubQuests += subQuest + ".\n"
+            }
+
+            if(nextPageExists){
+                val newOffset = minOf(subQuestsNonPaged.indexOf(subQuests.last()) + 1, subQuestsNonPaged.size)
+                addPagingQuest(context, indices, remoteView, newOffset)
             }
 
             val buttonPendingIntent =
@@ -196,16 +236,37 @@ class NotificationActionReceiver : BroadcastReceiver() {
             (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
                 .notify(notificationNumber, notBuild.build())
         }
+
+        private fun addPagingQuest(context: Context, indices: List<QuestState>, remoteView: RemoteViews, newOffset: Int) {
+            val previous = newOffset < indices.last().offset
+            val label = if(previous){"Previous"} else{"Next"}
+            val subQuestRemote = RemoteViews(context.packageName, R.layout.notification_subquest)
+
+            subQuestRemote.setTextViewText(R.id.notification_subquest_text, label)
+            val adjustedIndices = indices.map {
+                if (it == indices.last()) {
+                    QuestState(it.index, newOffset)
+                } else {
+                    it
+                }
+            }
+            val subPendingIntent = navigationPendingIntent(
+                    context, adjustedIndices, nextActionNumber())
+            subQuestRemote.setOnClickPendingIntent(R.id.notification_subquest_base, subPendingIntent)
+            remoteView.addView(R.id.notification_base, subQuestRemote)
+            val arrow = if(previous){R.string.up}else{R.string.down}
+            subQuestRemote.setTextViewText(R.id.notification_subquest_arrow, context.resources.getString(arrow))
+        }
     }
 
     override fun onReceive(context: Context, intent: Intent) {
         val indices = intent.getIntArrayExtra("indices").toList()
-        val pages = intent.getIntArrayExtra("pages").toList()
+        val offsets = intent.getIntArrayExtra("offsets").toList()
         val notificationIndexList = getIndexList(context)
 
         if(intent.getBooleanExtra("isNav", false)) {
             notificationIndexList[indices.first()] =
-                    indices.zip(pages).map { QuestState(it.first, it.second) }
+                    indices.zip(offsets).map { QuestState(it.first, it.second) }
             saveIndexList(context, notificationIndexList)
         }
         else{
