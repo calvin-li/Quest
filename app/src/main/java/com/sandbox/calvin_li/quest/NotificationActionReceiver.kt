@@ -25,7 +25,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
         private val edit_action = "edit_action"
         private val delete_action = "delete_action"
         private val indexListFileName = "notificationIndexList.json"
-        private val subQuestsPerPage: Int = 7
+        private val subQuestsPerPage: Int = 5 // Number excluding paging buttons, two less than full size
 
         private fun nextActionNumber(): Int {
             return notificationMap++
@@ -134,27 +134,25 @@ class NotificationActionReceiver : BroadcastReceiver() {
         private fun createQuestNotification(context: Context, indices: List<QuestState>) {
             val jsonObject = MainActivity.getNestedArray(indices.map { it.index })
             val notificationNumber = indices.first().index
+            var subQuestsOnThisPage = subQuestsPerPage
 
             @Suppress("UNCHECKED_CAST")
             val subQuestsNonPaged =
                     (jsonObject[MultiLevelListView.childLabel] as? JsonArray<JsonObject>) ?: JsonArray()
 
-            val offset = indices.last().offset
-            val previousPageExists = offset > 0
-            val nextPageExists = offset + subQuestsPerPage < subQuestsNonPaged.size
+            var offset = indices.last().offset
+            val previousPageExists = offset > 1
+            if(!previousPageExists){
+                subQuestsOnThisPage += 1
+                offset = 0
+            }
+            val nextPageExists = offset + subQuestsOnThisPage + 1 < subQuestsNonPaged.size
+            if(!nextPageExists){
+                subQuestsOnThisPage += 1
+            }
 
-            val subQuests: List<JsonObject> = if(subQuestsNonPaged.size > subQuestsPerPage){
-                val preSubQuests = subQuestsNonPaged.subList(
-                        offset,
-                        minOf(offset + subQuestsPerPage, subQuestsNonPaged.size)
-                )
-                if(previousPageExists){
-                    preSubQuests.removeAt(0)
-                }
-                if(nextPageExists){
-                    preSubQuests.remove(preSubQuests.last())
-                }
-                preSubQuests.toList()
+            val subQuests: List<JsonObject> = if(subQuestsNonPaged.size > subQuestsPerPage + 2){
+                subQuestsNonPaged.subList(offset, minOf(offset + subQuestsOnThisPage, subQuestsNonPaged.size))
             } else{
                 subQuestsNonPaged
             }
@@ -177,12 +175,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
             }
 
             if(previousPageExists){
-                var newOffset = subQuestsNonPaged.indexOf(subQuests.first()) - subQuestsPerPage + 1
-                if(newOffset > 0){
-                    newOffset += 1
-                } else{
-                    newOffset = 0
-                }
+                val newOffset = maxOf(offset - subQuestsPerPage, 0)
                 addPagingQuest(context, indices, remoteView, newOffset)
             }
 
@@ -193,7 +186,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 subQuestRemote.setTextViewText(R.id.notification_subquest_text, subQuest)
 
                 val subPendingIntent = navigationPendingIntent(
-                        context, indices.plus(QuestState(index,0)), nextActionNumber())
+                        context, indices.plus(QuestState(index + offset,0)), nextActionNumber())
                 subQuestRemote.setOnClickPendingIntent(R.id.notification_subquest_base, subPendingIntent)
 
                 @Suppress("UNCHECKED_CAST")
@@ -211,7 +204,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
             }
 
             if(nextPageExists){
-                val newOffset = minOf(subQuestsNonPaged.indexOf(subQuests.last()) + 1, subQuestsNonPaged.size)
+                val newOffset = minOf(offset + subQuestsOnThisPage, subQuestsNonPaged.size)
                 addPagingQuest(context, indices, remoteView, newOffset)
             }
 
