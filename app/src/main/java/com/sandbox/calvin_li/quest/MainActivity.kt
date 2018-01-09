@@ -3,6 +3,7 @@ package com.sandbox.calvin_li.quest
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.widget.ListView
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
@@ -11,9 +12,6 @@ import java.io.IOException
 import java.io.InputStream
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var listAdapter: ExpandableListAdapter
-    private lateinit var expandListView: MultiLevelListView
-
     internal companion object {
         private val questFileName = "quests.json"
         lateinit var questJson: JsonArray<JsonObject>
@@ -49,16 +47,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
 
-        expandListView = findViewById(R.id.top_view) as MultiLevelListView
-
         loadQuestJson(this)
         saveJson(this)
-
-        listAdapter = ExpandableListAdapter(this, null, null, emptyList())
-        expandListView.setAdapter(listAdapter)
+        (findViewById(R.id.top_view) as ListView).adapter = CustomListAdapter(this)
 
         NotificationActionReceiver.createOverallNotification(this)
-
         val notificationIndexList: MutableList<List<QuestState>> = mutableListOf()
         (0 until questJson.size).forEach { notificationIndexList.add(listOf(QuestState(it, 0))) }
         NotificationActionReceiver.saveIndexList(this, notificationIndexList)

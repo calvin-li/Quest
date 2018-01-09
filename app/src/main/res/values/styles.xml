@@ -9,7 +9,10 @@
     </style>
 
     <style name="ExpandableList">
-        <item name="android:layout_margin">8dp</item>
+        <item name="android:layout_margin">@dimen/standard_margins</item>
+        <item name="android:padding">@dimen/standard_padding</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
     </style>
 
     <style name="NotificationView">

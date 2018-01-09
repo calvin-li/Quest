@@ -8,6 +8,7 @@ class MultiLevelListView(context: Context, attributes: AttributeSet) :
 
     internal companion object {
         val nameLabel: String = "name"
+        val hiddenLabel: String = "hidden"
         val childLabel: String = "child"
     }
 

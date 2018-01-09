@@ -83,10 +83,12 @@ class QuestOptionsDialogFragment : DialogFragment() {
         fun addSubQuest(index: List<Int>, text: String, context: Context) {
             MainActivity.loadQuestJson(context)
             val currentObject = MainActivity.getNestedArray(index)
+            @Suppress("UNCHECKED_CAST")
             val childObject: JsonArray<JsonObject>? =
                 currentObject[MultiLevelListView.childLabel] as JsonArray<JsonObject>?
             val newObject = JsonObject()
             newObject.put(MultiLevelListView.nameLabel, text)
+            newObject.put(MultiLevelListView.hiddenLabel, false)
             if (childObject == null) {
                 currentObject.put(MultiLevelListView.childLabel, JsonArray(newObject))
             } else {
