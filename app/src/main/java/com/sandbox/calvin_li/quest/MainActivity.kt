@@ -12,6 +12,8 @@ import java.io.IOException
 import java.io.InputStream
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var questView: ListView
+
     internal companion object {
         private val questFileName = "quests.json"
         lateinit var questJson: JsonArray<JsonObject>
@@ -45,17 +47,24 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main)
 
+        setContentView(R.layout.main)
         loadQuestJson(this)
         saveJson(this)
-        (findViewById(R.id.top_view) as ListView).adapter = CustomListAdapter(this)
 
         NotificationActionReceiver.createOverallNotification(this)
         val notificationIndexList: MutableList<List<QuestState>> = mutableListOf()
         (0 until questJson.size).forEach { notificationIndexList.add(listOf(QuestState(it, 0))) }
         NotificationActionReceiver.saveIndexList(this, notificationIndexList)
-
         NotificationActionReceiver.refreshNotifications(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadQuestJson(this)
+
+        questView = findViewById(R.id.top_view) as ListView
+        val adapter = CustomListAdapter(this)
+        questView.adapter = adapter
     }
 }
