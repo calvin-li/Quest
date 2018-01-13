@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
             var nestedObject: JsonObject = questJson[indices[0]]
 
             for (i in 1 until indices.size) {
+                @Suppress("UNCHECKED_CAST")
                 nestedObject = (nestedObject[MultiLevelListView.childLabel] as JsonArray<JsonObject>)[indices[i]]
             }
             return nestedObject
@@ -40,6 +41,7 @@ class MainActivity : AppCompatActivity() {
                 context.resources.openRawResource(R.raw.quests)
             }
             // questStream = context.resources.openRawResource(R.raw.quests)
+            @Suppress("UNCHECKED_CAST")
             questJson = Parser().parse(questStream) as JsonArray<JsonObject>
             questStream.close()
         }
