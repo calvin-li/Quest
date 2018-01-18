@@ -98,7 +98,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
             NotificationActionReceiver.refreshNotifications(context)
         }
 
-        private fun  createBuilder(context: Context, view: EditText, title: String,
+        private fun createBuilder(context: Context, view: EditText, title: String,
                                    positiveAction: (DialogInterface, Int) -> Unit):
                 AlertDialog.Builder {
             return AlertDialog.Builder(context).setTitle(title)

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.TextView
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
@@ -18,6 +17,7 @@ class CustomListAdapter(
     : ArrayAdapter<Pair<String, List<Int>>>(context, R.layout.element_dialog, quests) {
 
     internal companion object {
+        private val indentSize = 24 // in dp
 
         fun flatten(questJson: JsonArray<JsonObject>?, currentIndex: List<Int>)
                 : List<Pair<String, List<Int>>> {
@@ -35,6 +35,25 @@ class CustomListAdapter(
         }
     }
 
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+        val (name, index) = getItem(position)
+
+        val returnedView: View = convertView ?: (this.context.getSystemService(Context
+            .LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.element_header, parent, false)
+
+        val indexPadding =
+            context.resources.getDimension(R.dimen.subquest_left_padding).toInt() +
+            indentSize * context.resources.displayMetrics.density * (index.size-1)
+        returnedView.setPadding(indexPadding.toInt(),
+            returnedView.paddingTop, returnedView.paddingRight, returnedView.paddingBottom)
+
+        val labelListHeader = returnedView.findViewById(R.id.element_header_text) as TextView
+        labelListHeader.setTypeface(null, Typeface.BOLD)
+        labelListHeader.text = name
+
+        return returnedView
+    }
+
     override fun getCount(): Int = quests.count()
 
     override fun getItem(position: Int): Pair<String, List<Int>> = quests[position]
@@ -44,19 +63,5 @@ class CustomListAdapter(
         return item.first.hashCode().toLong() * item.second.hashCode() //implicit cast right operand
     }
 
-    override fun getPosition(item: Pair<String, List<Int>>?): Int =
-        quests.indexOfFirst { it == item}
-
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val returnedView: View = convertView ?: (this.context.getSystemService(Context
-                .LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.element_header, parent, false)
-
-        val labelListHeader = returnedView.findViewById(R.id.element_header_text) as TextView
-        labelListHeader.setTypeface(null, Typeface.BOLD)
-
-        labelListHeader.tag = position
-        labelListHeader.text = getItem(position).first
-
-        return returnedView
-    }
+    override fun getPosition(item: Pair<String, List<Int>>?): Int = quests.indexOfFirst { it == item}
 }

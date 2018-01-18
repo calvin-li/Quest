@@ -10,4 +10,5 @@
     <dimen name="arrow_gap">8dp</dimen>
     <dimen name="arrow_scale_y">1.0</dimen>
     <dimen name="arrow_scale_x">1.33</dimen>
+    <dimen name="subquest_left_padding">16dp</dimen>
 </resources>

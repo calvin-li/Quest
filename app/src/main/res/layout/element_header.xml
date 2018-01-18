@@ -5,6 +5,7 @@
               android:layout_height="wrap_content"
               android:layout_margin="@dimen/standard_margins"
               android:padding="@dimen/standard_padding"
+              android:paddingLeft="@dimen/subquest_left_padding"
               android:orientation="horizontal"
               android:clickable="false"
               android:focusable="false">
