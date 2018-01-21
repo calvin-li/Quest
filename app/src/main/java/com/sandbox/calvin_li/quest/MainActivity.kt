@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
             for (i in 1 until indices.size) {
                 @Suppress("UNCHECKED_CAST")
-                nestedObject = (nestedObject[MultiLevelListView.childLabel] as JsonArray<JsonObject>)[indices[i]]
+                nestedObject = (nestedObject[CustomListAdapter.childLabel] as JsonArray<JsonObject>)[indices[i]]
             }
             return nestedObject
         }

@@ -6,29 +6,34 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.TextView
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
+import com.beust.klaxon.convert
 
 class CustomListAdapter(
         context: Context,
-        private val quests: Array<Pair<String, List<Int>>> =
-        flatten(MainActivity.questJson, emptyList()).toTypedArray())
+        private var quests: Array<Pair<String, List<Int>>> =
+            flatten(MainActivity.questJson, emptyList()).toTypedArray())
     : ArrayAdapter<Pair<String, List<Int>>>(context, R.layout.element_dialog, quests) {
 
     internal companion object {
         private val indentSize = 24 // in dp
+        internal val nameLabel: String = "name"
+        internal val hiddenLabel: String = "hidden"
+        internal val childLabel: String = "child"
 
         fun flatten(questJson: JsonArray<JsonObject>?, currentIndex: List<Int>)
                 : List<Pair<String, List<Int>>> {
             return questJson?.mapIndexed { index, jsonObject ->
                 listOf(Pair(
-                        jsonObject[MultiLevelListView.nameLabel] as String,
+                        jsonObject[nameLabel] as String,
                         currentIndex.plus(index)))
                         .plus(
                                 @Suppress("UNCHECKED_CAST")
                                 flatten(
-                                        jsonObject[MultiLevelListView.childLabel] as? JsonArray<JsonObject>,
+                                        jsonObject[childLabel] as? JsonArray<JsonObject>,
                                         currentIndex.plus(index))
                         )
             }?.flatten() ?: emptyList()
@@ -47,11 +52,26 @@ class CustomListAdapter(
         returnedView.setPadding(indexPadding.toInt(),
             returnedView.paddingTop, returnedView.paddingRight, returnedView.paddingBottom)
 
-        val labelListHeader = returnedView.findViewById(R.id.element_header_text) as TextView
-        labelListHeader.setTypeface(null, Typeface.BOLD)
-        labelListHeader.text = name
+        val questView = returnedView.findViewById(R.id.element_header_text) as TextView
+        questView.setTypeface(null, Typeface.BOLD)
+        questView.text = name
+
+        QuestOptionsDialogFragment.setAddButton(
+                this, returnedView.findViewById(R.id.element_header_add) as Button, index)
+
+        QuestOptionsDialogFragment.setEditButton(
+                this, returnedView.findViewById(R.id.element_header_edit) as Button, questView.text, index)
+
+        QuestOptionsDialogFragment.setDeleteButton(
+                this, returnedView.findViewById(R.id.element_header_delete) as Button, index)
 
         return returnedView
+    }
+
+    override fun notifyDataSetChanged() {
+        MainActivity.loadQuestJson(this.context)
+        quests = flatten(MainActivity.questJson, emptyList()).toTypedArray()
+        super.notifyDataSetChanged()
     }
 
     override fun getCount(): Int = quests.count()

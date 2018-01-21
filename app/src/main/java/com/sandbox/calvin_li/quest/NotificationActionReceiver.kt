@@ -138,7 +138,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
             @Suppress("UNCHECKED_CAST")
             val subQuestsNonPaged =
-                    (jsonObject[MultiLevelListView.childLabel] as? JsonArray<JsonObject>) ?: JsonArray()
+                    (jsonObject[CustomListAdapter.childLabel] as? JsonArray<JsonObject>) ?: JsonArray()
 
             var offset = indices.last().offset
             val previousPageExists = offset > 1
@@ -157,7 +157,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 subQuestsNonPaged
             }
 
-            var quest: String = jsonObject[MultiLevelListView.nameLabel] as String
+            var quest: String = jsonObject[CustomListAdapter.nameLabel] as String
             if (subQuests.count() > 0) {
                 quest = "$quest (+${subQuestsNonPaged.count()})"
             }
@@ -181,7 +181,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
             var allSubQuests = ""
             subQuests.forEachIndexed { index, subQuestJson ->
-                val subQuest: String = subQuestJson[MultiLevelListView.nameLabel] as String
+                val subQuest: String = subQuestJson[CustomListAdapter.nameLabel] as String
                 val subQuestRemote = RemoteViews(context.packageName, R.layout.notification_subquest)
                 subQuestRemote.setTextViewText(R.id.notification_subquest_text, subQuest)
 
@@ -191,7 +191,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
                 @Suppress("UNCHECKED_CAST")
                 val child =
-                        subQuestJson[MultiLevelListView.childLabel] as? JsonArray<JsonObject> ?: JsonArray()
+                        subQuestJson[CustomListAdapter.childLabel] as? JsonArray<JsonObject> ?: JsonArray()
                 if (child.isEmpty()) {
                     subQuestRemote.setTextViewText(R.id.notification_subquest_arrow, "")
                 } else {
