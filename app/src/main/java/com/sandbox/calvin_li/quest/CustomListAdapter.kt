@@ -5,9 +5,7 @@ import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.TextView
+import android.widget.*
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.convert
@@ -24,7 +22,7 @@ class CustomListAdapter(
         internal val hiddenLabel: String = "hidden"
         internal val childLabel: String = "child"
 
-        fun flatten(questJson: JsonArray<JsonObject>?, currentIndex: List<Int>)
+        private fun flatten(questJson: JsonArray<JsonObject>?, currentIndex: List<Int>)
                 : List<Pair<String, List<Int>>> {
             return questJson?.mapIndexed { index, jsonObject ->
                 listOf(Pair(
@@ -40,11 +38,19 @@ class CustomListAdapter(
         }
     }
 
+    internal val onItemClickListener = AdapterView.OnItemClickListener {
+        parentView: AdapterView<*>?, itemView: View?, position: Int, id: Long ->
+                Toast.makeText(this.context, getItem(position).first, Toast.LENGTH_LONG).show()
+            }
+
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val (name, index) = getItem(position)
 
-        val returnedView: View = convertView ?: (this.context.getSystemService(Context
-            .LAYOUT_INFLATER_SERVICE) as LayoutInflater).inflate(R.layout.element_header, parent, false)
+        val returnedView: View =
+            convertView ?:
+                (this.context.getSystemService(
+                    Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater)
+                .inflate(R.layout.element_header, parent, false)
 
         val indexPadding =
             context.resources.getDimension(R.dimen.subquest_left_padding).toInt() +

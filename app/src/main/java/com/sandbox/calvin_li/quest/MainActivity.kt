@@ -68,5 +68,6 @@ class MainActivity : AppCompatActivity() {
         questView = findViewById(R.id.top_view) as ListView
         val adapter = CustomListAdapter(this)
         questView.adapter = adapter
+        questView.onItemClickListener = adapter.onItemClickListener
     }
 }
