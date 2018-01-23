@@ -58,14 +58,14 @@ class QuestOptionsDialogFragment : DialogFragment() {
             val currentObject = MainActivity.getNestedArray(index)
 
             val newObject = JsonObject()
-            newObject.put(CustomListAdapter.nameLabel, text)
-            newObject.put(CustomListAdapter.hiddenLabel, false)
+            newObject[Quest.nameLabel] = text
+            newObject[Quest.expandLabel] = false
 
             @Suppress("UNCHECKED_CAST")
             val childObject: JsonArray<JsonObject>? =
-                    currentObject[CustomListAdapter.childLabel] as JsonArray<JsonObject>?
+                    currentObject[Quest.childLabel] as JsonArray<JsonObject>?
             if (childObject == null) {
-                currentObject.put(CustomListAdapter.childLabel, JsonArray(newObject))
+                currentObject[Quest.childLabel] = JsonArray(newObject)
             } else {
                 childObject.add(newObject)
             }
@@ -77,7 +77,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
         fun editQuest(index: List<Int>, text: String, context: Context) {
             MainActivity.loadQuestJson(context)
             val nestedObject: JsonObject = MainActivity.getNestedArray(index)
-            nestedObject[CustomListAdapter.nameLabel] = text
+            nestedObject[Quest.nameLabel] = text
             MainActivity.saveJson(context)
             NotificationActionReceiver.refreshNotifications(context)
         }
@@ -90,7 +90,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
             @Suppress("UNCHECKED_CAST")
             if (indices.size > 1) {
                 toDelete =
-                    MainActivity.getNestedArray(indices.dropLast(1))[CustomListAdapter.childLabel]
+                    MainActivity.getNestedArray(indices.dropLast(1))[Quest.childLabel]
                         as JsonArray<JsonObject>
             }
             toDelete.removeAt(leafIndex)

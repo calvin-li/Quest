@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var questView: ListView
 
     internal companion object {
-        private val questFileName = "quests.json"
+        private const val questFileName = "quests.json"
         lateinit var questJson: JsonArray<JsonObject>
 
         fun saveJson(context: Context) {
@@ -29,13 +29,13 @@ class MainActivity : AppCompatActivity() {
 
             for (i in 1 until indices.size) {
                 @Suppress("UNCHECKED_CAST")
-                nestedObject = (nestedObject[CustomListAdapter.childLabel] as JsonArray<JsonObject>)[indices[i]]
+                nestedObject = (nestedObject[Quest.childLabel] as JsonArray<JsonObject>)[indices[i]]
             }
             return nestedObject
         }
 
         internal fun loadQuestJson(context: Context){
-            var questStream: InputStream = try {
+            val questStream: InputStream = try {
                 context.openFileInput(questFileName)!!
             } catch (ex: IOException) {
                 context.resources.openRawResource(R.raw.quests)

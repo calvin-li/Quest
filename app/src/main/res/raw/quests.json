@@ -1,140 +1,140 @@
 [{
   "name": "Top 250",
-  "hidden": false,
+  "expanded": false,
   "child": [{
     "name": "The Shawshank Redemption",
-    "hidden": false
+    "expanded": true
   }, {
     "name": "The Godfather",
-    "hidden": false
+    "expanded": true
   }, {
     "name": "The Godfather: Part II",
-    "hidden": false
+    "expanded": true
   }, {
     "name": "Pulp Fiction",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "The Good, the Bad, the Ugly",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "The Dark Knight",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "12 Angry Men",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "1",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "2",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "3",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "4",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "5",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "6",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "7",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "8",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "9",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "10",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "11",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "12",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "13",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "14",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "15",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "16",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "17",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "18",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "19",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "20",
-    "hidden": false
+    "expanded": false
   }]
 }, {
   "name": "Now Showing",
-  "hidden": false,
+  "expanded": false,
   "child": [{
     "name": "The Conjuring",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "Despicable Me 2",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "Turbo",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "Grown Ups 2",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "Red 2",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "The Wolverine",
-    "hidden": false
+    "expanded": false
   }]
 }, {
   "name": "Coming Soon",
-  "hidden": false,
+  "expanded": false,
   "child": [{
     "name": "2 Guns",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "The Smurfs 2",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "The Spectacular Now",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "The Canyons",
-    "hidden": false
+    "expanded": false
   }, {
     "name": "Europa Report",
-    "hidden": false,
+    "expanded": false,
     "child": [{
       "name": "sub1",
-      "hidden": false
+      "expanded": false
     }, {
       "name": "sub2",
-      "hidden": false
+      "expanded": false
     }, {
       "name": "sub3",
-      "hidden": false
+      "expanded": false
     }, {
       "name": "",
-      "hidden": false
+      "expanded": false
     }]
   }]
 }]
