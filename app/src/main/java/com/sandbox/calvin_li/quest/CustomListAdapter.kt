@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import android.widget.*
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
+import kotlin.math.max
 
 class CustomListAdapter(
         context: Context,
         private var quests: Array<Quest> =
-            flatten(MainActivity.questJson, emptyList()).toTypedArray()
-        )
+            flatten(MainActivity.questJson, emptyList()).toTypedArray())
     : ArrayAdapter<Quest>(context, R.layout.element_dialog, quests) {
     internal companion object {
         private const val indentSize = 24 // in dp
@@ -43,8 +43,9 @@ class CustomListAdapter(
     private var visibleQuests = quests.filter { !it.hidden }
         get() = quests.filter { !it.hidden }
 
-    internal val onItemClickListener = AdapterView.OnItemClickListener {
-        adapterView: AdapterView<*>?, _: View?, position: Int, _: Long ->
+    internal val onItemClickListener = AdapterView.OnItemClickListener { parentView: AdapterView<*>?, _:
+    View?, position: Int, _: Long ->
+        val countBefore = count
         MainActivity.loadQuestJson(this.context)
 
         val quest = getItem(position)
@@ -53,8 +54,8 @@ class CustomListAdapter(
         MainActivity.saveJson(this.context)
         notifyDataSetChanged()
 
-        (adapterView as ListView).setSelection(position)
-}
+        (parentView as ListView).smoothScrollToPosition(position + max(0, count - countBefore))
+    }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val currentQuest = getItem(position)

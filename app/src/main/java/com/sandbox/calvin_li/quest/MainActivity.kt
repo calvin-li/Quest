@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity() {
         loadQuestJson(this)
 
         questView = findViewById(R.id.top_view) as ListView
+        questView.isSmoothScrollbarEnabled = true
         val adapter = CustomListAdapter(this)
         questView.adapter = adapter
         questView.onItemClickListener = adapter.onItemClickListener
