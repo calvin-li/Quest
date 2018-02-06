@@ -1,95 +1,140 @@
 [{
   "name": "Top 250",
+  "expanded": false,
   "child": [{
-    "name": "The Shawshank Redemption"
+    "name": "The Shawshank Redemption",
+    "expanded": true
   }, {
-    "name": "The Godfather"
+    "name": "The Godfather",
+    "expanded": true
   }, {
-    "name": "The Godfather: Part II"
+    "name": "The Godfather: Part II",
+    "expanded": true
   }, {
-    "name": "Pulp Fiction"
+    "name": "Pulp Fiction",
+    "expanded": false
   }, {
-    "name": "The Good, the Bad, the Ugly"
+    "name": "The Good, the Bad, the Ugly",
+    "expanded": false
   }, {
-    "name": "The Dark Knight"
+    "name": "The Dark Knight",
+    "expanded": false
   }, {
-    "name": "12 Angry Men"
+    "name": "12 Angry Men",
+    "expanded": false
   }, {
-    "name": "1"
+    "name": "1",
+    "expanded": false
   }, {
-    "name": "2"
+    "name": "2",
+    "expanded": false
   }, {
-    "name": "3"
+    "name": "3",
+    "expanded": false
   }, {
-    "name": "4"
+    "name": "4",
+    "expanded": false
   }, {
-    "name": "5"
+    "name": "5",
+    "expanded": false
   }, {
-    "name": "6"
+    "name": "6",
+    "expanded": false
   }, {
-    "name": "7"
+    "name": "7",
+    "expanded": false
   }, {
-    "name": "8"
+    "name": "8",
+    "expanded": false
   }, {
-    "name": "9"
+    "name": "9",
+    "expanded": false
   }, {
-    "name": "10"
+    "name": "10",
+    "expanded": false
   }, {
-    "name": "11"
+    "name": "11",
+    "expanded": false
   }, {
-    "name": "12"
+    "name": "12",
+    "expanded": false
   }, {
-    "name": "13"
+    "name": "13",
+    "expanded": false
   }, {
-    "name": "14"
+    "name": "14",
+    "expanded": false
   }, {
-    "name": "15"
+    "name": "15",
+    "expanded": false
   }, {
-    "name": "16"
+    "name": "16",
+    "expanded": false
   }, {
-    "name": "17"
+    "name": "17",
+    "expanded": false
   }, {
-    "name": "18"
+    "name": "18",
+    "expanded": false
   }, {
-    "name": "19"
+    "name": "19",
+    "expanded": false
   }, {
-    "name": "20"
+    "name": "20",
+    "expanded": false
   }]
 }, {
   "name": "Now Showing",
+  "expanded": false,
   "child": [{
-    "name": "The Conjuring"
+    "name": "The Conjuring",
+    "expanded": false
   }, {
-    "name": "Despicable Me 2"
+    "name": "Despicable Me 2",
+    "expanded": false
   }, {
-    "name": "Turbo"
+    "name": "Turbo",
+    "expanded": false
   }, {
-    "name": "Grown Ups 2"
+    "name": "Grown Ups 2",
+    "expanded": false
   }, {
-    "name": "Red 2"
+    "name": "Red 2",
+    "expanded": false
   }, {
-    "name": "The Wolverine"
+    "name": "The Wolverine",
+    "expanded": false
   }]
 }, {
   "name": "Coming Soon",
+  "expanded": false,
   "child": [{
-    "name": "2 Guns"
+    "name": "2 Guns",
+    "expanded": false
   }, {
-    "name": "The Smurfs 2"
+    "name": "The Smurfs 2",
+    "expanded": false
   }, {
-    "name": "The Spectacular Now"
+    "name": "The Spectacular Now",
+    "expanded": false
   }, {
-    "name": "The Canyons"
+    "name": "The Canyons",
+    "expanded": false
   }, {
     "name": "Europa Report",
+    "expanded": false,
     "child": [{
-      "name": "sub1"
+      "name": "sub1",
+      "expanded": false
     }, {
-      "name": "sub2"
+      "name": "sub2",
+      "expanded": false
     }, {
-      "name": "sub3"
+      "name": "sub3",
+      "expanded": false
     }, {
-      "name": ""
+      "name": "",
+      "expanded": false
     }]
   }]
 }]

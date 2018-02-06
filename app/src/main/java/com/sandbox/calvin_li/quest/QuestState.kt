@@ -16,7 +16,6 @@ class QuestState(
             QuestState(json[indexLabel] as Int, json[offsetLabel] as Int)
     }
 
-    override fun toString(): String {
-        return json { JsonObject(mapOf(indexLabel to index, offsetLabel to offset)) }.toJsonString()
-    }
+    override fun toString(): String =
+        json { JsonObject(mapOf(indexLabel to index, offsetLabel to offset)) }.toJsonString()
 }

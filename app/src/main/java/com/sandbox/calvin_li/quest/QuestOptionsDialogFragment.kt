@@ -7,6 +7,8 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.WindowManager
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import com.beust.klaxon.JsonArray
@@ -14,7 +16,36 @@ import com.beust.klaxon.JsonObject
 
 class QuestOptionsDialogFragment : DialogFragment() {
     companion object {
-        fun setDeleteButton(adapter: ExpandableListAdapter, deleteButton: Button, index:
+        fun setAddButton(adapter: ArrayAdapter<*>, button: Button, index: List<Int>) {
+            button.setOnClickListener {
+                val editView = getDialogView(adapter.context)
+                editView.hint = "Add new subquest here"
+
+                val dialog = createDialog(adapter.context, editView, "Add subquest", { _, _ ->
+                    addSubQuest(index, editView.text.toString(), adapter.context)
+                    adapter.notifyDataSetChanged()
+                })
+                dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED)
+                dialog.show()
+            }
+        }
+
+        fun setEditButton(adapter: ArrayAdapter<*>, editButton: Button, currentQuest:
+        CharSequence, index: List<Int>) {
+            editButton.setOnClickListener {
+                val editView = getDialogView(adapter.context)
+                editView.append(currentQuest)
+
+                val dialog = createDialog(adapter.context, editView, "Edit quest", { _, _ ->
+                    editQuest(index, editView.text.toString(), adapter.context)
+                    adapter.notifyDataSetChanged()
+                })
+                dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED)
+                dialog.show()
+            }
+        }
+
+        fun setDeleteButton(adapter: ArrayAdapter<*>, deleteButton: Button, index:
         List<Int>) {
             deleteButton.setOnClickListener {
                 deleteQuest(index, adapter.context)
@@ -22,29 +53,33 @@ class QuestOptionsDialogFragment : DialogFragment() {
             }
         }
 
-        fun setEditButton(adapter: ExpandableListAdapter, editButton: Button, currentQuest:
-        CharSequence, index: List<Int>) {
-            editButton.setOnClickListener {
-                val editView = getDialogView(adapter.context)
-                editView.append(currentQuest)
-                val builder = createBuilder(adapter.context, editView, "Edit quest", { _, _ ->
-                    editQuest(index, editView.text.toString(), adapter.context)
-                    adapter.notifyDataSetChanged()
-                })
-                builder.show()
+        fun addSubQuest(index: List<Int>, text: String, context: Context) {
+            MainActivity.loadQuestJson(context)
+            val currentObject = MainActivity.getNestedArray(index)
+
+            val newObject = JsonObject()
+            newObject[Quest.nameLabel] = text
+            newObject[Quest.expandLabel] = false
+
+            @Suppress("UNCHECKED_CAST")
+            val childObject: JsonArray<JsonObject>? =
+                    currentObject[Quest.childLabel] as JsonArray<JsonObject>?
+            if (childObject == null) {
+                currentObject[Quest.childLabel] = JsonArray(newObject)
+            } else {
+                childObject.add(newObject)
             }
+
+            MainActivity.saveJson(context)
+            NotificationActionReceiver.refreshNotifications(context)
         }
 
-        fun setAddButton(adapter: ExpandableListAdapter, button: Button, index: List<Int>) {
-            button.setOnClickListener {
-                val editView = getDialogView(adapter.context)
-                editView.hint = "Add new subquest here"
-                val builder = createBuilder(adapter.context, editView, "Add subquest", { _, _ ->
-                    addSubQuest(index, editView.text.toString(), adapter.context)
-                    adapter.notifyDataSetChanged()
-                })
-                builder.show()
-            }
+        fun editQuest(index: List<Int>, text: String, context: Context) {
+            MainActivity.loadQuestJson(context)
+            val nestedObject: JsonObject = MainActivity.getNestedArray(index)
+            nestedObject[Quest.nameLabel] = text
+            MainActivity.saveJson(context)
+            NotificationActionReceiver.refreshNotifications(context)
         }
 
         fun deleteQuest(indices: List<Int>, context: Context) {
@@ -55,7 +90,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
             @Suppress("UNCHECKED_CAST")
             if (indices.size > 1) {
                 toDelete =
-                    MainActivity.getNestedArray(indices.dropLast(1))[MultiLevelListView.childLabel]
+                    MainActivity.getNestedArray(indices.dropLast(1))[Quest.childLabel]
                         as JsonArray<JsonObject>
             }
             toDelete.removeAt(leafIndex)
@@ -72,37 +107,14 @@ class QuestOptionsDialogFragment : DialogFragment() {
             NotificationActionReceiver.refreshNotifications(context)
         }
 
-        fun editQuest(index: List<Int>, text: String, context: Context) {
-            MainActivity.loadQuestJson(context)
-            val nestedObject: JsonObject = MainActivity.getNestedArray(index)
-            nestedObject[MultiLevelListView.nameLabel] = text
-            MainActivity.saveJson(context)
-            NotificationActionReceiver.refreshNotifications(context)
-        }
-
-        fun addSubQuest(index: List<Int>, text: String, context: Context) {
-            MainActivity.loadQuestJson(context)
-            val currentObject = MainActivity.getNestedArray(index)
-            val childObject: JsonArray<JsonObject>? =
-                currentObject[MultiLevelListView.childLabel] as JsonArray<JsonObject>?
-            val newObject = JsonObject()
-            newObject.put(MultiLevelListView.nameLabel, text)
-            if (childObject == null) {
-                currentObject.put(MultiLevelListView.childLabel, JsonArray(newObject))
-            } else {
-                childObject.add(newObject)
-            }
-            MainActivity.saveJson(context)
-            NotificationActionReceiver.refreshNotifications(context)
-        }
-
-        private fun  createBuilder(context: Context, view: EditText, title: String,
-                                   positiveAction: (DialogInterface, Int) -> Unit):
-                AlertDialog.Builder {
+        private fun createDialog(context: Context, view: EditText, title: String,
+                                 positiveAction: (DialogInterface, Int) -> Unit):
+                AlertDialog {
             return AlertDialog.Builder(context).setTitle(title)
                     .setView(view)
                     .setPositiveButton("Confirm", positiveAction)
                     .setNegativeButton("Cancel", { _, _ -> })
+                    .create()
         }
 
         private fun getDialogView(context: Context): EditText {
