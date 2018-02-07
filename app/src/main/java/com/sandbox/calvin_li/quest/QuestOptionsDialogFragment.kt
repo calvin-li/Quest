@@ -56,10 +56,11 @@ class QuestOptionsDialogFragment : DialogFragment() {
         fun addSubQuest(index: List<Int>, text: String, context: Context) {
             MainActivity.loadQuestJson(context)
             val currentObject = MainActivity.getNestedArray(index)
+            currentObject[Quest.expandLabel] = true
 
             val newObject = JsonObject()
             newObject[Quest.nameLabel] = text
-            newObject[Quest.expandLabel] = false
+            newObject[Quest.expandLabel] = true
 
             @Suppress("UNCHECKED_CAST")
             val childObject: JsonArray<JsonObject>? =
