@@ -3,7 +3,11 @@ package com.sandbox.calvin_li.quest
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
+import android.view.WindowManager
 import android.widget.ListView
+import android.widget.Toast
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
@@ -47,10 +51,43 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        if(item.itemId == R.id.action_add){
+            val editView = QuestOptionsDialogFragment.getDialogView(this)
+            editView.hint = "Add new subquest here"
+
+            val dialog = QuestOptionsDialogFragment.createDialog(this, editView, "Add subquest", { _, _ ->
+                loadQuestJson(this)
+
+                val newObject = JsonObject()
+                newObject[Quest.nameLabel] = editView.text.toString()
+                newObject[Quest.expandLabel] = true
+
+                questJson.add(newObject)
+                saveJson(this)
+                this.onResume()
+            })
+
+            dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED)
+            dialog.show()
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.main)
+    }
+
+    override fun onResume() {
+        super.onResume()
         loadQuestJson(this)
         saveJson(this)
 
@@ -59,11 +96,6 @@ class MainActivity : AppCompatActivity() {
         (0 until questJson.size).forEach { notificationIndexList.add(listOf(QuestState(it, 0))) }
         NotificationActionReceiver.saveIndexList(this, notificationIndexList)
         NotificationActionReceiver.refreshNotifications(this)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        loadQuestJson(this)
 
         questView = findViewById(R.id.top_view) as ListView
         questView.isSmoothScrollbarEnabled = true

@@ -2,6 +2,7 @@
 <resources>
     <color name="goldStandard">#EDD759</color>
     <color name="goldStandard_dark">#e2c455</color>
+    <color name="actionbar_text">#FFFFFF</color>
     <color name="colorPrimaryDark">#212121</color>
     <color name="colorAccent">#FF4081</color>
     <color name="buttonBackground">#20000000</color>

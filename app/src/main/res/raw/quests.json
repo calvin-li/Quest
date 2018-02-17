@@ -25,63 +25,6 @@
   }, {
     "name": "1",
     "expanded": false
-  }, {
-    "name": "2",
-    "expanded": false
-  }, {
-    "name": "3",
-    "expanded": false
-  }, {
-    "name": "4",
-    "expanded": false
-  }, {
-    "name": "5",
-    "expanded": false
-  }, {
-    "name": "6",
-    "expanded": false
-  }, {
-    "name": "7",
-    "expanded": false
-  }, {
-    "name": "8",
-    "expanded": false
-  }, {
-    "name": "9",
-    "expanded": false
-  }, {
-    "name": "10",
-    "expanded": false
-  }, {
-    "name": "11",
-    "expanded": false
-  }, {
-    "name": "12",
-    "expanded": false
-  }, {
-    "name": "13",
-    "expanded": false
-  }, {
-    "name": "14",
-    "expanded": false
-  }, {
-    "name": "15",
-    "expanded": false
-  }, {
-    "name": "16",
-    "expanded": false
-  }, {
-    "name": "17",
-    "expanded": false
-  }, {
-    "name": "18",
-    "expanded": false
-  }, {
-    "name": "19",
-    "expanded": false
-  }, {
-    "name": "20",
-    "expanded": false
   }]
 }, {
   "name": "Now Showing",
@@ -109,32 +52,38 @@
   "name": "Coming Soon",
   "expanded": false,
   "child": [{
-    "name": "2 Guns",
+    "name": "Fix Keyboard in notification buttons",
     "expanded": false
   }, {
-    "name": "The Smurfs 2",
-    "expanded": false
-  }, {
-    "name": "The Spectacular Now",
-    "expanded": false
-  }, {
-    "name": "The Canyons",
-    "expanded": false
-  }, {
-    "name": "Europa Report",
+    "name": "Add button for new top level quest",
     "expanded": false,
     "child": [{
-      "name": "sub1",
-      "expanded": false
-    }, {
-      "name": "sub2",
-      "expanded": false
-    }, {
-      "name": "sub3",
-      "expanded": false
-    }, {
-      "name": "",
-      "expanded": false
+        "name": "Add ability to manipulate json directly",
+        "expanded": false
     }]
+  }, {
+    "name": "Style fix",
+    "expanded": false,
+    "child": [{
+      "name": "Change color and logo",
+      "expanded": false
+    }, {
+      "name": "Add expansion indicator",
+      "expanded": false
+    }, {
+      "name": "Fix quest text",
+      "expanded": false,
+        "child": [
+            {
+                "name": "Decide on font",
+                "expanded": false
+            }, {
+                "name": "Center text",
+                "expanded": false
+        }]
+    }]
+  }, {
+      "name": "Maybe change color of view behind ListView?",
+      "expanded": false
   }]
 }]

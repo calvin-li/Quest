@@ -108,8 +108,8 @@ class QuestOptionsDialogFragment : DialogFragment() {
             NotificationActionReceiver.refreshNotifications(context)
         }
 
-        private fun createDialog(context: Context, view: EditText, title: String,
-                                 positiveAction: (DialogInterface, Int) -> Unit):
+        internal fun createDialog(context: Context, view: EditText, title: String,
+                                  positiveAction: (DialogInterface, Int) -> Unit):
                 AlertDialog {
             return AlertDialog.Builder(context).setTitle(title)
                     .setView(view)
@@ -118,7 +118,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
                     .create()
         }
 
-        private fun getDialogView(context: Context): EditText {
+        internal fun getDialogView(context: Context): EditText {
             val layoutInflater: LayoutInflater = context.getSystemService(Context
                     .LAYOUT_INFLATER_SERVICE) as LayoutInflater
             return layoutInflater.inflate(R.layout.element_dialog, null) as EditText
