@@ -1,54 +1,4 @@
 [{
-  "name": "Top 250",
-  "expanded": false,
-  "child": [{
-    "name": "The Shawshank Redemption",
-    "expanded": true
-  }, {
-    "name": "The Godfather",
-    "expanded": true
-  }, {
-    "name": "The Godfather: Part II",
-    "expanded": true
-  }, {
-    "name": "Pulp Fiction",
-    "expanded": false
-  }, {
-    "name": "The Good, the Bad, the Ugly",
-    "expanded": false
-  }, {
-    "name": "The Dark Knight",
-    "expanded": false
-  }, {
-    "name": "12 Angry Men",
-    "expanded": false
-  }, {
-    "name": "1",
-    "expanded": false
-  }]
-}, {
-  "name": "Now Showing",
-  "expanded": false,
-  "child": [{
-    "name": "The Conjuring",
-    "expanded": false
-  }, {
-    "name": "Despicable Me 2",
-    "expanded": false
-  }, {
-    "name": "Turbo",
-    "expanded": false
-  }, {
-    "name": "Grown Ups 2",
-    "expanded": false
-  }, {
-    "name": "Red 2",
-    "expanded": false
-  }, {
-    "name": "The Wolverine",
-    "expanded": false
-  }]
-}, {
   "name": "Coming Soon",
   "expanded": false,
   "child": [{
@@ -86,4 +36,38 @@
       "name": "Maybe change color of view behind ListView?",
       "expanded": false
   }]
-}]
+},
+  {
+    "name": "Work",
+    "expanded": false,
+    "child": [{
+      "name": "Add deserialization runner test",
+      "expanded": true
+    }, {
+      "name": "Sovereign deployments",
+      "expanded": true
+    }, {
+      "name": "Runner EV2 deployment",
+      "expanded": true
+    }, {
+      "name": "PIR",
+      "expanded": false
+    }, {
+      "name": "Post Event Survey",
+      "expanded": false
+    }]
+  },
+  {
+    "name": "MacBook",
+    "expanded": false,
+    "child": [{
+      "name": "Hibernation",
+      "expanded": false
+    }, {
+      "name": "Window buttons",
+      "expanded": false
+    }, {
+      "name": "Adjust sensitivities",
+      "expanded": false
+    }]
+  }]
