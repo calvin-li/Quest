@@ -73,7 +73,8 @@ class NotificationActionReceiver : BroadcastReceiver() {
             return PendingIntent.getBroadcast(context, 0, questIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
-        private fun createButtonAction(context: Context, intent: PendingIntent, key: String, label: String)
+        private fun createButtonAction(context: Context, intent: PendingIntent, key: String, label:
+        String, quest: String = "")
             : Notification.Action {
             val action = Notification.Action.Builder(
                 Icon.createWithResource(context, R.mipmap.quest_notification),
@@ -81,8 +82,15 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 intent)
 
             if(!key.equals(delete_action, false)){
+                val hint: String = if(key.equals(add_action, false)){
+                    QuestOptionsDialogFragment.addHint
+                } else {    //Edit action
+                    quest
+                }
+
                 val input: RemoteInput =
                     RemoteInput.Builder(key)
+                        .setLabel(hint)
                         .build()
                 action.addRemoteInput(input)
             }
@@ -157,10 +165,12 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 subQuestsNonPaged
             }
 
-            var quest: String = jsonObject[Quest.nameLabel] as String
-            if (subQuests.count() > 0) {
-                quest = "$quest (+${subQuestsNonPaged.count()})"
-            }
+            val questRaw: String = jsonObject[Quest.nameLabel] as String
+
+            val quest = questRaw +
+                if (subQuests.count() > 0) {
+                    "(+${subQuestsNonPaged.count()})"
+                } else { "" }
 
             val remoteView = RemoteViews(context.packageName, R.layout.notification_view)
             remoteView.setTextViewText(R.id.notification_main_quest, quest)
@@ -211,7 +221,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
             val buttonPendingIntent =
                 buttonPendingIntent(context, indices, nextActionNumber())
             val deleteAction = createButtonAction(context, buttonPendingIntent, delete_action, "delete")
-            val editAction = createButtonAction(context, buttonPendingIntent, edit_action, "edit")
+            val editAction = createButtonAction(context, buttonPendingIntent, edit_action, "edit", questRaw)
             val addAction = createButtonAction(context, buttonPendingIntent, add_action, "add")
 
             val notBuild: Notification.Builder = Notification.Builder(context)

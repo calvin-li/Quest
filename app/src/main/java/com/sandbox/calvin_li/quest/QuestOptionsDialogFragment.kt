@@ -16,10 +16,11 @@ import com.beust.klaxon.JsonObject
 
 class QuestOptionsDialogFragment : DialogFragment() {
     companion object {
+        const val addHint = "Add new subquest here"
         fun setAddButton(adapter: ArrayAdapter<*>, button: Button, index: List<Int>) {
             button.setOnClickListener {
                 val editView = getDialogView(adapter.context)
-                editView.hint = "Add new subquest here"
+                editView.hint = addHint
 
                 val dialog = createDialog(adapter.context, editView, "Add subquest", { _, _ ->
                     addSubQuest(index, editView.text.toString(), adapter.context)
