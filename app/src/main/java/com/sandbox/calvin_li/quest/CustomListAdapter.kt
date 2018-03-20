@@ -10,10 +10,10 @@ import com.beust.klaxon.JsonObject
 import kotlin.math.max
 
 class CustomListAdapter(
-        context: Context,
-        private var quests: Array<Quest> =
-            flatten(MainActivity.questJson, emptyList()).toTypedArray())
-    : ArrayAdapter<Quest>(context, R.layout.element_dialog, quests) {
+    context: Context,
+    private var quests: Array<Quest> =
+        flatten(MainActivity.questJson, emptyList()).toTypedArray())
+: ArrayAdapter<Quest>(context, R.layout.element_dialog, quests) {
     internal companion object {
         private const val indentSize = 24 // in dp
 
@@ -82,7 +82,11 @@ class CustomListAdapter(
         questView.text = currentQuest.name
 
         QuestOptionsDialogFragment.setAddButton(
-                this, container.findViewById(R.id.element_header_add) as Button, currentQuest.index)
+            this,
+            container.findViewById(R.id.element_header_add) as Button,
+            currentQuest.index,
+            {i -> (parent as ListView).smoothScrollToPosition(i)}
+        )
 
         QuestOptionsDialogFragment.setEditButton(
                 this, container.findViewById(R.id.element_header_edit) as Button, questView.text, currentQuest.index)
@@ -110,4 +114,6 @@ class CustomListAdapter(
     }
 
     override fun getPosition(item: Quest?): Int = visibleQuests.indexOfFirst {it == item}
+
+    fun getPosition(name: String): Int = visibleQuests.indexOfFirst {it.name == name}
 }

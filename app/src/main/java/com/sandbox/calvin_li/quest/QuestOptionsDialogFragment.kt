@@ -17,21 +17,24 @@ import com.beust.klaxon.JsonObject
 class QuestOptionsDialogFragment : DialogFragment() {
     companion object {
         const val addHint = "Add new subquest here"
-        fun setAddButton(adapter: ArrayAdapter<*>, button: Button, index: List<Int>) {
+        fun setAddButton(
+            adapter: CustomListAdapter, button: Button, index: List<Int>, scroll: (Int) -> Unit) {
             button.setOnClickListener {
                 val editView = getDialogView(adapter.context)
                 editView.hint = addHint
 
                 val dialog = createDialog(adapter.context, editView, "Add subquest", { _, _ ->
-                    addSubQuest(index, editView.text.toString(), adapter.context)
+                    val newQuest = editView.text.toString()
+                    addSubQuest(index, newQuest, adapter.context)
                     adapter.notifyDataSetChanged()
+                    scroll(adapter.getPosition(newQuest))
                 })
                 dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED)
                 dialog.show()
             }
         }
 
-        fun setEditButton(adapter: ArrayAdapter<*>, editButton: Button, currentQuest:
+        fun setEditButton(adapter: CustomListAdapter, editButton: Button, currentQuest:
         CharSequence, index: List<Int>) {
             editButton.setOnClickListener {
                 val editView = getDialogView(adapter.context)
@@ -46,7 +49,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
             }
         }
 
-        fun setDeleteButton(adapter: ArrayAdapter<*>, deleteButton: Button, index:
+        fun setDeleteButton(adapter: CustomListAdapter, deleteButton: Button, index:
         List<Int>) {
             deleteButton.setOnClickListener {
                 deleteQuest(index, adapter.context)
