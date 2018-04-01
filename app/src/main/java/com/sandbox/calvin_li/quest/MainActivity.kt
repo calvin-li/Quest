@@ -2,7 +2,9 @@ package com.sandbox.calvin_li.quest
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Environment
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager
@@ -11,6 +13,7 @@ import android.widget.Toast
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
+import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -20,12 +23,22 @@ class MainActivity : AppCompatActivity() {
 
     internal companion object {
         private const val questFileName = "quests.json"
+        private const val questExternalFileName = questFileName
         lateinit var questJson: JsonArray<JsonObject>
 
         fun saveJson(context: Context) {
             val writeStream: FileOutputStream = context.openFileOutput(questFileName, Context.MODE_PRIVATE)
             writeStream.write(questJson.toJsonString().toByteArray())
             writeStream.close()
+
+            if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED){
+                val externalFile = File(context.getExternalFilesDir(null), questExternalFileName)
+                if (!externalFile.createNewFile()) { Log.e("Quest error", "File not created") }
+
+                val externalWriteStream = FileOutputStream(externalFile)
+                externalWriteStream.write(questJson.toJsonString(true).toByteArray())
+                externalWriteStream.close()
+            }
         }
 
         fun getNestedArray(indices: List<Int>): JsonObject {
