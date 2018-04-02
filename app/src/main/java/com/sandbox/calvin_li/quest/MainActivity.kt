@@ -13,10 +13,7 @@ import android.widget.Toast
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
-import java.io.InputStream
+import java.io.*
 
 class MainActivity : AppCompatActivity() {
     private lateinit var questView: ListView
@@ -27,10 +24,6 @@ class MainActivity : AppCompatActivity() {
         lateinit var questJson: JsonArray<JsonObject>
 
         fun saveJson(context: Context) {
-            val writeStream: FileOutputStream = context.openFileOutput(questFileName, Context.MODE_PRIVATE)
-            writeStream.write(questJson.toJsonString().toByteArray())
-            writeStream.close()
-
             if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED){
                 val externalFile = File(context.getExternalFilesDir(null), questExternalFileName)
                 if (!externalFile.createNewFile()) { Log.e("Quest error", "File not created") }
@@ -41,6 +34,23 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        internal fun loadQuestJson(context: Context){
+            val questStream: InputStream = try {
+                val externalFile = File(context.getExternalFilesDir(null), questExternalFileName)
+                FileInputStream(externalFile)
+            } catch (ex: IOException) {
+                try {
+                    context.openFileInput(questFileName)
+                } catch (ex: FileNotFoundException) {
+                    context.resources.openRawResource(R.raw.quests)
+                }
+            }
+
+            @Suppress("UNCHECKED_CAST")
+            questJson = Parser().parse(questStream) as JsonArray<JsonObject>
+            questStream.close()
+        }
+
         fun getNestedArray(indices: List<Int>): JsonObject {
             var nestedObject: JsonObject = questJson[indices[0]]
 
@@ -49,18 +59,6 @@ class MainActivity : AppCompatActivity() {
                 nestedObject = (nestedObject[Quest.childLabel] as JsonArray<JsonObject>)[indices[i]]
             }
             return nestedObject
-        }
-
-        internal fun loadQuestJson(context: Context){
-            val questStream: InputStream = try {
-                context.openFileInput(questFileName)!!
-            } catch (ex: IOException) {
-                context.resources.openRawResource(R.raw.quests)
-            }
-            // questStream = context.resources.openRawResource(R.raw.quests)
-            @Suppress("UNCHECKED_CAST")
-            questJson = Parser().parse(questStream) as JsonArray<JsonObject>
-            questStream.close()
         }
     }
 
