@@ -7,4 +7,9 @@
         android:title="@string/add_subquest"
         app:showAsAction="ifRoom"/>
 
+    <item
+        android:id="@+id/action_json"
+        android:title="@string/show_json"
+        app:showAsAction="never"/>
+
 </menu>

@@ -7,4 +7,5 @@
     <string name="backward">⪡</string>
     <string name="down">⤵</string>
     <string name="up">⤴</string>
+    <string name="show_json">Open as JSON file</string>
 </resources>

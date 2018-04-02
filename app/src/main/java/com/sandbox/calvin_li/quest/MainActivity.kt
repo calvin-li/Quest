@@ -9,23 +9,26 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager
 import android.widget.ListView
-import android.widget.Toast
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import java.io.*
+import android.content.Intent
+import android.net.Uri
+import android.support.v4.content.FileProvider
+import android.webkit.MimeTypeMap
+
 
 class MainActivity : AppCompatActivity() {
     private lateinit var questView: ListView
 
     internal companion object {
-        private const val questFileName = "quests.json"
-        private const val questExternalFileName = questFileName
+        private const val questFileName: String = "quests.json"
         lateinit var questJson: JsonArray<JsonObject>
 
         fun saveJson(context: Context) {
             if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED){
-                val externalFile = File(context.getExternalFilesDir(null), questExternalFileName)
+                val externalFile = File(context.getExternalFilesDir(null), questFileName)
                 if (!externalFile.createNewFile()) { Log.e("Quest error", "File not created") }
 
                 val externalWriteStream = FileOutputStream(externalFile)
@@ -36,14 +39,10 @@ class MainActivity : AppCompatActivity() {
 
         internal fun loadQuestJson(context: Context){
             val questStream: InputStream = try {
-                val externalFile = File(context.getExternalFilesDir(null), questExternalFileName)
+                val externalFile = File(context.getExternalFilesDir(null), questFileName)
                 FileInputStream(externalFile)
             } catch (ex: IOException) {
-                try {
-                    context.openFileInput(questFileName)
-                } catch (ex: FileNotFoundException) {
-                    context.resources.openRawResource(R.raw.quests)
-                }
+                context.resources.openRawResource(R.raw.quests)
             }
 
             @Suppress("UNCHECKED_CAST")
@@ -87,6 +86,21 @@ class MainActivity : AppCompatActivity() {
 
             dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED)
             dialog.show()
+        }
+        else if(item.itemId == R.id.action_json){
+            saveJson(this)
+            val jsonFile = File(this.getExternalFilesDir(null), questFileName)
+
+            val jsonUri = FileProvider.getUriForFile(
+                    this,
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    jsonFile)
+
+            val jsonIntent = Intent(Intent.ACTION_VIEW)
+            jsonIntent.setDataAndType(jsonUri, "text/plain")
+            jsonIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            jsonIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            startActivity(Intent.createChooser(jsonIntent, "Open with: "))
         }
 
         return super.onOptionsItemSelected(item)
