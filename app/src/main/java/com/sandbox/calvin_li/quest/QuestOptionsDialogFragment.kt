@@ -11,6 +11,7 @@ import android.view.WindowManager
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 
@@ -29,6 +30,11 @@ class QuestOptionsDialogFragment : DialogFragment() {
                     adapter.notifyDataSetChanged()
                     scroll(adapter.getPosition(newQuest))
                 })
+
+                editView.setOnEditorActionListener { _, _, _ ->
+                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).callOnClick()
+                }
+
                 dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED)
                 dialog.show()
             }
@@ -44,6 +50,11 @@ class QuestOptionsDialogFragment : DialogFragment() {
                     editQuest(index, editView.text.toString(), adapter.context)
                     adapter.notifyDataSetChanged()
                 })
+
+                editView.setOnEditorActionListener { _, _, _ ->
+                    dialog.getButton(DialogInterface.BUTTON_POSITIVE).callOnClick()
+                }
+
                 dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED)
                 dialog.show()
             }
