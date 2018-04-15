@@ -66,7 +66,7 @@ class CustomListAdapter(
             .inflate(R.layout.element_header, parent, false)
 
         val indexPadding =
-            context.resources.getDimension(R.dimen.subquest_left_padding).toInt() +
+            context.resources.getDimension(R.dimen.subquest_left_padding).toInt() + // can probably replace this with expansion indicator
             indentSize * context.resources.displayMetrics.density * (currentQuest.index.size-1)
         container.setPadding(indexPadding.toInt(),
             container.paddingTop, container.paddingRight, container.paddingBottom)
