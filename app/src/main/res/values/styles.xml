@@ -3,7 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/goldStandard_dark</item>
+        <item name="colorPrimary">@color/groovy</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
@@ -32,7 +32,7 @@
         <item name="android:layout_margin">@dimen/standard_margins</item>
         <item name="android:padding">@dimen/standard_padding</item>
         <item name="android:layout_centerInParent">true</item>
-        <item name="android:tint">@color/goldStandard_dark</item>
+        <item name="android:tint">@color/groovy</item>
         <item name="android:src">@drawable/bg_circle</item>
     </style>
 
@@ -49,7 +49,7 @@
         <item name="android:layout_margin">@dimen/standard_margins</item>
         <item name="android:minWidth">0dp</item>
         <item name="android:minHeight">0dp</item>
-        <item name="android:backgroundTint">@color/goldStandard_dark</item>
+        <item name="android:backgroundTint">@color/groovy</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
 
