@@ -18,6 +18,24 @@
     <style name="NotificationView">
     </style>
 
+    <style name="QuestMainLine">
+    </style>
+
+    <style name="ExpArrow" parent="QuestMainLine">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/standard_margins</item>
+        <item name="android:padding">@dimen/standard_padding</item>
+        <item name="android:tint">@color/groovy</item>
+        <item name="android:rotation">45</item>
+        <item name="android:src">@mipmap/quest_notification</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+
+    <style name="QuestText" parent="QuestMainLine">
+        <item name="android:gravity">start|center_vertical</item>
+    </style>
+
     <style name="ButtonFrame">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

@@ -10,9 +10,13 @@
               android:clickable="false"
               android:focusable="false">
 
+    <ImageView
+        android:id="@+id/element_header_arrow"
+        style="@style/ExpArrow"/>
+
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        style="@style/QuestText"
         android:id="@+id/element_header_text"
-        android:gravity="start|center_vertical"
         android:textStyle="bold"
         android:clickable="false"
         android:focusable="false"

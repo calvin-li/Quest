@@ -79,6 +79,13 @@ class CustomListAdapter(
             container.visibility = View.VISIBLE
         }
 
+        val expArrow = container.findViewById(R.id.element_header_arrow)
+        if(currentQuest.expanded){
+            expArrow.rotation = 45f
+        } else {
+            expArrow.rotation = -45f
+        }
+
         questView.text = currentQuest.name
 
         QuestOptionsDialogFragment.setAddButton(
