@@ -5,7 +5,7 @@
     <dimen name="standard_padding">0dp</dimen>
     <dimen name="button_x_padding">2dp</dimen>
     <dimen name="button_y_padding">16dp</dimen>
-    <dimen name="button_x_margins">2dp</dimen>
+    <dimen name="button_x_margins">4dp</dimen>
     <dimen name="arrow_x_margins">8dp</dimen>
     <dimen name="button_text_size">22sp</dimen>
     <dimen name="arrow_text_size">19sp</dimen>

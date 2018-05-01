@@ -58,7 +58,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">@dimen/standard_margins</item>
         <item name="android:layout_marginRight">@dimen/standard_margins</item>
-        <item name="android:padding">@dimen/button_x_margins</item>
+        <item name="android:padding">@dimen/button_x_padding</item>
     </style>
 
     <style name="ButtonBg">
@@ -75,17 +75,24 @@
         <item name="android:layout_width">24dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerInParent">true</item>
+
         <item name="android:clickable">true</item>
         <item name="android:focusable">false</item>
+
         <item name="android:paddingTop">@dimen/button_y_padding</item>
         <item name="android:paddingBottom">@dimen/button_y_padding</item>
         <item name="android:paddingLeft">@dimen/button_x_padding</item>
         <item name="android:paddingRight">@dimen/button_x_padding</item>
-        <item name="android:layout_margin">@dimen/standard_margins</item>
+
+        <item name="android:layout_marginTop">@dimen/standard_margins</item>
+        <item name="android:layout_marginBottom">@dimen/standard_margins</item>
+        <item name="android:layout_marginLeft">@dimen/button_x_margins</item>
+        <item name="android:layout_marginRight">@dimen/button_x_margins</item>
+
         <item name="android:minWidth">0dp</item>
         <item name="android:minHeight">0dp</item>
         <item name="android:backgroundTint">@color/groovy</item>
-        <item name="android:background">@android:color/transparent</item>
+        <item name="android:background">@color/buttonBackground</item>
     </style>
 
     <style name="ButtonText">
