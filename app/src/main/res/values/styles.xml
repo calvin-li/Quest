@@ -24,16 +24,33 @@
     <style name="ExpArrow" parent="QuestMainLine">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">@dimen/standard_margins</item>
+
+        <item name="android:layout_marginTop">@dimen/standard_margins</item>
+        <item name="android:layout_marginBottom">@dimen/standard_margins</item>
+        <item name="android:layout_marginLeft">@dimen/arrow_x_margins</item>
+        <item name="android:layout_marginRight">@dimen/arrow_x_margins</item>
+
         <item name="android:padding">@dimen/standard_padding</item>
-        <item name="android:tint">@color/groovy</item>
-        <item name="android:rotation">45</item>
-        <item name="android:src">@mipmap/quest_notification</item>
+
+        <item name="android:textColor">@color/groovy</item>
+        <item name="android:textSize">@dimen/button_text_size</item>
         <item name="android:layout_gravity">center_vertical</item>
     </style>
 
     <style name="QuestText" parent="QuestMainLine">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+
+        <item name="android:layout_margin">@dimen/standard_margins</item>
+        <item name="android:padding">@dimen/standard_padding</item>
         <item name="android:gravity">start|center_vertical</item>
+        <item name="android:layout_weight">1</item>
+
+        <item name="android:focusable">false</item>
+        <item name="android:clickable">false</item>
+
+        <item name="android:text">lorem ipsum</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="ButtonFrame">
