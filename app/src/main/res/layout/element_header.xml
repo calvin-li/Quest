@@ -10,7 +10,7 @@
               android:orientation="horizontal"
               android:clickable="false"
               android:focusable="false"
-              tools:ignore="RtlSymmetry">
+              tools:ignore="RtlSymmetry,ContentDescription">
 
     <TextView
         android:id="@+id/element_header_arrow"
@@ -31,51 +31,21 @@
         android:layout_height="match_parent"
         tools:ignore="HardcodedText"/>
 
-    <RelativeLayout
-        style="@style/ButtonFrame">
-        <ImageView
-            style="@style/ButtonBg"/>
+    <!-- Cannot use ImageButton here as it blocks click events to the rest of the ListView -->
+    <ImageView
+        android:src="@mipmap/button_add"
+        android:id="@+id/element_header_add"
+        style="@style/Button"/>
 
-        <Button
-            android:id="@+id/element_header_add"
-            style="@style/ButtonFg"/>
+    <ImageView
+        android:src="@mipmap/button_edit"
+        android:id="@+id/element_header_edit"
+        style="@style/Button"/>
 
-        <TextView
-            style="@style/ButtonText"
-            android:text="@string/add_subquest"/>
-    </RelativeLayout>
-
-    <RelativeLayout
-        style="@style/ButtonFrame">
-        <ImageView
-            style="@style/ButtonBg"/>
-
-        <Button
-            android:id="@+id/element_header_edit"
-            style="@style/ButtonFg"/>
-
-        <TextView
-            style="@style/ButtonText"
-            android:scaleX="0.666"
-            android:scaleY="0.9"
-            android:translationY="-2dp"
-            android:text="@string/edit_quest"/>
-    </RelativeLayout>
-
-    <RelativeLayout
-        style="@style/ButtonFrame">
-        <ImageView
-            style="@style/ButtonBg"/>
-
-        <Button
-            android:id="@+id/element_header_delete"
-            style="@style/ButtonFg"/>
-
-        <TextView
-            style="@style/ButtonText"
-            android:scaleX="0.5"
-            android:text="@string/delete_quest"/>
-    </RelativeLayout>
+    <ImageView
+        android:src="@mipmap/button_delete"
+        android:id="@+id/element_header_delete"
+        style="@style/Button"/>
 
 </LinearLayout>
 

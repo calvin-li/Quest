@@ -46,64 +46,25 @@
         <item name="android:gravity">start|center_vertical</item>
         <item name="android:layout_weight">1</item>
 
-        <item name="android:focusable">false</item>
         <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
 
         <item name="android:text">lorem ipsum</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="ButtonFrame">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">@dimen/standard_margins</item>
-        <item name="android:layout_marginRight">@dimen/standard_margins</item>
-        <item name="android:padding">@dimen/button_x_padding</item>
-    </style>
+    <style name="Button">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:scaleType">centerInside</item>
 
-    <style name="ButtonBg">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">@dimen/standard_margins</item>
         <item name="android:padding">@dimen/standard_padding</item>
-        <item name="android:layout_centerInParent">true</item>
-        <item name="android:tint">@color/groovy</item>
-        <item name="android:src">@drawable/bg_circle</item>
-    </style>
 
-    <style name="ButtonFg">
-        <item name="android:layout_width">24dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_centerInParent">true</item>
-
-        <item name="android:clickable">true</item>
         <item name="android:focusable">false</item>
 
-        <item name="android:paddingTop">@dimen/button_y_padding</item>
-        <item name="android:paddingBottom">@dimen/button_y_padding</item>
-        <item name="android:paddingLeft">@dimen/button_x_padding</item>
-        <item name="android:paddingRight">@dimen/button_x_padding</item>
-
-        <item name="android:layout_marginTop">@dimen/standard_margins</item>
-        <item name="android:layout_marginBottom">@dimen/standard_margins</item>
-        <item name="android:layout_marginLeft">@dimen/button_x_margins</item>
-        <item name="android:layout_marginRight">@dimen/button_x_margins</item>
-
-        <item name="android:minWidth">0dp</item>
-        <item name="android:minHeight">0dp</item>
-        <item name="android:backgroundTint">@color/groovy</item>
-        <item name="android:background">@color/buttonBackground</item>
-    </style>
-
-    <style name="ButtonText">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_margin">@dimen/standard_margins</item>
-        <item name="android:padding">@dimen/standard_padding</item>
-        <item name="android:layout_centerInParent">true</item>
-        <item name="android:typeface">monospace</item>
-        <item name="android:textSize">@dimen/button_text_size</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:tint">@color/groovy</item>
+        <item name="android:backgroundTint">@color/buttonBackground</item>
     </style>
 
     <style name="notification">

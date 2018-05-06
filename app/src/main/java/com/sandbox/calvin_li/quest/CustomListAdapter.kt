@@ -96,16 +96,16 @@ class CustomListAdapter(
 
         QuestOptionsDialogFragment.setAddButton(
             this,
-            container.findViewById(R.id.element_header_add) as Button,
+            container.findViewById(R.id.element_header_add),
             currentQuest.index,
             {i -> (parent as ListView).smoothScrollToPosition(i)}
         )
 
         QuestOptionsDialogFragment.setEditButton(
-                this, container.findViewById(R.id.element_header_edit) as Button, questView.text, currentQuest.index)
+                this, container.findViewById(R.id.element_header_edit), questView.text, currentQuest.index)
 
         QuestOptionsDialogFragment.setDeleteButton(
-                this, container.findViewById(R.id.element_header_delete) as Button, currentQuest.index)
+                this, container.findViewById(R.id.element_header_delete), currentQuest.index)
 
         return container
     }

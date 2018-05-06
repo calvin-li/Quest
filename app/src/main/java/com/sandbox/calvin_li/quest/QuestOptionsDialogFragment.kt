@@ -7,11 +7,9 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.WindowManager
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 
@@ -19,8 +17,8 @@ class QuestOptionsDialogFragment : DialogFragment() {
     companion object {
         const val addHint = "Add new subquest here"
         fun setAddButton(
-            adapter: CustomListAdapter, button: Button, index: List<Int>, scroll: (Int) -> Unit) {
-            button.setOnClickListener {
+            adapter: CustomListAdapter, clickable: View, index: List<Int>, scroll: (Int) -> Unit) {
+            clickable.setOnClickListener {
                 val editView = getDialogView(adapter.context)
                 editView.hint = addHint
 
@@ -40,9 +38,9 @@ class QuestOptionsDialogFragment : DialogFragment() {
             }
         }
 
-        fun setEditButton(adapter: CustomListAdapter, editButton: Button, currentQuest:
+        fun setEditButton(adapter: CustomListAdapter, clickable: View, currentQuest:
         CharSequence, index: List<Int>) {
-            editButton.setOnClickListener {
+            clickable.setOnClickListener {
                 val editView = getDialogView(adapter.context)
                 editView.append(currentQuest)
 
@@ -60,9 +58,9 @@ class QuestOptionsDialogFragment : DialogFragment() {
             }
         }
 
-        fun setDeleteButton(adapter: CustomListAdapter, deleteButton: Button, index:
+        fun setDeleteButton(adapter: CustomListAdapter, clickable: View, index:
         List<Int>) {
-            deleteButton.setOnClickListener {
+            clickable.setOnClickListener {
                 deleteQuest(index, adapter.context)
                 adapter.notifyDataSetChanged()
             }
