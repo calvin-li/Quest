@@ -3,7 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/goldStandard_dark</item>
+        <item name="colorPrimary">@color/groovy</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
@@ -18,50 +18,53 @@
     <style name="NotificationView">
     </style>
 
-    <style name="ButtonFrame">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">@dimen/standard_margins</item>
-        <item name="android:layout_marginRight">@dimen/standard_margins</item>
-        <item name="android:padding">@dimen/button_x_margins</item>
+    <style name="QuestMainLine">
     </style>
 
-    <style name="ButtonBg">
+    <style name="ExpArrow" parent="QuestMainLine">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
+
+        <item name="android:layout_marginTop">@dimen/standard_margins</item>
+        <item name="android:layout_marginBottom">@dimen/standard_margins</item>
+        <item name="android:layout_marginLeft">@dimen/arrow_x_margins</item>
+        <item name="android:layout_marginRight">@dimen/arrow_x_margins</item>
+
+        <item name="android:padding">@dimen/standard_padding</item>
+
+        <item name="android:textColor">@color/groovy</item>
+        <item name="android:textSize">@dimen/arrow_text_size</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+
+    <style name="QuestText" parent="QuestMainLine">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+
         <item name="android:layout_margin">@dimen/standard_margins</item>
         <item name="android:padding">@dimen/standard_padding</item>
-        <item name="android:layout_centerInParent">true</item>
-        <item name="android:tint">@color/goldStandard_dark</item>
-        <item name="android:src">@drawable/bg_circle</item>
-    </style>
+        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:layout_weight">1</item>
 
-    <style name="ButtonFg">
-        <item name="android:layout_width">24dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_centerInParent">true</item>
-        <item name="android:clickable">true</item>
+        <item name="android:clickable">false</item>
         <item name="android:focusable">false</item>
-        <item name="android:paddingTop">@dimen/button_y_padding</item>
-        <item name="android:paddingBottom">@dimen/button_y_padding</item>
-        <item name="android:paddingLeft">@dimen/button_x_padding</item>
-        <item name="android:paddingRight">@dimen/button_x_padding</item>
-        <item name="android:layout_margin">@dimen/standard_margins</item>
-        <item name="android:minWidth">0dp</item>
-        <item name="android:minHeight">0dp</item>
-        <item name="android:backgroundTint">@color/goldStandard_dark</item>
-        <item name="android:background">@android:color/transparent</item>
+
+        <item name="android:text">lorem ipsum</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="ButtonText">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="Button">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:scaleType">centerInside</item>
+
         <item name="android:layout_margin">@dimen/standard_margins</item>
         <item name="android:padding">@dimen/standard_padding</item>
-        <item name="android:layout_centerInParent">true</item>
-        <item name="android:typeface">monospace</item>
-        <item name="android:textSize">@dimen/button_text_size</item>
-        <item name="android:textColor">@android:color/white</item>
+
+        <item name="android:focusable">false</item>
+
+        <item name="android:tint">@color/groovy</item>
+        <item name="android:backgroundTint">@color/buttonBackground</item>
     </style>
 
     <style name="notification">

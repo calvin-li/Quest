@@ -129,7 +129,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 .setOngoing(true)
                 .setShowWhen(false)
                 .setSmallIcon(R.mipmap.quest_notification)
-                .setColor(context.getColor(R.color.goldStandard))
+                .setColor(context.getColor(R.color.groovy_notification))
                 .setGroupSummary(true)
                 .setGroup("g1")
                 .setContentIntent(PendingIntent.getActivity(
@@ -228,7 +228,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 .setOngoing(true)
                 .setShowWhen(false)
                 .setSmallIcon(R.mipmap.quest_notification)
-                .setColor(context.getColor(R.color.goldStandard))
+                .setColor(context.getColor(R.color.groovy_notification))
                 .setContentTitle(quest)
                 .setContentText(allSubQuests)
                 .setCustomBigContentView(remoteView)

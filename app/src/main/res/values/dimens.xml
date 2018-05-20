@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="element_header_button_width">50dp</dimen>
     <dimen name="standard_margins">0dp</dimen>
     <dimen name="standard_padding">0dp</dimen>
-    <dimen name="button_x_padding">2dp</dimen>
-    <dimen name="button_y_padding">16dp</dimen>
-    <dimen name="button_x_margins">2dp</dimen>
-    <dimen name="button_text_size">22sp</dimen>
+    <dimen name="arrow_x_margins">8dp</dimen>
+    <dimen name="arrow_text_size">19sp</dimen>
     <dimen name="arrow_gap">8dp</dimen>
     <dimen name="arrow_scale_y">1.0</dimen>
     <dimen name="arrow_scale_x">1.33</dimen>

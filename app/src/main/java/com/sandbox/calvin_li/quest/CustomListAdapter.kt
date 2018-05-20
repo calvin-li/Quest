@@ -24,7 +24,8 @@ class CustomListAdapter(
                     jsonObject[Quest.nameLabel] as String,
                     currentIndex.plus(index),
                     jsonObject[Quest.expandLabel] as Boolean,
-                    isHidden(currentIndex)))
+                    isHidden(currentIndex),
+                    (jsonObject[Quest.childLabel] as? JsonArray<*>)?.size ?: 0))
                         .plus(
                                 @Suppress("UNCHECKED_CAST")
                                 flatten(
@@ -66,7 +67,7 @@ class CustomListAdapter(
             .inflate(R.layout.element_header, parent, false)
 
         val indexPadding =
-            context.resources.getDimension(R.dimen.subquest_left_padding).toInt() + // can probably replace this with expansion indicator
+            context.resources.getDimension(R.dimen.arrow_x_margins).toInt() +
             indentSize * context.resources.displayMetrics.density * (currentQuest.index.size-1)
         container.setPadding(indexPadding.toInt(),
             container.paddingTop, container.paddingRight, container.paddingBottom)
@@ -79,20 +80,32 @@ class CustomListAdapter(
             container.visibility = View.VISIBLE
         }
 
+        val expArrow = container.findViewById(R.id.element_header_arrow)
+        if(currentQuest.children > 0) {
+            expArrow.visibility = View.VISIBLE
+            if (currentQuest.expanded) {
+                expArrow.rotation = 90f
+            } else {
+                expArrow.rotation = 0f
+            }
+        } else {
+            expArrow.visibility = View.INVISIBLE
+        }
+
         questView.text = currentQuest.name
 
         QuestOptionsDialogFragment.setAddButton(
             this,
-            container.findViewById(R.id.element_header_add) as Button,
+            container.findViewById(R.id.element_header_add),
             currentQuest.index,
             {i -> (parent as ListView).smoothScrollToPosition(i)}
         )
 
         QuestOptionsDialogFragment.setEditButton(
-                this, container.findViewById(R.id.element_header_edit) as Button, questView.text, currentQuest.index)
+                this, container.findViewById(R.id.element_header_edit), questView.text, currentQuest.index)
 
         QuestOptionsDialogFragment.setDeleteButton(
-                this, container.findViewById(R.id.element_header_delete) as Button, currentQuest.index)
+                this, container.findViewById(R.id.element_header_delete), currentQuest.index)
 
         return container
     }
