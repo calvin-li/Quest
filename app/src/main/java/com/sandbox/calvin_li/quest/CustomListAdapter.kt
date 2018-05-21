@@ -1,5 +1,6 @@
 package com.sandbox.calvin_li.quest
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -20,18 +21,18 @@ class CustomListAdapter(
         private fun flatten(questJson: JsonArray<JsonObject>?, currentIndex: List<Int>)
                 : List<Quest> {
             return questJson?.mapIndexed { index, jsonObject ->
-                listOf(Quest(
-                    jsonObject[Quest.nameLabel] as String,
-                    currentIndex.plus(index),
-                    jsonObject[Quest.expandLabel] as Boolean,
-                    isHidden(currentIndex),
-                    (jsonObject[Quest.childLabel] as? JsonArray<*>)?.size ?: 0))
-                        .plus(
-                                @Suppress("UNCHECKED_CAST")
-                                flatten(
-                                        jsonObject[Quest.childLabel] as? JsonArray<JsonObject>,
-                                        currentIndex.plus(index))
-                        )
+                listOf(
+                    Quest(
+                        jsonObject[Quest.nameLabel] as String,
+                        currentIndex.plus(index),
+                        jsonObject[Quest.expandLabel] as Boolean,
+                        isHidden(currentIndex),
+                        (jsonObject[Quest.childLabel] as? JsonArray<*>)?.size ?: 0))
+                    .plus(
+                        @Suppress("UNCHECKED_CAST")
+                        flatten(
+                        jsonObject[Quest.childLabel] as? JsonArray<JsonObject>,
+                        currentIndex.plus(index)))
             }?.flatten() ?: emptyList()
         }
 
@@ -58,6 +59,7 @@ class CustomListAdapter(
         (parentView as ListView).smoothScrollToPosition(position + max(0, count - countBefore))
     }
 
+    @SuppressLint("SetTextI18n")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val currentQuest = getItem(position)
 
@@ -71,8 +73,6 @@ class CustomListAdapter(
             indentSize * context.resources.displayMetrics.density * (currentQuest.index.size-1)
         container.setPadding(indexPadding.toInt(),
             container.paddingTop, container.paddingRight, container.paddingBottom)
-
-        val questView = container.findViewById(R.id.element_header_text) as TextView
 
         if(currentQuest.hidden) {
             container.visibility = View.GONE
@@ -92,7 +92,15 @@ class CustomListAdapter(
             expArrow.visibility = View.INVISIBLE
         }
 
+        val questView = container.findViewById(R.id.element_header_text) as TextView
         questView.text = currentQuest.name
+
+        val numChildrenView = container.findViewById(R.id.element_header_children) as TextView
+        if(currentQuest.children > 0) {
+            numChildrenView.text = "+${currentQuest.children}"
+        } else{
+            numChildrenView.text = ""
+        }
 
         QuestOptionsDialogFragment.setAddButton(
             this,

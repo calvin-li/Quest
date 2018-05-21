@@ -11,8 +11,12 @@
     <style name="ExpandableList">
         <item name="android:layout_margin">@dimen/standard_margins</item>
         <item name="android:padding">@dimen/standard_padding</item>
+
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
+
+        <item name="android:divider">@color/groovy</item>
+        <item name="android:dividerHeight">@dimen/custom_list_divider_height</item>
     </style>
 
     <style name="NotificationView">
@@ -51,6 +55,24 @@
 
         <item name="android:text">lorem ipsum</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="ChildLabel">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+
+        <item name="android:layout_margin">@dimen/standard_margins</item>
+        <item name="android:padding">@dimen/standard_padding</item>
+        <item name="android:gravity">start|top</item>
+        <item name="android:layout_weight">0</item>
+
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+
+        <item name="android:text">999</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/childLabel_text_size</item>
+        <item name="android:textColor">@color/groovy</item>
     </style>
 
     <style name="Button">

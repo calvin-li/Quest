@@ -14,9 +14,11 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import java.io.*
 import android.content.Intent
-import android.net.Uri
+import android.graphics.Color
 import android.support.v4.content.FileProvider
-import android.webkit.MimeTypeMap
+import android.graphics.drawable.GradientDrawable
+
+
 
 
 class MainActivity : AppCompatActivity() {
@@ -124,6 +126,15 @@ class MainActivity : AppCompatActivity() {
 
         questView = findViewById(R.id.top_view) as ListView
         questView.isSmoothScrollbarEnabled = true
+
+        val colors = intArrayOf(
+                Color.WHITE,
+                getColor(R.color.groovy),
+                getColor(R.color.groovy),
+                Color.WHITE)
+        questView.divider = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colors)
+        questView.dividerHeight = resources.getDimension(R.dimen.custom_list_divider_height).toInt()
+
         val adapter = CustomListAdapter(this)
         questView.adapter = adapter
         questView.onItemClickListener = adapter.onItemClickListener

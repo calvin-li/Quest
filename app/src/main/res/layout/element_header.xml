@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:id="@+id/element_header_container"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_margin="@dimen/standard_margins"
-              android:padding="@dimen/standard_padding"
-              android:paddingStart="@dimen/subquest_left_padding"
-              android:orientation="horizontal"
-              android:clickable="false"
-              android:focusable="false"
-              tools:ignore="RtlSymmetry,ContentDescription">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/element_header_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/standard_margins"
+    android:padding="@dimen/standard_padding"
+    android:paddingStart="@dimen/subquest_left_padding"
+    android:orientation="horizontal"
+    android:clickable="false"
+    android:focusable="false"
+    tools:ignore="RtlSymmetry,ContentDescription">
 
     <TextView
         android:id="@+id/element_header_arrow"
@@ -19,17 +19,11 @@
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         style="@style/QuestText"
-        android:id="@+id/element_header_text"
-        android:text="lorem ipsum"
-        android:textStyle="bold"
-        android:clickable="false"
-        android:focusable="false"
-        android:layout_weight="1"
-        android:layout_margin="@dimen/standard_margins"
-        android:padding="@dimen/standard_padding"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        tools:ignore="HardcodedText"/>
+        android:id="@+id/element_header_text"/>
+
+    <TextView
+        style="@style/ChildLabel"
+        android:id="@+id/element_header_children"/>
 
     <!-- Cannot use ImageButton here as it blocks click events to the rest of the ListView -->
     <ImageView
