@@ -122,13 +122,13 @@ class QuestOptionsDialogFragment : DialogFragment() {
         }
 
         internal fun createDialog(context: Context, view: EditText, title: String,
-                                  positiveAction: (DialogInterface, Int) -> Unit):
-                AlertDialog {
-            return AlertDialog.Builder(context).setTitle(title)
-                    .setView(view)
-                    .setPositiveButton("Confirm", positiveAction)
-                    .setNegativeButton("Cancel", { _, _ -> })
-                    .create()
+            positiveAction: (DialogInterface, Int) -> Unit): AlertDialog {
+            return AlertDialog.Builder(context, R.style.QuestDialogStyle)
+                .setTitle(title)
+                .setView(view)
+                .setPositiveButton("Confirm", positiveAction)
+                .setNegativeButton("Cancel", { _, _ -> })
+                .create()
         }
 
         internal fun getDialogView(context: Context): EditText {

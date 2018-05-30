@@ -107,4 +107,13 @@
         <item name="android:scaleX">@dimen/arrow_scale_x</item>
     </style>
 
+    <style name="QuestDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:colorAccent">@color/groovy_notification</item>
+    </style>
+
+    <style name="QuestTextBoxTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorControlActivated">@color/groovy_notification</item>
+    </style>
+
+
 </resources>
