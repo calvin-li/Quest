@@ -7,14 +7,14 @@
               android:orientation="vertical">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/notification_main_base"
-        android:orientation="horizontal"
-        style="@style/notification.wrapper">
+                  android:id="@+id/notification_main_base"
+                  android:orientation="horizontal"
+                  style="@style/notification.wrapper">
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
                   android:id="@+id/notification_main_quest"
-                  android:textColor="@android:color/black"
-                  style="@style/notification.text"/>
+                  android:text="lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
+                  style="@style/notification.text.main"/>
 
         <TextView
             android:id="@+id/notification_main_arrow"
@@ -22,5 +22,24 @@
             style="@style/notification.arrow"/>
 
     </LinearLayout>
+
+    <!--
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/notification_main_base"
+        android:orientation="horizontal"
+        style="@style/notification.wrapper">
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:id="@+id/notification_main_quest"
+                  android:text="lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
+                  style="@style/notification.text.main"/>
+
+        <TextView
+            android:id="@+id/notification_main_arrow"
+            android:text="@string/backward"
+            style="@style/notification.arrow"/>
+
+    </LinearLayout>
+    -->
 
 </LinearLayout>

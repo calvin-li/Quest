@@ -43,11 +43,11 @@
 
     <style name="QuestText" parent="QuestMainLine">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
 
         <item name="android:layout_margin">@dimen/standard_margins</item>
         <item name="android:padding">@dimen/standard_padding</item>
-        <item name="android:gravity">start|center_vertical</item>
+        <item name="android:gravity">center_vertical</item>
         <item name="android:layout_weight">1</item>
 
         <item name="android:clickable">false</item>
@@ -96,15 +96,28 @@
 
     <style name="notification.wrapper" parent="notification">
         <item name="android:layout_width">match_parent</item>
+        <item name="android:gravity">center_vertical</item>
     </style>
 
     <style name="notification.text" parent="notification">
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="notification.text.main" parent="notification.text">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:maxLines">2</item>
     </style>
 
     <style name="notification.arrow" parent="notification">
         <item name="android:layout_marginLeft">@dimen/arrow_gap</item>
         <item name="android:scaleY">@dimen/arrow_scale_y</item>
         <item name="android:scaleX">@dimen/arrow_scale_x</item>
+        <item name="android:gravity">start|top</item>
+        <item name="android:layout_weight">0</item>
     </style>
 
     <style name="QuestDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">

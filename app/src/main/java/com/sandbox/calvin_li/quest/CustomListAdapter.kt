@@ -2,6 +2,7 @@ package com.sandbox.calvin_li.quest
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

@@ -21,15 +21,13 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
     companion object {
         private var notificationMap: Int = 0
-        private val add_action = "add_action"
-        private val edit_action = "edit_action"
-        private val delete_action = "delete_action"
-        private val indexListFileName = "notificationIndexList.json"
-        private val subQuestsPerPage: Int = 5 // Number excluding paging buttons, two less than full size
+        private const val add_action = "add_action"
+        private const val edit_action = "edit_action"
+        private const val delete_action = "delete_action"
+        private const val indexListFileName = "notificationIndexList.json"
+        private const val subQuestsPerPage: Int = 5 // Number excluding paging buttons, two less than full size
 
-        private fun nextActionNumber(): Int {
-            return notificationMap++
-        }
+        private fun nextActionNumber(): Int = notificationMap++
 
         internal fun saveIndexList(context: Context, notificationIndexList: List<List<QuestState>>){
             val indexArray = JsonArray<JsonArray<QuestState>>()
@@ -210,7 +208,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 remoteView.addView(R.id.notification_base, subQuestRemote)
 
                 // Newline displays as space.
-                allSubQuests += subQuest + ".\n"
+                allSubQuests += "$subQuest.\n"
             }
 
             if(nextPageExists){
