@@ -1,73 +1,78 @@
 [{
-  "name": "Coming Soon",
+  "name": "Welcome to Quest! ",
+  "expanded": true
+}, {
+  "name": "Quest helps you keep your life on track by displaying your to-do items (quests) in your notifications",
+  "expanded": false
+}, {
+  "name": "Press the arrow on the left",
   "expanded": false,
   "child": [{
-    "name": "Fix Keyboard in notification buttons",
-    "expanded": false
-  }, {
-    "name": "Add button for new top level quest",
+    "name": "This is a subquest. For when you gotta do stuff before you can do other stuff",
     "expanded": false,
     "child": [{
-        "name": "Add ability to manipulate json directly",
-        "expanded": false
-    }]
-  }, {
-    "name": "Style fix",
-    "expanded": false,
-    "child": [{
-      "name": "Change color and logo",
-      "expanded": false
-    }, {
-      "name": "Add expansion indicator",
-      "expanded": false
-    }, {
-      "name": "Fix quest text",
+      "name": "Subquests",
       "expanded": false,
-        "child": [
-            {
-                "name": "Decide on font",
-                "expanded": false
-            }, {
-                "name": "Center text",
-                "expanded": false
+      "child": [{
+        "name": "Are",
+        "expanded": false,
+        "child": [{
+          "name": "Infinitely",
+          "expanded": false,
+          "child": [{
+            "name": "Nestable",
+            "expanded": true
+          }]
         }]
+      }]
     }]
+  }]
+}, {
+  "name": "You'll see three buttons on the right side",
+  "expanded": false,
+  "child": [{
+    "name": "The plus sign adds a subquest",
+    "expanded": true
   }, {
-      "name": "Maybe change color of view behind ListView?",
-      "expanded": false
-  }]
-},
-  {
-    "name": "Work",
+    "name": "The pen edits the current quest",
+    "expanded": true
+  }, {
+    "name": "The minus deletes the current quest and all subquests",
+    "expanded": true,
+    "child": []
+  }, {
+    "name": "The big plus button on top adds a new top-level quest",
+    "expanded": true,
+    "child": []
+  }, {
+    "name": "Finally, the three dots on the top right open a menu",
     "expanded": false,
     "child": [{
-      "name": "Add deserialization runner test",
+      "name": "The menu lets you open your quests as a JSON file using your favorite editor",
       "expanded": true
     }, {
-      "name": "Sovereign deployments",
+      "name": "Saving that file automatically updates the quest display here",
       "expanded": true
     }, {
-      "name": "Runner EV2 deployment",
+      "name": "This is useful for larger changes (eg reordering) or for transferring quests",
       "expanded": true
-    }, {
-      "name": "PIR",
-      "expanded": false
-    }, {
-      "name": "Post Event Survey",
-      "expanded": false
-    }]
-  },
-  {
-    "name": "MacBook",
-    "expanded": false,
-    "child": [{
-      "name": "Hibernation",
-      "expanded": false
-    }, {
-      "name": "Window buttons",
-      "expanded": false
-    }, {
-      "name": "Adjust sensitivities",
-      "expanded": false
     }]
   }]
+}, {
+  "name": "You should see a new notification at the top bar. It looks kinda like a Q",
+  "expanded": false,
+  "child": [{
+    "name": "You should see your quests displayed as notifications",
+    "expanded": true
+  }, {
+    "name": "You can do everything you do here through the notifications, except creating new quests",
+    "expanded": true
+  }]
+}, {
+  "name": "Hope you enjoy! ",
+  "expanded": false,
+  "child": [{
+    "name": "This app is open. Check it out, along with my other protects, on my GitHub",
+    "expanded": true
+  }]
+}]
