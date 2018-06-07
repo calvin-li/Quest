@@ -2,7 +2,6 @@ package com.sandbox.calvin_li.quest
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -81,7 +80,7 @@ class CustomListAdapter(
             container.visibility = View.VISIBLE
         }
 
-        val expArrow = container.findViewById(R.id.element_header_arrow)
+        val expArrow: TextView = container.findViewById(R.id.element_header_arrow)
         if(currentQuest.children > 0) {
             expArrow.visibility = View.VISIBLE
             if (currentQuest.expanded) {
