@@ -26,6 +26,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
         private const val delete_action = "delete_action"
         private const val indexListFileName = "notificationIndexList.json"
         private const val subQuestsPerPage: Int = 5 // Number excluding paging buttons, two less than full size
+        internal const val channelId = "Quests"
 
         private fun nextActionNumber(): Int = notificationMap++
 
@@ -48,7 +49,8 @@ class NotificationActionReceiver : BroadcastReceiver() {
             @Suppress("UNCHECKED_CAST")
             val indexArray = Parser().parse(indexStream) as JsonArray<JsonArray<JsonObject>>
             indexStream.close()
-            return indexArray.map { it.toList().map { QuestState.fromJsonObject(it) } }.toMutableList()
+            return indexArray.map { i -> i.toList().map { j -> QuestState.fromJsonObject(j) } }
+                .toMutableList()
         }
 
         private fun setIntentExtras(questIntent: Intent, indices: List<QuestState>) {
@@ -123,7 +125,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
         }
 
         internal fun createOverallNotification(context: Context) {
-            val groupNotification: Notification.Builder = Notification.Builder(context)
+            val groupNotification: Notification.Builder = Notification.Builder(context, channelId)
                 .setOngoing(true)
                 .setShowWhen(false)
                 .setSmallIcon(R.mipmap.quest_notification)
@@ -222,7 +224,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
             val editAction = createButtonAction(context, buttonPendingIntent, edit_action, "edit", questRaw)
             val addAction = createButtonAction(context, buttonPendingIntent, add_action, "add")
 
-            val notBuild: Notification.Builder = Notification.Builder(context)
+            val notBuild: Notification.Builder = Notification.Builder(context, channelId)
                 .setOngoing(true)
                 .setShowWhen(false)
                 .setSmallIcon(R.mipmap.quest_notification)

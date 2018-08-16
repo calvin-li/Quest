@@ -1,5 +1,7 @@
 package com.sandbox.calvin_li.quest
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
 import android.os.Environment
@@ -71,7 +73,7 @@ class MainActivity : AppCompatActivity() {
             val editView = QuestOptionsDialogFragment.getDialogView(this)
             editView.hint = "Add new subquest here"
 
-            val dialog = QuestOptionsDialogFragment.createDialog(this, editView, "Add subquest", { _, _ ->
+            val dialog = QuestOptionsDialogFragment.createDialog(this, editView, "Add subquest") { _, _ ->
                 loadQuestJson(this)
 
                 val newObject = JsonObject()
@@ -81,7 +83,7 @@ class MainActivity : AppCompatActivity() {
                 questJson.add(newObject)
                 saveJson(this)
                 this.onResume()
-            })
+            }
 
             dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED)
             dialog.show()
@@ -106,6 +108,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
+            NotificationChannel(
+                NotificationActionReceiver.channelId,
+                NotificationActionReceiver.channelId,
+                NotificationManager.IMPORTANCE_MIN))
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
     }
@@ -121,7 +129,7 @@ class MainActivity : AppCompatActivity() {
         NotificationActionReceiver.saveIndexList(this, notificationIndexList)
         NotificationActionReceiver.refreshNotifications(this)
 
-        questView = findViewById(R.id.top_view) as ListView
+        questView = findViewById<ListView>(R.id.top_view)
         questView.isSmoothScrollbarEnabled = true
 
         val colors = intArrayOf(
