@@ -16,19 +16,17 @@ import com.beust.klaxon.Parser
 import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStream
+import java.util.*
 
 class NotificationActionReceiver : BroadcastReceiver() {
 
     companion object {
-        private var notificationMap: Int = 0
         private const val add_action = "add_action"
         private const val edit_action = "edit_action"
         private const val delete_action = "delete_action"
         private const val indexListFileName = "notificationIndexList.json"
         private const val subQuestsPerPage: Int = 5 // Number excluding paging buttons, two less than full size
         internal const val channelId = "Quests"
-
-        private fun nextActionNumber(): Int = notificationMap++
 
         internal fun saveIndexList(context: Context, notificationIndexList: List<List<QuestState>>){
             val indexArray = JsonArray<JsonArray<QuestState>>()
@@ -54,21 +52,22 @@ class NotificationActionReceiver : BroadcastReceiver() {
         }
 
         private fun setIntentExtras(questIntent: Intent, indices: List<QuestState>) {
+            questIntent.action = Random().nextLong().toString()
             questIntent.putExtra("indices", indices.map { it.index }.toIntArray())
             questIntent.putExtra("offsets", indices.map { it.offset }.toIntArray())
         }
 
-        private fun navigationPendingIntent(context: Context, indices: List<QuestState>, actionNumber: Int):
+        private fun navigationPendingIntent(context: Context, indices: List<QuestState>):
                 PendingIntent {
-            val questIntent = Intent("notification_action$actionNumber")
+            val questIntent = Intent(context, NotificationActionReceiver::class.java)
             setIntentExtras(questIntent, indices)
             questIntent.putExtra("isNav", true)
             return PendingIntent.getBroadcast(context, 0, questIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
-        private fun buttonPendingIntent(context: Context, indices: List<QuestState>, actionNumber: Int)
+        private fun buttonPendingIntent(context: Context, indices: List<QuestState>)
             :PendingIntent {
-            val questIntent = Intent("notification_action$actionNumber")
+            val questIntent = Intent(context, NotificationActionReceiver::class.java)
             setIntentExtras(questIntent, indices)
             return PendingIntent.getBroadcast(context, 0, questIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
@@ -99,14 +98,12 @@ class NotificationActionReceiver : BroadcastReceiver() {
         }
 
         internal fun refreshNotifications(context: Context) {
-            notificationMap = 0
             MainActivity.loadQuestJson(context)
             val indexList = getIndexList(context)
             // notifications appear in reverse order of creation
             MainActivity.questJson.reversed().forEachIndexed{
                 i, _ -> createQuestNotification(context, indexList.reversed()[i])
             }
-            notificationMap = 0
         }
 
         internal fun removeAndShiftNotification(context: Context, index: Int) {
@@ -177,7 +174,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
             if (indices.size > 1) {
                 val questPendingIntent = navigationPendingIntent(
-                    context, indices.dropLast(1), nextActionNumber())
+                    context, indices.dropLast(1))
                 remoteView.setOnClickPendingIntent(R.id.notification_main_base, questPendingIntent)
                 remoteView.setTextViewText(R.id.notification_main_arrow, context.resources.getString(R.string.backward))
             } else {
@@ -196,7 +193,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 subQuestRemote.setTextViewText(R.id.notification_subquest_text, subQuest)
 
                 val subPendingIntent = navigationPendingIntent(
-                        context, indices.plus(QuestState(index + offset,0)), nextActionNumber())
+                    context, indices.plus(QuestState(index + offset,0)))
                 subQuestRemote.setOnClickPendingIntent(R.id.notification_subquest_base, subPendingIntent)
 
                 @Suppress("UNCHECKED_CAST")
@@ -219,7 +216,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
             }
 
             val buttonPendingIntent =
-                buttonPendingIntent(context, indices, nextActionNumber())
+                buttonPendingIntent(context, indices)
             val deleteAction = createButtonAction(context, buttonPendingIntent, delete_action, "delete")
             val editAction = createButtonAction(context, buttonPendingIntent, edit_action, "edit", questRaw)
             val addAction = createButtonAction(context, buttonPendingIntent, add_action, "add")
@@ -254,7 +251,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 }
             }
             val subPendingIntent = navigationPendingIntent(
-                    context, adjustedIndices, nextActionNumber())
+                context, adjustedIndices)
             subQuestRemote.setOnClickPendingIntent(R.id.notification_subquest_base, subPendingIntent)
             remoteView.addView(R.id.notification_base, subQuestRemote)
             val arrow = if(previous){R.string.up}else{R.string.down}
