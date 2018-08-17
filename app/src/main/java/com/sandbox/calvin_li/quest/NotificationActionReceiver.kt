@@ -275,6 +275,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
         else{
             val remoteInputBundle: Bundle? = RemoteInput.getResultsFromIntent(intent)
             if (remoteInputBundle == null) {
+                // assume delete
                 QuestOptionsDialogFragment.deleteQuest(indices, context)
             } else {
                 var input: CharSequence? = remoteInputBundle.getCharSequence(add_action)

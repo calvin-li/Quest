@@ -9,8 +9,8 @@ class QuestState(
         val offset: Int
 ) {
     internal companion object {
-        private val indexLabel = "index"
-        private val offsetLabel = "offset"
+        private const val indexLabel = "index"
+        private const val offsetLabel = "offset"
 
         fun fromJsonObject(json: JsonObject): QuestState =
             QuestState(json[indexLabel] as Int, json[offsetLabel] as Int)
