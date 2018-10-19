@@ -129,7 +129,7 @@ class MainActivity : AppCompatActivity() {
         NotificationActionReceiver.saveIndexList(this, notificationIndexList)
         NotificationActionReceiver.refreshNotifications(this)
 
-        questView = findViewById<ListView>(R.id.top_view)
+        questView = findViewById(R.id.top_view)
         questView.isSmoothScrollbarEnabled = true
 
         val colors = intArrayOf(

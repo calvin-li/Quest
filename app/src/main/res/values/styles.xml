@@ -100,6 +100,7 @@
     </style>
 
     <style name="notification.text" parent="notification">
+        <item name="android:textColor">@android:color/black</item>
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
         <item name="android:scrollHorizontally">true</item>
@@ -110,6 +111,7 @@
     <style name="notification.text.main" parent="notification.text">
         <item name="android:textColor">@android:color/black</item>
         <item name="android:maxLines">2</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="notification.arrow" parent="notification">
