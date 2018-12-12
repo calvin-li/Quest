@@ -105,9 +105,8 @@ class CustomListAdapter(
         QuestOptionsDialogFragment.setAddButton(
             this,
             container.findViewById(R.id.element_header_add),
-            currentQuest.index,
-            {(parent as ListView).smoothScrollToPosition(getPosition(currentQuest.name))}
-        )
+            currentQuest.index
+        ) {(parent as ListView).smoothScrollToPosition(getPosition(currentQuest.name))}
 
         QuestOptionsDialogFragment.setEditButton(
                 this, container.findViewById(R.id.element_header_edit), questView.text, currentQuest.index)
@@ -136,5 +135,5 @@ class CustomListAdapter(
 
     override fun getPosition(item: Quest?): Int = visibleQuests.indexOfFirst {it == item}
 
-    fun getPosition(name: String): Int = visibleQuests.indexOfFirst {it.name == name}
+    private fun getPosition(name: String): Int = visibleQuests.indexOfFirst {it.name == name}
 }

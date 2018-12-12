@@ -1,5 +1,6 @@
 package com.sandbox.calvin_li.quest
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
 import android.app.DialogFragment
@@ -22,12 +23,12 @@ class QuestOptionsDialogFragment : DialogFragment() {
                 val editView = getDialogView(adapter.context)
                 editView.hint = addHint
 
-                val dialog = createDialog(adapter.context, editView, "Add subquest", { _, _ ->
+                val dialog = createDialog(adapter.context, editView, "Add subquest") { _, _ ->
                     val newQuest = editView.text.toString()
                     addSubQuest(index, newQuest, adapter.context)
                     adapter.notifyDataSetChanged()
                     scroll()
-                })
+                }
 
                 editView.setOnEditorActionListener { _, _, _ ->
                     dialog.getButton(DialogInterface.BUTTON_POSITIVE).callOnClick()
@@ -44,10 +45,10 @@ class QuestOptionsDialogFragment : DialogFragment() {
                 val editView = getDialogView(adapter.context)
                 editView.append(currentQuest)
 
-                val dialog = createDialog(adapter.context, editView, "Edit quest", { _, _ ->
+                val dialog = createDialog(adapter.context, editView, "Edit quest") { _, _ ->
                     editQuest(index, editView.text.toString(), adapter.context)
                     adapter.notifyDataSetChanged()
-                })
+                }
 
                 editView.setOnEditorActionListener { _, _, _ ->
                     dialog.getButton(DialogInterface.BUTTON_POSITIVE).callOnClick()
@@ -127,10 +128,11 @@ class QuestOptionsDialogFragment : DialogFragment() {
                 .setTitle(title)
                 .setView(view)
                 .setPositiveButton("Confirm", positiveAction)
-                .setNegativeButton("Cancel", { _, _ -> })
+                .setNegativeButton("Cancel") { _, _ -> }
                 .create()
         }
 
+        @SuppressLint("InflateParams")
         internal fun getDialogView(context: Context): EditText {
             val layoutInflater: LayoutInflater = context.getSystemService(Context
                     .LAYOUT_INFLATER_SERVICE) as LayoutInflater
