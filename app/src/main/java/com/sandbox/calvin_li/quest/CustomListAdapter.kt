@@ -106,7 +106,7 @@ class CustomListAdapter(
             this,
             container.findViewById(R.id.element_header_add),
             currentQuest.index,
-            {i -> (parent as ListView).smoothScrollToPosition(i)}
+            {(parent as ListView).smoothScrollToPosition(getPosition(currentQuest.name))}
         )
 
         QuestOptionsDialogFragment.setEditButton(

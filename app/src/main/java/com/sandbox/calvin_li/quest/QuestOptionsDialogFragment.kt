@@ -17,7 +17,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
     companion object {
         const val addHint = "Add new subquest here"
         fun setAddButton(
-            adapter: CustomListAdapter, clickable: View, index: List<Int>, scroll: (Int) -> Unit) {
+            adapter: CustomListAdapter, clickable: View, index: List<Int>, scroll: () -> Unit) {
             clickable.setOnClickListener {
                 val editView = getDialogView(adapter.context)
                 editView.hint = addHint
@@ -26,7 +26,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
                     val newQuest = editView.text.toString()
                     addSubQuest(index, newQuest, adapter.context)
                     adapter.notifyDataSetChanged()
-                    scroll(adapter.getPosition(newQuest))
+                    scroll()
                 })
 
                 editView.setOnEditorActionListener { _, _, _ ->
