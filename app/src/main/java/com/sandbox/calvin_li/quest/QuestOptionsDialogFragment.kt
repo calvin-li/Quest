@@ -3,7 +3,7 @@ package com.sandbox.calvin_li.quest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
-import android.app.DialogFragment
+import android.support.v4.app.DialogFragment
 import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
@@ -34,7 +34,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
                     dialog.getButton(DialogInterface.BUTTON_POSITIVE).callOnClick()
                 }
 
-                dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED)
+                dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED)
                 dialog.show()
             }
         }
@@ -54,7 +54,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
                     dialog.getButton(DialogInterface.BUTTON_POSITIVE).callOnClick()
                 }
 
-                dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED)
+                dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED)
                 dialog.show()
             }
         }
