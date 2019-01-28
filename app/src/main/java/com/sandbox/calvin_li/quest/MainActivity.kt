@@ -108,11 +108,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val questsChannel = NotificationChannel(
+            NotificationActionReceiver.channelId,
+            NotificationActionReceiver.channelId,
+            NotificationManager.IMPORTANCE_LOW)
+        questsChannel.enableLights(false)
+        questsChannel.enableVibration(false)
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
-            NotificationChannel(
-                NotificationActionReceiver.channelId,
-                NotificationActionReceiver.channelId,
-                NotificationManager.IMPORTANCE_MIN))
+            questsChannel)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
