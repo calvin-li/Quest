@@ -85,8 +85,9 @@ class MainActivity : AppCompatActivity() {
                 this.onResume()
             }
 
-            dialog.window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED)
+            dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED)
             dialog.show()
+            editView.requestFocus()
         }
         else if(item.itemId == R.id.action_json){
             saveJson(this)

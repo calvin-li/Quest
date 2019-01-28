@@ -36,6 +36,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
 
                 dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED)
                 dialog.show()
+                editView.requestFocus()
             }
         }
 
@@ -56,6 +57,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
 
                 dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED)
                 dialog.show()
+                editView.requestFocus()
             }
         }
 
