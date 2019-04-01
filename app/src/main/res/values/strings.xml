@@ -8,4 +8,5 @@
     <string name="down">⤵</string>
     <string name="up">⤴</string>
     <string name="show_json">Open as JSON file</string>
+    <string name="dark_toggle">Toggle Dark Mode</string>
 </resources>

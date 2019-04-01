@@ -16,6 +16,7 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import java.io.*
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.Color
 import android.support.v4.content.FileProvider
 import android.graphics.drawable.GradientDrawable
@@ -69,40 +70,51 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        if(item.itemId == R.id.action_add){
-            val editView = QuestOptionsDialogFragment.getDialogView(this)
-            editView.hint = "Add new subquest here"
+        when(item.itemId) {
+            R.id.action_add -> {
+                val editView = QuestOptionsDialogFragment.getDialogView(this)
+                editView.hint = "Add new subquest here"
 
-            val dialog = QuestOptionsDialogFragment.createDialog(this, editView, "Add subquest") { _, _ ->
-                loadQuestJson(this)
+                val dialog = QuestOptionsDialogFragment.createDialog(this, editView, "Add subquest") { _, _ ->
+                    loadQuestJson(this)
 
-                val newObject = JsonObject()
-                newObject[Quest.nameLabel] = editView.text.toString()
-                newObject[Quest.expandLabel] = true
+                    val newObject = JsonObject()
+                    newObject[Quest.nameLabel] = editView.text.toString()
+                    newObject[Quest.expandLabel] = true
 
-                questJson.add(newObject)
-                saveJson(this)
-                this.onResume()
+                    questJson.add(newObject)
+                    saveJson(this)
+                    this.onResume()
+                }
+
+                dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED)
+                dialog.show()
+                editView.requestFocus()
             }
+            R.id.action_json -> {
+                saveJson(this)
+                val jsonFile = File(this.getExternalFilesDir(null), questFileName)
 
-            dialog.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_MODE_CHANGED)
-            dialog.show()
-            editView.requestFocus()
-        }
-        else if(item.itemId == R.id.action_json){
-            saveJson(this)
-            val jsonFile = File(this.getExternalFilesDir(null), questFileName)
+                val jsonUri = FileProvider.getUriForFile(
+                        this,
+                        BuildConfig.APPLICATION_ID + ".provider",
+                        jsonFile)
 
-            val jsonUri = FileProvider.getUriForFile(
-                    this,
-                    BuildConfig.APPLICATION_ID + ".provider",
-                    jsonFile)
-
-            val jsonIntent = Intent(Intent.ACTION_VIEW)
-            jsonIntent.setDataAndType(jsonUri, "text/plain")
-            jsonIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            jsonIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            startActivity(Intent.createChooser(jsonIntent, "Open with: "))
+                val jsonIntent = Intent(Intent.ACTION_VIEW)
+                jsonIntent.setDataAndType(jsonUri, "text/plain")
+                jsonIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                jsonIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                startActivity(Intent.createChooser(jsonIntent, "Open with: "))
+            }
+            R.id.action_dark_toggle -> {
+                if(appTheme == R.style.AppThemeLight){
+                    appTheme = R.style.AppThemeDark
+                }
+                else if (appTheme == R.style.AppThemeDark){
+                    appTheme = R.style.AppThemeLight
+                }
+                recreate()
+            }
         }
 
         return super.onOptionsItemSelected(item)
@@ -147,5 +159,13 @@ class MainActivity : AppCompatActivity() {
         val adapter = CustomListAdapter(this)
         questView.adapter = adapter
         questView.onItemClickListener = adapter.onItemClickListener
+    }
+
+    override fun getTheme(): Resources.Theme {
+        val theme = super.getTheme()
+        val appTheme = getPreferences()
+        theme.applyStyle(appTheme, true)
+        return theme
+
     }
 }

@@ -11,5 +11,9 @@
         android:id="@+id/action_json"
         android:title="@string/show_json"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/action_dark_toggle"
+        android:title="@string/dark_toggle"
+        app:showAsAction="never"/>
 
 </menu>

@@ -6,7 +6,9 @@ android {
         release {
             keyAlias 'key0'
             keyPassword '123456'
-            storeFile file('C:/Users/Calvin-PC/Dropbox/Documents/Quest key.jks')
+            // Switch locally between Mac OS and windows
+            // storeFile file('C:/Users/Calvin-PC/Dropbox/Documents/Quest key.jks')
+            storeFile file('/Users/calvinli/Dropbox/Documents/Quest key.jks')
             storePassword '123456'
         }
     }
@@ -41,7 +43,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation group: 'commons-io', name: 'commons-io', version: '2.5'
-    implementation 'com.beust:klaxon:0.30'
+    implementation 'com.beust:klaxon:3.0.1'
     implementation 'io.github.jupf.staticlog:staticlog:2.1.9'
 }
 repositories {
