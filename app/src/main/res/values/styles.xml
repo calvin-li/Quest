@@ -1,6 +1,8 @@
 <resources>
 
     <!-- Base application theme. -->
+    <style name="AppThemeDefault" parent="AppThemeLight" />
+
     <style name="AppThemeLight" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/groovy</item>

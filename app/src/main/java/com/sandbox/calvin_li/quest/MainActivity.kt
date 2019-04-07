@@ -26,6 +26,11 @@ class MainActivity : AppCompatActivity() {
 
     internal companion object {
         private const val questFileName: String = "quests.json"
+
+        private const val appThemeLabel: String = "appTheme"
+        private const val defaultTheme: Int = R.style.AppThemeLight
+        private var currentTheme: Int = 0
+
         lateinit var questJson: JsonArray<JsonObject>
 
         fun saveJson(context: Context) {
@@ -107,11 +112,12 @@ class MainActivity : AppCompatActivity() {
                 startActivity(Intent.createChooser(jsonIntent, "Open with: "))
             }
             R.id.action_dark_toggle -> {
-                if(appTheme == R.style.AppThemeLight){
-                    appTheme = R.style.AppThemeDark
-                }
-                else if (appTheme == R.style.AppThemeDark){
-                    appTheme = R.style.AppThemeLight
+                val sharedPrefs = getPreferences(Context.MODE_PRIVATE)
+                val lightDarkThemes = listOf(R.style.AppThemeLight, R.style.AppThemeDark)
+                with (sharedPrefs.edit()) {
+                    currentTheme = lightDarkThemes.minus(getAppTheme()).first()
+                    putInt(appThemeLabel, currentTheme)
+                    apply()
                 }
                 recreate()
             }
@@ -163,9 +169,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun getTheme(): Resources.Theme {
         val theme = super.getTheme()
-        val appTheme = getPreferences()
+        val appTheme = getAppTheme()
         theme.applyStyle(appTheme, true)
         return theme
 
+    }
+
+    private fun getAppTheme():Int {
+        if(currentTheme == 0){
+            currentTheme = getPreferences(Context.MODE_PRIVATE).getInt(appThemeLabel, defaultTheme)
+        }
+        return currentTheme
     }
 }
