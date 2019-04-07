@@ -42,8 +42,7 @@ class CustomListAdapter(
                 .any { !(MainActivity.getNestedArray(it)[Quest.expandLabel] as Boolean) }
     }
 
-    private var visibleQuests = quests.filter { !it.hidden }
-        get() = quests.filter { !it.hidden }
+    private fun visibleQuests() = quests.filter { !it.hidden }
 
     internal val onItemClickListener = AdapterView.OnItemClickListener { parentView: AdapterView<*>?, _:
     View?, position: Int, _: Long ->
@@ -123,9 +122,9 @@ class CustomListAdapter(
         super.notifyDataSetChanged()
     }
 
-    override fun getCount(): Int = visibleQuests.count()
+    override fun getCount(): Int = visibleQuests().count()
 
-    override fun getItem(position: Int): Quest = visibleQuests[position]
+    override fun getItem(position: Int): Quest = visibleQuests()[position]
 
     override fun getItemId(position: Int): Long {
         val currentQuest = getItem(position)
@@ -133,7 +132,7 @@ class CustomListAdapter(
         //implicit cast right operand
     }
 
-    override fun getPosition(item: Quest?): Int = visibleQuests.indexOfFirst {it == item}
+    override fun getPosition(item: Quest?): Int = visibleQuests().indexOfFirst {it == item}
 
-    private fun getPosition(name: String): Int = visibleQuests.indexOfFirst {it.name == name}
+    private fun getPosition(name: String): Int = visibleQuests().indexOfFirst {it.name == name}
 }
