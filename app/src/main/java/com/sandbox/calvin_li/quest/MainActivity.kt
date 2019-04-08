@@ -16,20 +16,19 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import java.io.*
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.Color
 import android.support.v4.content.FileProvider
 import android.graphics.drawable.GradientDrawable
+import android.support.v7.app.AppCompatDelegate
 
 class MainActivity : AppCompatActivity() {
     private lateinit var questView: ListView
+    private var darkMode: Boolean = false
 
     internal companion object {
         private const val questFileName: String = "quests.json"
 
         private const val appThemeLabel: String = "appTheme"
-        private const val defaultTheme: Int = R.style.AppThemeLight
-        private var currentTheme: Int = 0
 
         lateinit var questJson: JsonArray<JsonObject>
 
@@ -74,13 +73,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
         when(item.itemId) {
             R.id.action_add -> {
                 val editView = QuestOptionsDialogFragment.getDialogView(this)
                 editView.hint = "Add new subquest here"
 
-                val dialog = QuestOptionsDialogFragment.createDialog(this, editView, "Add subquest") { _, _ ->
+                val dialog = QuestOptionsDialogFragment.createDialog(this, editView, "Add subquest")
+                { _, _ ->
                     loadQuestJson(this)
 
                     val newObject = JsonObject()
@@ -113,10 +112,10 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.action_dark_toggle -> {
                 val sharedPrefs = getPreferences(Context.MODE_PRIVATE)
-                val lightDarkThemes = listOf(R.style.AppThemeLight, R.style.AppThemeDark)
                 with (sharedPrefs.edit()) {
-                    currentTheme = lightDarkThemes.minus(getAppTheme()).first()
-                    putInt(appThemeLabel, currentTheme)
+                    val usingDark = sharedPrefs.getBoolean(appThemeLabel, false)
+                    darkMode = !usingDark
+                    putBoolean(appThemeLabel, darkMode)
                     apply()
                 }
                 recreate()
@@ -127,14 +126,22 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        darkMode =
+                getPreferences(Context.MODE_PRIVATE).getBoolean(appThemeLabel, false)
+        if(darkMode){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        } else{
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+
         val questsChannel = NotificationChannel(
             NotificationActionReceiver.channelId,
             NotificationActionReceiver.channelId,
             NotificationManager.IMPORTANCE_LOW)
         questsChannel.enableLights(false)
         questsChannel.enableVibration(false)
-        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
-            questsChannel)
+        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+                .createNotificationChannel(questsChannel)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
@@ -154,31 +161,17 @@ class MainActivity : AppCompatActivity() {
         questView = findViewById(R.id.top_view)
         questView.isSmoothScrollbarEnabled = true
 
+        val bgColor = if (darkMode) R.color.primaryDark else Color.WHITE
         val colors = intArrayOf(
-                Color.WHITE,
+                bgColor,
                 getColor(R.color.groovy),
                 getColor(R.color.groovy),
-                Color.WHITE)
+                bgColor)
         questView.divider = GradientDrawable(GradientDrawable.Orientation.LEFT_RIGHT, colors)
         questView.dividerHeight = resources.getDimension(R.dimen.custom_list_divider_height).toInt()
 
         val adapter = CustomListAdapter(this)
         questView.adapter = adapter
         questView.onItemClickListener = adapter.onItemClickListener
-    }
-
-    override fun getTheme(): Resources.Theme {
-        val theme = super.getTheme()
-        val appTheme = getAppTheme()
-        theme.applyStyle(appTheme, true)
-        return theme
-
-    }
-
-    private fun getAppTheme():Int {
-        if(currentTheme == 0){
-            currentTheme = getPreferences(Context.MODE_PRIVATE).getInt(appThemeLabel, defaultTheme)
-        }
-        return currentTheme
     }
 }

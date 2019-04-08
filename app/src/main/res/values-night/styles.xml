@@ -1,0 +1,14 @@
+<resources>
+
+    <style name="ExpandableList" parent="ExpandableListBase">
+        <item name="android:background">@color/primaryDark</item>
+    </style>
+
+    <style name="QuestDialogStyle" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:background">@color/primaryDark</item>
+        <item name="android:colorAccent">@color/groovy_notification</item>
+        <item name="android:textColor">@color/groovy</item>
+    </style>
+
+
+</resources>

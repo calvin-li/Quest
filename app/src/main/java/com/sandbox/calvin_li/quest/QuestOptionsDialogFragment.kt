@@ -6,6 +6,7 @@ import android.app.Dialog
 import android.support.v4.app.DialogFragment
 import android.content.Context
 import android.content.DialogInterface
+import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -124,11 +125,16 @@ class QuestOptionsDialogFragment : DialogFragment() {
             NotificationActionReceiver.refreshNotifications(context)
         }
 
-        internal fun createDialog(context: Context, view: EditText, title: String,
-            positiveAction: (DialogInterface, Int) -> Unit): AlertDialog {
+        internal fun createDialog(context: Context, editView: EditText, title: String,
+                                  positiveAction: (DialogInterface, Int) -> Unit): AlertDialog {
+            val currentNightMode: Int =
+                    context.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)
+            if(currentNightMode == Configuration.UI_MODE_NIGHT_YES) {
+                editView.setTextColor(context.resources.getColor(R.color.light_text, null))
+            }
             return AlertDialog.Builder(context, R.style.QuestDialogStyle)
                 .setTitle(title)
-                .setView(view)
+                .setView(editView)
                 .setPositiveButton("Confirm", positiveAction)
                 .setNegativeButton("Cancel") { _, _ -> }
                 .create()

@@ -1,24 +1,12 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppThemeDefault" parent="AppThemeLight" />
-
-    <style name="AppThemeLight" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppThemeDefault" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/groovy</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="AppThemeDark" parent="Theme.AppCompat">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/groovy</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:background">@color/colorPrimaryDark</item>
-    </style>
-
-    <style name="ExpandableList">
+    <style name="ExpandableListBase">
         <item name="android:layout_margin">@dimen/standard_margins</item>
         <item name="android:padding">@dimen/standard_padding</item>
 
@@ -28,6 +16,8 @@
         <item name="android:divider">@color/groovy</item>
         <item name="android:dividerHeight">@dimen/custom_list_divider_height</item>
     </style>
+
+    <style name="ExpandableList" parent="ExpandableListBase" />
 
     <style name="NotificationView">
     </style>
@@ -130,9 +120,12 @@
         <item name="android:layout_weight">0</item>
     </style>
 
-    <style name="QuestDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <style name="QuestDialogStyleBase" parent="Theme.AppCompat.DayNight.Dialog.Alert">
         <item name="android:colorAccent">@color/groovy_notification</item>
     </style>
+
+    <style name="QuestDialogStyle" parent="QuestDialogStyleBase" />
+
 
     <style name="QuestTextBoxTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorControlActivated">@color/groovy_notification</item>
