@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- hint is defaulted to add quest here to get italicizing to work. Replace as appropriate -->
 <EditText xmlns:android="http://schemas.android.com/apk/res/android"
           android:theme="@style/QuestTextBoxTheme"
           android:id="@+id/element_dialog"
+          android:hint="@string/quest_add_hint"
+          android:importantForAutofill="no"
 
           android:shadowColor="@color/groovy"
           android:textColorHighlight="@color/groovy"

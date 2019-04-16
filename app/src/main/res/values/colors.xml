@@ -3,8 +3,10 @@
     <color name="groovy">#ff7f00</color>
     <color name="groovy_notification">#ff6f00</color>
     <color name="groovy_dark">#dd512a</color>
-    <color name="light_text">#bbb</color>
-    <color name="primaryDark">#212121</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="buttonBackground">#01000000</color>
+    <color name="light_text">#ccc</color>
+    <color name="light_hint_text">#666</color>
+    <color name="primary_dark">#212121</color>
+    <color name="secondary_dark">#111111</color>
+    <color name="color_accent">#FF4081</color>
+    <color name="button_background">#01000000</color>
 </resources>

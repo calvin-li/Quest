@@ -1,10 +1,12 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppThemeDefault" parent="Theme.AppCompat.DayNight.DarkActionBar">
+    <style name="AppThemeDefaultBase" parent="Theme.AppCompat.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/groovy</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/color_accent</item>
     </style>
+
+    <style name="AppThemeDefault" parent="AppThemeDefaultBase" />
 
     <style name="ExpandableListBase">
         <item name="android:layout_margin">@dimen/standard_margins</item>
@@ -19,11 +21,9 @@
 
     <style name="ExpandableList" parent="ExpandableListBase" />
 
-    <style name="NotificationView">
-    </style>
+    <style name="NotificationView"/>
 
-    <style name="QuestMainLine">
-    </style>
+    <style name="QuestMainLine"/>
 
     <style name="ExpArrow" parent="QuestMainLine">
         <item name="android:layout_width">wrap_content</item>
@@ -86,7 +86,7 @@
         <item name="android:focusable">false</item>
 
         <item name="android:tint">@color/groovy</item>
-        <item name="android:backgroundTint">@color/buttonBackground</item>
+        <item name="android:backgroundTint">@color/button_background</item>
     </style>
 
     <style name="notification">
@@ -130,6 +130,5 @@
     <style name="QuestTextBoxTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorControlActivated">@color/groovy_notification</item>
     </style>
-
 
 </resources>

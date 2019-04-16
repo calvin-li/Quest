@@ -16,6 +16,7 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import java.io.*
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.support.v4.content.FileProvider
 import android.graphics.drawable.GradientDrawable
@@ -23,12 +24,12 @@ import android.support.v7.app.AppCompatDelegate
 
 class MainActivity : AppCompatActivity() {
     private lateinit var questView: ListView
-    private var darkMode: Boolean = false
+    private var nightMode: Int = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 
     internal companion object {
         private const val questFileName: String = "quests.json"
 
-        private const val appThemeLabel: String = "appTheme"
+        private const val dayNightMode: String = "dayNightMode"
 
         lateinit var questJson: JsonArray<JsonObject>
 
@@ -55,6 +56,11 @@ class MainActivity : AppCompatActivity() {
             questJson = Parser().parse(questStream) as JsonArray<JsonObject>
             questStream.close()
         }
+
+        internal fun inNightMode(context: Context) =
+            context.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK) ==
+                Configuration.UI_MODE_NIGHT_YES
+
 
         fun getNestedArray(indices: List<Int>): JsonObject {
             var nestedObject: JsonObject = questJson[indices[0]]
@@ -110,15 +116,17 @@ class MainActivity : AppCompatActivity() {
                 jsonIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
                 startActivity(Intent.createChooser(jsonIntent, "Open with: "))
             }
-            R.id.action_dark_toggle -> {
-                val sharedPrefs = getPreferences(Context.MODE_PRIVATE)
-                with (sharedPrefs.edit()) {
-                    val usingDark = sharedPrefs.getBoolean(appThemeLabel, false)
-                    darkMode = !usingDark
-                    putBoolean(appThemeLabel, darkMode)
-                    apply()
-                }
-                recreate()
+            R.id.night_follow_system -> {
+                setDayNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            }
+            R.id.night_yes -> {
+                setDayNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            }
+            R.id.night_no -> {
+                setDayNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+            R.id.night_auto -> {
+                setDayNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
             }
         }
 
@@ -126,13 +134,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        darkMode =
-                getPreferences(Context.MODE_PRIVATE).getBoolean(appThemeLabel, false)
-        if(darkMode){
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else{
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-        }
+        AppCompatDelegate.setDefaultNightMode(
+            getPreferences(Context.MODE_PRIVATE).getInt(
+                dayNightMode, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM))
 
         val questsChannel = NotificationChannel(
             NotificationActionReceiver.channelId,
@@ -141,7 +145,7 @@ class MainActivity : AppCompatActivity() {
         questsChannel.enableLights(false)
         questsChannel.enableVibration(false)
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-                .createNotificationChannel(questsChannel)
+            .createNotificationChannel(questsChannel)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main)
@@ -161,7 +165,8 @@ class MainActivity : AppCompatActivity() {
         questView = findViewById(R.id.top_view)
         questView.isSmoothScrollbarEnabled = true
 
-        val bgColor = if (darkMode) R.color.primaryDark else Color.WHITE
+        Configuration.UI_MODE_NIGHT_MASK
+        val bgColor = if (inNightMode()) R.color.primary_dark else Color.WHITE
         val colors = intArrayOf(
                 bgColor,
                 getColor(R.color.groovy),
@@ -174,4 +179,16 @@ class MainActivity : AppCompatActivity() {
         questView.adapter = adapter
         questView.onItemClickListener = adapter.onItemClickListener
     }
+
+    private fun setDayNightMode(newMode: Int) {
+        val sharedPrefs = getPreferences(Context.MODE_PRIVATE)
+        with(sharedPrefs.edit()) {
+            nightMode = newMode
+            putInt(dayNightMode, nightMode)
+            apply()
+        }
+        recreate()
+    }
+
+    private fun inNightMode() = Companion.inNightMode(this)
 }

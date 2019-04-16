@@ -14,7 +14,7 @@ class CustomListAdapter(
     context: Context,
     private var quests: Array<Quest> =
         flatten(MainActivity.questJson, emptyList()).toTypedArray())
-: ArrayAdapter<Quest>(context, R.layout.element_dialog, quests) {
+: ArrayAdapter<Quest>(context, 0, quests) {     // Resource parameter is not used
     internal companion object {
         private const val indentSize = 24 // in dp
 

@@ -82,7 +82,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
             if(!key.equals(delete_action, false)){
                 val hint: String = if(key.equals(add_action, false)){
-                    QuestOptionsDialogFragment.addHint
+                    context.resources.getString(R.string.quest_add_hint)
                 } else {    //Edit action
                     quest
                 }

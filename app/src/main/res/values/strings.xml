@@ -3,10 +3,16 @@
     <string name="add_subquest"> + </string>
     <string name="edit_quest">✍</string>
     <string name="delete_quest">─</string>
+    <string name="quest_add_hint"><i>Add new subquest here</i></string>
+    <string name="quest_hint">Quest Dialog</string>
     <string name="forward">⪢</string>
     <string name="backward">⪡</string>
     <string name="down">⤵</string>
     <string name="up">⤴</string>
     <string name="show_json">Open as JSON file</string>
-    <string name="dark_toggle">Toggle Dark Mode</string>
+    <string name="dark_select">Dark Mode Option</string>
+    <string name="follow_system_mode">Follow System Default</string>
+    <string name="dark_mode">Always Dark Mode</string>
+    <string name="light_mode">Always Light Mode</string>
+    <string name="auto">Dark at Night</string>
 </resources>

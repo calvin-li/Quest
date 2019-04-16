@@ -1,14 +1,17 @@
 <resources>
 
+    <style name="AppThemeDefault" parent="AppThemeDefaultBase">
+        <item name="android:itemBackground">@color/secondary_dark</item>
+    </style>
+
     <style name="ExpandableList" parent="ExpandableListBase">
-        <item name="android:background">@color/primaryDark</item>
+        <item name="android:background">@color/primary_dark</item>
     </style>
 
     <style name="QuestDialogStyle" parent="Theme.AppCompat.Dialog.Alert">
-        <item name="android:background">@color/primaryDark</item>
+        <item name="android:background">@color/primary_dark</item>
         <item name="android:colorAccent">@color/groovy_notification</item>
         <item name="android:textColor">@color/groovy</item>
     </style>
-
 
 </resources>

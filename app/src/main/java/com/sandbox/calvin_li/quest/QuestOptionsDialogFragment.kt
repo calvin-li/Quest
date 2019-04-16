@@ -6,7 +6,6 @@ import android.app.Dialog
 import android.support.v4.app.DialogFragment
 import android.content.Context
 import android.content.DialogInterface
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,12 +16,10 @@ import com.beust.klaxon.JsonObject
 
 class QuestOptionsDialogFragment : DialogFragment() {
     companion object {
-        const val addHint = "Add new subquest here"
         fun setAddButton(
             adapter: CustomListAdapter, clickable: View, index: List<Int>, scroll: () -> Unit) {
             clickable.setOnClickListener {
                 val editView = getDialogView(adapter.context)
-                editView.hint = addHint
 
                 val dialog = createDialog(adapter.context, editView, "Add subquest") { _, _ ->
                     val newQuest = editView.text.toString()
@@ -46,6 +43,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
             clickable.setOnClickListener {
                 val editView = getDialogView(adapter.context)
                 editView.append(currentQuest)
+                editView.hint = currentQuest
 
                 val dialog = createDialog(adapter.context, editView, "Edit quest") { _, _ ->
                     editQuest(index, editView.text.toString(), adapter.context)
@@ -127,10 +125,9 @@ class QuestOptionsDialogFragment : DialogFragment() {
 
         internal fun createDialog(context: Context, editView: EditText, title: String,
                                   positiveAction: (DialogInterface, Int) -> Unit): AlertDialog {
-            val currentNightMode: Int =
-                    context.resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)
-            if(currentNightMode == Configuration.UI_MODE_NIGHT_YES) {
+            if(MainActivity.inNightMode(context)) {
                 editView.setTextColor(context.resources.getColor(R.color.light_text, null))
+                editView.setHintTextColor(context.resources.getColor(R.color.light_hint_text, null))
             }
             return AlertDialog.Builder(context, R.style.QuestDialogStyle)
                 .setTitle(title)
