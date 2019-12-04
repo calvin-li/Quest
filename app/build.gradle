@@ -7,8 +7,8 @@ android {
             keyAlias 'key0'
             keyPassword '123456'
             // Switch locally between Mac OS and windows
-            storeFile file('C:/Users/Calvin-PC/Dropbox/Documents/Quest key.jks')
-            // storeFile file('/Users/calvinli/Dropbox/Documents/Quest key.jks')
+            // storeFile file('C:/Users/Calvin-PC/Dropbox/Documents/Quest key.jks')
+            storeFile file('/Users/calvinli/Dropbox/Documents/Quest key.jks')
             storePassword '123456'
         }
     }

@@ -99,7 +99,7 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
-    <style name="notification.text" parent="notification">
+    <style name="notification.textBase" parent="notification">
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
         <item name="android:scrollHorizontally">true</item>
@@ -107,10 +107,14 @@
         <item name="android:layout_weight">1</item>
     </style>
 
-    <style name="notification.text.main" parent="notification.text">
+    <style name="notification.text" parent="notification.textBase"/>
+
+    <style name="notification.text.mainBase" parent="notification.text">
         <item name="android:maxLines">2</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="notification.text.main" parent="notification.text.mainBase"/>
 
     <style name="notification.arrow" parent="notification">
         <item name="android:layout_marginLeft">@dimen/arrow_gap</item>
