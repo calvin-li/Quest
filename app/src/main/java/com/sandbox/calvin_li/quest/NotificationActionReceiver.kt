@@ -7,7 +7,6 @@ import android.app.RemoteInput
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.widget.RemoteViews
@@ -191,7 +190,6 @@ class NotificationActionReceiver : BroadcastReceiver() {
             subQuests.forEachIndexed { index, subQuestJson ->
                 val subQuest: String = subQuestJson[Quest.nameLabel] as String
                 val subQuestRemote = RemoteViews(context.packageName, R.layout.notification_subquest)
-
                 subQuestRemote.setTextViewText(R.id.notification_subquest_text, subQuest)
 
                 val subPendingIntent = navigationPendingIntent(

@@ -14,12 +14,4 @@
         <item name="android:textColor">@color/groovy</item>
     </style>
 
-    <style name="notification.text" parent="notification.textBase">
-        <item name="android:textColor">@color/white_text</item>
-    </style>
-
-    <style name="notification.text.main" parent="notification.text.mainBase">
-        <item name="android:textColor">@color/white_text</item>
-    </style>
-
 </resources>
