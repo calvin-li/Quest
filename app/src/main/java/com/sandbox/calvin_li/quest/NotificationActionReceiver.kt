@@ -10,6 +10,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.Icon
 import android.os.Bundle
+import android.util.Log
 import android.widget.RemoteViews
 import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
@@ -281,27 +282,29 @@ class NotificationActionReceiver : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        val indices = intent.getIntArrayExtra("indices").toList()
-        val offsets = intent.getIntArrayExtra("offsets").toList()
-        val notificationIndexList = getIndexList(context)
+        Log.w("boot_broadcast_poc", "starting service...")
+        if (intent.action != Intent.ACTION_BOOT_COMPLETED) {
+            val indices = intent.getIntArrayExtra("indices").toList()
+            val offsets = intent.getIntArrayExtra("offsets").toList()
+            val notificationIndexList = getIndexList(context)
 
-        if(intent.getBooleanExtra("isNav", false)) {
-            notificationIndexList[indices.first()] =
-                    indices.zip(offsets).map { QuestState(it.first, it.second) }
-            saveIndexList(context, notificationIndexList)
-        }
-        else{
-            val remoteInputBundle: Bundle? = RemoteInput.getResultsFromIntent(intent)
-            if (remoteInputBundle == null) {
-                // assume delete
-                QuestOptionsDialogFragment.deleteQuest(indices, context)
+            if (intent.getBooleanExtra("isNav", false)) {
+                notificationIndexList[indices.first()] =
+                        indices.zip(offsets).map { QuestState(it.first, it.second) }
+                saveIndexList(context, notificationIndexList)
             } else {
-                var input: CharSequence? = remoteInputBundle.getCharSequence(add_action)
-                if(input == null){
-                    input = remoteInputBundle.getCharSequence(edit_action)
-                    QuestOptionsDialogFragment.editQuest(indices, input.toString(), context)
-                } else{
-                    QuestOptionsDialogFragment.addSubQuest(indices, input.toString(), context)
+                val remoteInputBundle: Bundle? = RemoteInput.getResultsFromIntent(intent)
+                if (remoteInputBundle == null) {
+                    // assume delete
+                    QuestOptionsDialogFragment.deleteQuest(indices, context)
+                } else {
+                    var input: CharSequence? = remoteInputBundle.getCharSequence(add_action)
+                    if (input == null) {
+                        input = remoteInputBundle.getCharSequence(edit_action)
+                        QuestOptionsDialogFragment.editQuest(indices, input.toString(), context)
+                    } else {
+                        QuestOptionsDialogFragment.addSubQuest(indices, input.toString(), context)
+                    }
                 }
             }
         }
