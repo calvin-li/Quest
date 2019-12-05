@@ -24,7 +24,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
                 val dialog = createDialog(adapter.context, editView, "Add subquest") { _, _ ->
                     val newQuest = editView.text.toString()
                     addSubQuest(index, newQuest, adapter.context)
-                    adapter.notifyDataSetChanged()
+                    adapter.notifyDataSetChanged(false)
                     scroll()
                 }
 
@@ -47,7 +47,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
 
                 val dialog = createDialog(adapter.context, editView, "Edit quest") { _, _ ->
                     editQuest(index, editView.text.toString(), adapter.context)
-                    adapter.notifyDataSetChanged()
+                    adapter.notifyDataSetChanged(false)
                 }
 
                 editView.setOnEditorActionListener { _, _, _ ->
@@ -64,7 +64,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
         List<Int>) {
             clickable.setOnClickListener {
                 deleteQuest(index, adapter.context)
-                adapter.notifyDataSetChanged()
+                adapter.notifyDataSetChanged(false)
             }
         }
 
@@ -76,6 +76,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
             val newObject = JsonObject()
             newObject[Quest.nameLabel] = text
             newObject[Quest.expandLabel] = true
+            newObject[Quest.checkedLabel] = false
 
             @Suppress("UNCHECKED_CAST")
             val childObject: JsonArray<JsonObject>? =

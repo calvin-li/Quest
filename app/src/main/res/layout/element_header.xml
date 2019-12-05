@@ -19,7 +19,11 @@
         android:text="@string/forward"
         style="@style/ExpArrow"/>
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    <CheckBox
+        android:id="@+id/element_header_checkbox"
+        style="@style/QuestCheck"/>
+
+    <TextView
         style="@style/QuestText"
         android:id="@+id/element_header_text"/>
 

@@ -27,7 +27,8 @@ class CustomListAdapter(
                         currentIndex.plus(index),
                         jsonObject[Quest.expandLabel] as Boolean,
                         isHidden(currentIndex),
-                        (jsonObject[Quest.childLabel] as? JsonArray<*>)?.size ?: 0))
+                        (jsonObject[Quest.childLabel] as? JsonArray<*>)?.size ?: 0,
+                        jsonObject[Quest.checkedLabel] as? Boolean ?: false))
                     .plus(
                         @Suppress("UNCHECKED_CAST")
                         flatten(
@@ -42,6 +43,42 @@ class CustomListAdapter(
                 .any { !(MainActivity.getNestedArray(it)[Quest.expandLabel] as Boolean) }
     }
 
+    private var animateCheckBoxes: Boolean = false
+
+    private fun toggleCheckQuest(index: List<Int>){
+        val parentJson = if (index.size > 1) {
+            MainActivity.getNestedArray(index.dropLast(1))
+        } else {
+            null
+        }
+        val questJson: JsonObject = if (parentJson == null) {
+            MainActivity.getNestedArray(index)
+        } else {
+            (parentJson[Quest.childLabel] as JsonArray<*>)[index.last()] as JsonObject
+        }
+
+        val isChecked: Boolean = questJson[Quest.checkedLabel] as? Boolean ?: false
+        setCheck(questJson, !isChecked)
+
+        if (parentJson != null){
+            parentJson[Quest.checkedLabel] =
+                (parentJson[Quest.childLabel] as JsonArray<*>).all {
+                    (it as JsonObject)[Quest.checkedLabel] as Boolean
+                }
+        }
+
+        MainActivity.saveJson(context)
+        notifyDataSetChanged(true)
+    }
+
+    private fun setCheck(quest: JsonObject, checked: Boolean) {
+        quest[Quest.checkedLabel] = checked
+
+        (quest[Quest.childLabel] as? JsonArray<*>?)?.forEach {
+            setCheck(it as JsonObject, checked)
+        }
+    }
+
     private fun visibleQuests() = quests.filter { !it.hidden }
 
     internal val onItemClickListener = AdapterView.OnItemClickListener { parentView: AdapterView<*>?, _:
@@ -53,7 +90,7 @@ class CustomListAdapter(
         MainActivity.getNestedArray(quest.index)[Quest.expandLabel] = !(quest.expanded)
 
         MainActivity.saveJson(this.context)
-        notifyDataSetChanged()
+        notifyDataSetChanged(false)
 
         (parentView as ListView).smoothScrollToPosition(position + max(0, count - countBefore))
     }
@@ -91,6 +128,14 @@ class CustomListAdapter(
             expArrow.visibility = View.INVISIBLE
         }
 
+        val checkBox = container.findViewById<CheckBox>(R.id.element_header_checkbox)
+        checkBox.setOnClickListener { toggleCheckQuest(currentQuest.index) }
+
+        checkBox.isChecked = currentQuest.checked
+        if (!animateCheckBoxes) {
+            checkBox.jumpDrawablesToCurrentState()
+        }
+
         val questView = container.findViewById(R.id.element_header_text) as TextView
         questView.text = currentQuest.name
 
@@ -116,9 +161,11 @@ class CustomListAdapter(
         return container
     }
 
-    override fun notifyDataSetChanged() {
+    fun notifyDataSetChanged(animate: Boolean) {
         MainActivity.loadQuestJson(this.context)
         quests = flatten(MainActivity.questJson, emptyList()).toTypedArray()
+
+        animateCheckBoxes = animate
         super.notifyDataSetChanged()
     }
 

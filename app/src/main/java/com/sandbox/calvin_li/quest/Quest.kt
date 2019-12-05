@@ -5,11 +5,13 @@ class Quest(
     internal val index: List<Int>,
     internal val expanded: Boolean,
     internal val hidden: Boolean,
-    internal val children: Int
+    internal val children: Int,
+    internal val checked: Boolean
 ){
     internal companion object {
         internal const val nameLabel: String = "name"
         internal const val expandLabel: String = "expanded"
         internal const val childLabel: String = "child"
+        internal const val checkedLabel: String = "checked"
     }
 }

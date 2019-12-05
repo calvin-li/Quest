@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity() {
                     val newObject = JsonObject()
                     newObject[Quest.nameLabel] = editView.text.toString()
                     newObject[Quest.expandLabel] = true
+                    newObject[Quest.checkedLabel] = false
 
                     questJson.add(newObject)
                     saveJson(this)

@@ -41,6 +41,19 @@
         <item name="android:layout_gravity">center_vertical</item>
     </style>
 
+    <style name="QuestCheck" parent="QuestMainLine">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+
+        <item name="android:layout_marginTop">@dimen/standard_margins</item>
+        <item name="android:layout_marginBottom">@dimen/standard_margins</item>
+
+        <item name="android:padding">@dimen/standard_padding</item>
+
+        <item name="android:buttonTint">@color/groovy</item>
+        <item name="android:focusable">false</item>
+    </style>
+
     <style name="QuestText" parent="QuestMainLine">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
