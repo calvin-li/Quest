@@ -7,7 +7,6 @@ import android.app.RemoteInput
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.util.Log
@@ -181,15 +180,16 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
             val quest = questRaw +
                 if (subQuests.count() > 0) {
+                    if (questRaw.last().isWhitespace()){
+                        ""
+                    } else{
+                        " "
+                    } +
                     "(+${subQuestsNonPaged.count()})"
                 } else { "" }
 
             val remoteView = RemoteViews(context.packageName, R.layout.notification_view)
             remoteView.setTextViewText(R.id.notification_main_quest, quest)
-            // Could not do this through night mode styles
-            if (MainActivity.inNightMode(context)){
-                //remoteView.setTextColor(R.id.notification_main_quest, Color.WHITE)
-            }
 
             if (indices.size > 1) {
                 val questPendingIntent = navigationPendingIntent(
@@ -210,9 +210,6 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 val subQuest: String = subQuestJson[Quest.nameLabel] as String
                 val subQuestRemote = RemoteViews(context.packageName, R.layout.notification_subquest)
                 subQuestRemote.setTextViewText(R.id.notification_subquest_text, subQuest)
-                if (MainActivity.inNightMode(context)){
-                    //subQuestRemote.setTextColor(R.id.notification_subquest_text, Color.WHITE)
-                }
 
                 val subPendingIntent = navigationPendingIntent(
                     context, indices.plus(QuestState(index + offset,0)))
@@ -284,8 +281,8 @@ class NotificationActionReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Log.w("boot_broadcast_poc", "starting service...")
         if (intent.action != Intent.ACTION_BOOT_COMPLETED) {
-            val indices = intent.getIntArrayExtra("indices").toList()
-            val offsets = intent.getIntArrayExtra("offsets").toList()
+            val indices = intent.getIntArrayExtra("indices")!!.toList()
+            val offsets = intent.getIntArrayExtra("offsets")!!.toList()
             val notificationIndexList = getIndexList(context)
 
             if (intent.getBooleanExtra("isNav", false)) {
