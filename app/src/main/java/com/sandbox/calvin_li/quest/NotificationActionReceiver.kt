@@ -188,7 +188,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
             remoteView.setTextViewText(R.id.notification_main_quest, quest)
             // Could not do this through night mode styles
             if (MainActivity.inNightMode(context)){
-                // remoteView.setTextColor(R.id.notification_main_quest, Color.WHITE)
+                //remoteView.setTextColor(R.id.notification_main_quest, Color.WHITE)
             }
 
             if (indices.size > 1) {
@@ -211,7 +211,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 val subQuestRemote = RemoteViews(context.packageName, R.layout.notification_subquest)
                 subQuestRemote.setTextViewText(R.id.notification_subquest_text, subQuest)
                 if (MainActivity.inNightMode(context)){
-                    subQuestRemote.setTextColor(R.id.notification_subquest_text, Color.WHITE)
+                    //subQuestRemote.setTextColor(R.id.notification_subquest_text, Color.WHITE)
                 }
 
                 val subPendingIntent = navigationPendingIntent(

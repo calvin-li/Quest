@@ -96,19 +96,19 @@ class CustomListAdapter(
     }
 
     @SuppressLint("SetTextI18n")
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val currentQuest = getItem(position)
 
         val container: View = convertView ?:
-            (this.context.getSystemService(
+        (this.context.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater)
-            .inflate(R.layout.element_header, parent, false)
+                .inflate(R.layout.element_header, parent, false)
 
         val indexPadding =
-            context.resources.getDimension(R.dimen.arrow_x_margins).toInt() +
-            indentSize * context.resources.displayMetrics.density * (currentQuest.index.size-1)
+                context.resources.getDimension(R.dimen.arrow_x_margins).toInt() +
+                        indentSize * context.resources.displayMetrics.density * (currentQuest.index.size-1)
         container.setPadding(indexPadding.toInt(),
-            container.paddingTop, container.paddingRight, container.paddingBottom)
+                container.paddingTop, container.paddingRight, container.paddingBottom)
 
         if(currentQuest.hidden) {
             container.visibility = View.GONE
@@ -147,9 +147,9 @@ class CustomListAdapter(
         }
 
         QuestOptionsDialogFragment.setAddButton(
-            this,
-            container.findViewById(R.id.element_header_add),
-            currentQuest.index
+                this,
+                container.findViewById(R.id.element_header_add),
+                currentQuest.index
         ) {(parent as ListView).smoothScrollToPosition(getPosition(currentQuest.name))}
 
         QuestOptionsDialogFragment.setEditButton(

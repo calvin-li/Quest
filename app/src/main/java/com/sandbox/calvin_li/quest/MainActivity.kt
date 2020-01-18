@@ -5,7 +5,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
 import android.os.Environment
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -18,9 +18,9 @@ import java.io.*
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Color
-import android.support.v4.content.FileProvider
+import androidx.core.content.FileProvider
 import android.graphics.drawable.GradientDrawable
-import android.support.v7.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate
 
 class MainActivity : AppCompatActivity() {
     private lateinit var questView: ListView
