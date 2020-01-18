@@ -11,3 +11,5 @@
 app/build
 app/release
 app/debug
+Quest.zip
+*.pepk
