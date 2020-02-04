@@ -142,7 +142,7 @@ class MainActivity : AppCompatActivity() {
         val questsChannel = NotificationChannel(
             NotificationActionReceiver.channelId,
             NotificationActionReceiver.channelId,
-            NotificationManager.IMPORTANCE_HIGH)
+            NotificationManager.IMPORTANCE_DEFAULT)
         questsChannel.enableLights(false)
         questsChannel.enableVibration(false)
         (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
