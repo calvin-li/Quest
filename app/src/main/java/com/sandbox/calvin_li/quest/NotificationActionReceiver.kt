@@ -47,6 +47,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
             }
             @Suppress("UNCHECKED_CAST")
             val indexArray = Parser().parse(indexStream) as JsonArray<JsonArray<JsonObject>>
+
             indexStream.close()
             return indexArray.map { i -> i.toList().map { j -> QuestState.fromJsonObject(j) } }
                 .toMutableList()
@@ -144,7 +145,8 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 .setGroupSummary(true)
                 .setGroup("g1")
                 .setContentIntent(PendingIntent.getActivity(
-                    context, 0, Intent(context, MainActivity::class.java), 0))
+                    context, 0, Intent(context, MainActivity::class.java),
+                    PendingIntent.FLAG_IMMUTABLE))
 
             (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).notify(
                 -1, groupNotification.build())
