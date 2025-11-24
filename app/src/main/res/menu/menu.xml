@@ -25,7 +25,7 @@
                       android:title="@string/dark_mode" />
                 <item android:id="@+id/night_no"
                       android:title="@string/light_mode" />
-                <item android:id="@+id/night_auto"
+                <item android:id="@+id/battery_auto"
                       android:title="@string/auto" />
             </menu>
         </item>

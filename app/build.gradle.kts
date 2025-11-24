@@ -37,6 +37,9 @@ android {
     buildFeatures {
         buildConfig = true
     }
+    lint {
+        disable += listOf("TextContrastCheck")
+    }
 }
 
 dependencies {

@@ -16,23 +16,23 @@ class CustomListAdapter(
         flatten(MainActivity.questJson, emptyList()).toTypedArray())
 : ArrayAdapter<Quest>(context, 0, quests) {     // Resource parameter is not used
     internal companion object {
-        private const val indentSize = 24 // in dp
+        private const val INDENT_SIZE = 24 // in dp
 
         private fun flatten(questJson: JsonArray<JsonObject>?, currentIndex: List<Int>)
                 : List<Quest> {
             return questJson?.mapIndexed { index, jsonObject ->
                 listOf(
                     Quest(
-                        jsonObject[Quest.nameLabel] as String,
+                        jsonObject[Quest.NAME_LABEL] as String,
                         currentIndex.plus(index),
-                        jsonObject[Quest.expandLabel] as Boolean,
+                        jsonObject[Quest.EXPAND_LABEL] as Boolean,
                         isHidden(currentIndex),
-                        (jsonObject[Quest.childLabel] as? JsonArray<*>)?.size ?: 0,
-                        jsonObject[Quest.checkedLabel] as? Boolean ?: false))
+                        (jsonObject[Quest.CHILD_LABEL] as? JsonArray<*>)?.size ?: 0,
+                        jsonObject[Quest.CHECKED_LABEL] as? Boolean ?: false))
                     .plus(
                         @Suppress("UNCHECKED_CAST")
                         flatten(
-                        jsonObject[Quest.childLabel] as? JsonArray<JsonObject>,
+                        jsonObject[Quest.CHILD_LABEL] as? JsonArray<JsonObject>,
                         currentIndex.plus(index)))
             }?.flatten() ?: emptyList()
         }
@@ -40,7 +40,7 @@ class CustomListAdapter(
         private fun isHidden(index: List<Int>) =
             (index.size - 1 downTo 0).toList()
                 .mapIndexed{ it, _ -> index.subList(0, it+1) }
-                .any { !(MainActivity.getNestedArray(it)[Quest.expandLabel] as Boolean) }
+                .any { !(MainActivity.getNestedArray(it)[Quest.EXPAND_LABEL] as Boolean) }
     }
 
     private var animateCheckBoxes: Boolean = false
@@ -54,16 +54,16 @@ class CustomListAdapter(
         val questJson: JsonObject = if (parentJson == null) {
             MainActivity.getNestedArray(index)
         } else {
-            (parentJson[Quest.childLabel] as JsonArray<*>)[index.last()] as JsonObject
+            (parentJson[Quest.CHILD_LABEL] as JsonArray<*>)[index.last()] as JsonObject
         }
 
-        val isChecked: Boolean = questJson[Quest.checkedLabel] as? Boolean ?: false
+        val isChecked: Boolean = questJson[Quest.CHECKED_LABEL] as? Boolean ?: false
         setCheck(questJson, !isChecked)
 
         if (parentJson != null){
-            parentJson[Quest.checkedLabel] =
-                (parentJson[Quest.childLabel] as JsonArray<*>).all {
-                    (it as JsonObject)[Quest.checkedLabel] as Boolean
+            parentJson[Quest.CHECKED_LABEL] =
+                (parentJson[Quest.CHILD_LABEL] as JsonArray<*>).all {
+                    (it as JsonObject)[Quest.CHECKED_LABEL] as Boolean
                 }
         }
 
@@ -72,9 +72,9 @@ class CustomListAdapter(
     }
 
     private fun setCheck(quest: JsonObject, checked: Boolean) {
-        quest[Quest.checkedLabel] = checked
+        quest[Quest.CHECKED_LABEL] = checked
 
-        (quest[Quest.childLabel] as? JsonArray<*>?)?.forEach {
+        (quest[Quest.CHILD_LABEL] as? JsonArray<*>?)?.forEach {
             setCheck(it as JsonObject, checked)
         }
     }
@@ -87,7 +87,7 @@ class CustomListAdapter(
         MainActivity.loadQuestJson(this.context)
 
         val quest = getItem(position)
-        MainActivity.getNestedArray(quest.index)[Quest.expandLabel] = !(quest.expanded)
+        MainActivity.getNestedArray(quest.index)[Quest.EXPAND_LABEL] = !(quest.expanded)
 
         MainActivity.saveJson(this.context)
         notifyDataSetChanged(false)
@@ -106,7 +106,7 @@ class CustomListAdapter(
 
         val indexPadding =
                 context.resources.getDimension(R.dimen.arrow_x_margins).toInt() +
-                        indentSize * context.resources.displayMetrics.density * (currentQuest.index.size-1)
+                        INDENT_SIZE * context.resources.displayMetrics.density * (currentQuest.index.size-1)
         container.setPadding(indexPadding.toInt(),
                 container.paddingTop, container.paddingRight, container.paddingBottom)
 
@@ -136,10 +136,10 @@ class CustomListAdapter(
             checkBox.jumpDrawablesToCurrentState()
         }
 
-        val questView = container.findViewById(R.id.element_header_text) as TextView
+        val questView: TextView = container.findViewById(R.id.element_header_text)
         questView.text = currentQuest.name
 
-        val numChildrenView = container.findViewById(R.id.element_header_children) as TextView
+        val numChildrenView: TextView = container.findViewById(R.id.element_header_children)
         if(currentQuest.children > 0) {
             numChildrenView.text = "+${currentQuest.children}"
         } else{

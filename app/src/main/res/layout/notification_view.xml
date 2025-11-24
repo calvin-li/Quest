@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/notification_base"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/notification_base"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:orientation="vertical">
@@ -13,8 +14,9 @@
 
         <TextView
               android:id="@+id/notification_main_quest"
-              android:text="lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum "
-              style="@style/notification.text.main"/>
+              android:text="lorem ipsum"
+              style="@style/notification.text.main"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/notification_main_arrow"

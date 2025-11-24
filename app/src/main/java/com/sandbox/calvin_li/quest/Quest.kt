@@ -9,9 +9,9 @@ class Quest(
     internal val checked: Boolean
 ){
     internal companion object {
-        internal const val nameLabel: String = "name"
-        internal const val expandLabel: String = "expanded"
-        internal const val childLabel: String = "child"
-        internal const val checkedLabel: String = "checked"
+        internal const val NAME_LABEL: String = "name"
+        internal const val EXPAND_LABEL: String = "expanded"
+        internal const val CHILD_LABEL: String = "child"
+        internal const val CHECKED_LABEL: String = "checked"
     }
 }

@@ -71,18 +71,18 @@ class QuestOptionsDialogFragment : DialogFragment() {
         fun addSubQuest(index: List<Int>, text: String, context: Context) {
             MainActivity.loadQuestJson(context)
             val currentObject = MainActivity.getNestedArray(index)
-            currentObject[Quest.expandLabel] = true
+            currentObject[Quest.EXPAND_LABEL] = true
 
             val newObject = JsonObject()
-            newObject[Quest.nameLabel] = text
-            newObject[Quest.expandLabel] = true
-            newObject[Quest.checkedLabel] = false
+            newObject[Quest.NAME_LABEL] = text
+            newObject[Quest.EXPAND_LABEL] = true
+            newObject[Quest.CHECKED_LABEL] = false
 
             @Suppress("UNCHECKED_CAST")
             val childObject: JsonArray<JsonObject>? =
-                    currentObject[Quest.childLabel] as JsonArray<JsonObject>?
+                    currentObject[Quest.CHILD_LABEL] as JsonArray<JsonObject>?
             if (childObject == null) {
-                currentObject[Quest.childLabel] = JsonArray(newObject)
+                currentObject[Quest.CHILD_LABEL] = JsonArray(newObject)
             } else {
                 childObject.add(newObject)
             }
@@ -94,7 +94,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
         fun editQuest(index: List<Int>, text: String, context: Context) {
             MainActivity.loadQuestJson(context)
             val nestedObject: JsonObject = MainActivity.getNestedArray(index)
-            nestedObject[Quest.nameLabel] = text
+            nestedObject[Quest.NAME_LABEL] = text
             MainActivity.saveJson(context)
             NotificationActionReceiver.refreshNotifications(context)
         }
@@ -107,7 +107,7 @@ class QuestOptionsDialogFragment : DialogFragment() {
             @Suppress("UNCHECKED_CAST")
             if (indices.size > 1) {
                 toDelete =
-                    MainActivity.getNestedArray(indices.dropLast(1))[Quest.childLabel]
+                    MainActivity.getNestedArray(indices.dropLast(1))[Quest.CHILD_LABEL]
                         as JsonArray<JsonObject>
             }
             toDelete.removeAt(leafIndex)

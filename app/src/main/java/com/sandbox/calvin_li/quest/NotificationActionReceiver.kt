@@ -22,31 +22,31 @@ import java.util.*
 class NotificationActionReceiver : BroadcastReceiver() {
 
     companion object {
-        private const val add_action = "add_action"
-        private const val edit_action = "edit_action"
-        private const val delete_action = "delete_action"
-        private const val indexListFileName = "notificationIndexList.json"
-        private const val subQuestsPerPage: Int = 5 // Number excluding paging buttons, two less than full size
-        internal const val channelId = "Quests"
+        private const val ADD_ACTION = "add_action"
+        private const val EDIT_ACTION = "edit_action"
+        private const val DELETE_ACTION = "delete_action"
+        private const val INDEX_FILE_LIST_NAME = "notificationIndexList.json"
+        private const val SUBQUESTS_PER_PAGE: Int = 5 // Number excluding paging buttons, two less than full size
+        internal const val CHANNEL_ID = "Quests"
 
         internal fun saveIndexList(context: Context, notificationIndexList: List<List<QuestState>>){
             val indexArray = JsonArray<JsonArray<QuestState>>()
             notificationIndexList.forEach {
                 indexArray.add(JsonArray(it))
             }
-            val writeStream: FileOutputStream = context.openFileOutput(indexListFileName, Context.MODE_PRIVATE)
+            val writeStream: FileOutputStream = context.openFileOutput(INDEX_FILE_LIST_NAME, Context.MODE_PRIVATE)
             writeStream.write(indexArray.toJsonString().toByteArray())
             writeStream.close()
         }
 
         internal fun getIndexList(context: Context): MutableList<List<QuestState>> {
             val indexStream: InputStream = try {
-                context.openFileInput(indexListFileName)!!
-            } catch (ex: IOException) {
+                context.openFileInput(INDEX_FILE_LIST_NAME)!!
+            } catch (_: IOException) {
                 return mutableListOf()
             }
             @Suppress("UNCHECKED_CAST")
-            val indexArray = Parser().parse(indexStream) as JsonArray<JsonArray<JsonObject>>
+            val indexArray = Parser.default().parse(indexStream) as JsonArray<JsonArray<JsonObject>>
 
             indexStream.close()
             return indexArray.map { i -> i.toList().map { j -> QuestState.fromJsonObject(j) } }
@@ -64,14 +64,24 @@ class NotificationActionReceiver : BroadcastReceiver() {
             val questIntent = Intent(context, NotificationActionReceiver::class.java)
             setIntentExtras(questIntent, indices)
             questIntent.putExtra("isNav", true)
-            return PendingIntent.getBroadcast(context, 0, questIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            return PendingIntent.getBroadcast(
+                context,
+                0,
+                questIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            )
         }
 
         private fun buttonPendingIntent(context: Context, indices: List<QuestState>)
             :PendingIntent {
             val questIntent = Intent(context, NotificationActionReceiver::class.java)
             setIntentExtras(questIntent, indices)
-            return PendingIntent.getBroadcast(context, 0, questIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+            return PendingIntent.getBroadcast(
+                context,
+                0,
+                questIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            )
         }
 
         private fun createButtonAction(context: Context, intent: PendingIntent, key: String, label:
@@ -82,8 +92,8 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 label,
                 intent)
 
-            if(!key.equals(delete_action, false)){
-                val hint: String = if(key.equals(add_action, false)){
+            if(!key.equals(DELETE_ACTION, false)){
+                val hint: String = if(key.equals(ADD_ACTION, false)){
                     context.resources.getString(R.string.quest_add_hint)
                 } else {    //Edit action
                     quest
@@ -137,7 +147,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
         }
 
         internal fun createOverallNotification(context: Context) {
-            val groupNotification: Notification.Builder = Notification.Builder(context, channelId)
+            val groupNotification: Notification.Builder = Notification.Builder(context, CHANNEL_ID)
                 .setOngoing(true)
                 .setShowWhen(false)
                 .setSmallIcon(R.mipmap.quest_notification)
@@ -155,11 +165,11 @@ class NotificationActionReceiver : BroadcastReceiver() {
         private fun createQuestNotification(context: Context, indices: List<QuestState>) {
             val jsonObject = MainActivity.getNestedArray(indices.map { it.index })
             val notificationNumber = indices.first().index
-            var subQuestsOnThisPage = subQuestsPerPage
+            var subQuestsOnThisPage = SUBQUESTS_PER_PAGE
 
             @Suppress("UNCHECKED_CAST")
             val subQuestsNonPaged =
-                    (jsonObject[Quest.childLabel] as? JsonArray<JsonObject>) ?: JsonArray()
+                    (jsonObject[Quest.CHILD_LABEL] as? JsonArray<JsonObject>) ?: JsonArray()
 
             var offset = indices.last().offset
             val previousPageExists = offset > 1
@@ -172,13 +182,13 @@ class NotificationActionReceiver : BroadcastReceiver() {
                 subQuestsOnThisPage += 1
             }
 
-            val subQuests: List<JsonObject> = if(subQuestsNonPaged.size > subQuestsPerPage + 2){
+            val subQuests: List<JsonObject> = if(subQuestsNonPaged.size > SUBQUESTS_PER_PAGE + 2){
                 subQuestsNonPaged.subList(offset, minOf(offset + subQuestsOnThisPage, subQuestsNonPaged.size))
             } else{
                 subQuestsNonPaged
             }
 
-            val questRaw: String = jsonObject[Quest.nameLabel] as String
+            val questRaw: String = jsonObject[Quest.NAME_LABEL] as String
 
             val quest = questRaw +
                 if (subQuests.count() > 0) {
@@ -203,13 +213,13 @@ class NotificationActionReceiver : BroadcastReceiver() {
             }
 
             if(previousPageExists){
-                val newOffset = maxOf(offset - subQuestsPerPage, 0)
+                val newOffset = maxOf(offset - SUBQUESTS_PER_PAGE, 0)
                 addPagingQuest(context, indices, remoteView, newOffset)
             }
 
             var allSubQuests = ""
             subQuests.forEachIndexed { index, subQuestJson ->
-                val subQuest: String = subQuestJson[Quest.nameLabel] as String
+                val subQuest: String = subQuestJson[Quest.NAME_LABEL] as String
                 val subQuestRemote = RemoteViews(context.packageName, R.layout.notification_subquest)
                 subQuestRemote.setTextViewText(R.id.notification_subquest_text, subQuest)
 
@@ -219,7 +229,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
                 @Suppress("UNCHECKED_CAST")
                 val child =
-                        subQuestJson[Quest.childLabel] as? JsonArray<JsonObject> ?: JsonArray()
+                        subQuestJson[Quest.CHILD_LABEL] as? JsonArray<JsonObject> ?: JsonArray()
                 if (child.isEmpty()) {
                     subQuestRemote.setTextViewText(R.id.notification_subquest_arrow, "")
                 } else {
@@ -238,11 +248,11 @@ class NotificationActionReceiver : BroadcastReceiver() {
 
             val buttonPendingIntent =
                 buttonPendingIntent(context, indices)
-            val deleteAction = createButtonAction(context, buttonPendingIntent, delete_action, "delete")
-            val editAction = createButtonAction(context, buttonPendingIntent, edit_action, "edit", questRaw)
-            val addAction = createButtonAction(context, buttonPendingIntent, add_action, "add")
+            val deleteAction = createButtonAction(context, buttonPendingIntent, DELETE_ACTION, "delete")
+            val editAction = createButtonAction(context, buttonPendingIntent, EDIT_ACTION, "edit", questRaw)
+            val addAction = createButtonAction(context, buttonPendingIntent, ADD_ACTION, "add")
 
-            val notBuild: Notification.Builder = Notification.Builder(context, channelId)
+            val notBuild: Notification.Builder = Notification.Builder(context, CHANNEL_ID)
                 .setOngoing(true)
                 .setShowWhen(false)
                 .setSmallIcon(R.mipmap.quest_notification)
@@ -297,9 +307,9 @@ class NotificationActionReceiver : BroadcastReceiver() {
                     // assume delete
                     QuestOptionsDialogFragment.deleteQuest(indices, context)
                 } else {
-                    var input: CharSequence? = remoteInputBundle.getCharSequence(add_action)
+                    var input: CharSequence? = remoteInputBundle.getCharSequence(ADD_ACTION)
                     if (input == null) {
-                        input = remoteInputBundle.getCharSequence(edit_action)
+                        input = remoteInputBundle.getCharSequence(EDIT_ACTION)
                         QuestOptionsDialogFragment.editQuest(indices, input.toString(), context)
                     } else {
                         QuestOptionsDialogFragment.addSubQuest(indices, input.toString(), context)

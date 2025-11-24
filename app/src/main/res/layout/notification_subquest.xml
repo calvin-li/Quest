@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/notification_subquest_base"
-              android:orientation="horizontal"
-              style="@style/notification.wrapper">
+    android:id="@+id/notification_subquest_base"
+    android:orientation="horizontal"
+    style="@style/notification.wrapper">
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
               android:id="@+id/notification_subquest_text"
               style="@style/notification.text"/>
 
     <TextView
         android:id="@+id/notification_subquest_arrow"
-        android:text="@string/forward"
-        style="@style/notification.arrow"/>
+        style="@style/notification.arrow"
+        android:text="@string/forward"/>
 
 </LinearLayout>

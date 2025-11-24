@@ -9,13 +9,13 @@ class QuestState(
         val offset: Int
 ) {
     internal companion object {
-        private const val indexLabel = "index"
-        private const val offsetLabel = "offset"
+        private const val INDEX_LABEL = "index"
+        private const val OFFSET_LABEL = "offset"
 
         fun fromJsonObject(json: JsonObject): QuestState =
-            QuestState(json[indexLabel] as Int, json[offsetLabel] as Int)
+            QuestState(json[INDEX_LABEL] as Int, json[OFFSET_LABEL] as Int)
     }
 
     override fun toString(): String =
-        json { JsonObject(mapOf(indexLabel to index, offsetLabel to offset)) }.toJsonString()
+        json { JsonObject(mapOf(INDEX_LABEL to index, OFFSET_LABEL to offset)) }.toJsonString()
 }

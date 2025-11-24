@@ -21,21 +21,22 @@ import android.graphics.Color
 import androidx.core.content.FileProvider
 import android.graphics.drawable.GradientDrawable
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.edit
 
 class MainActivity : AppCompatActivity() {
     private lateinit var questView: ListView
     private var nightMode: Int = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
 
     internal companion object {
-        private const val questFileName: String = "quests.json"
+        private const val QUEST_FILE_NAME: String = "quests.json"
 
-        private const val dayNightMode: String = "dayNightMode"
+        private const val DAY_NIGHT_MODE: String = "dayNightMode"
 
         lateinit var questJson: JsonArray<JsonObject>
 
         fun saveJson(context: Context) {
             if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED){
-                val externalFile = File(context.getExternalFilesDir(null), questFileName)
+                val externalFile = File(context.getExternalFilesDir(null), QUEST_FILE_NAME)
                 if (!externalFile.createNewFile()) { Log.e("Quest error", "File not created") }
 
                 val externalWriteStream = FileOutputStream(externalFile)
@@ -46,14 +47,14 @@ class MainActivity : AppCompatActivity() {
 
         internal fun loadQuestJson(context: Context){
             val questStream: InputStream = try {
-                val externalFile = File(context.getExternalFilesDir(null), questFileName)
+                val externalFile = File(context.getExternalFilesDir(null), QUEST_FILE_NAME)
                 FileInputStream(externalFile)
-            } catch (ex: IOException) {
+            } catch (_: IOException) {
                 context.resources.openRawResource(R.raw.quests)
             }
 
             @Suppress("UNCHECKED_CAST")
-            questJson = Parser().parse(questStream) as JsonArray<JsonObject>
+            questJson = Parser.default().parse(questStream) as JsonArray<JsonObject>
             questStream.close()
         }
 
@@ -67,7 +68,7 @@ class MainActivity : AppCompatActivity() {
 
             for (i in 1 until indices.size) {
                 @Suppress("UNCHECKED_CAST")
-                nestedObject = (nestedObject[Quest.childLabel] as JsonArray<JsonObject>)[indices[i]]
+                nestedObject = (nestedObject[Quest.CHILD_LABEL] as JsonArray<JsonObject>)[indices[i]]
             }
             return nestedObject
         }
@@ -89,9 +90,9 @@ class MainActivity : AppCompatActivity() {
                     loadQuestJson(this)
 
                     val newObject = JsonObject()
-                    newObject[Quest.nameLabel] = editView.text.toString()
-                    newObject[Quest.expandLabel] = true
-                    newObject[Quest.checkedLabel] = false
+                    newObject[Quest.NAME_LABEL] = editView.text.toString()
+                    newObject[Quest.EXPAND_LABEL] = true
+                    newObject[Quest.CHECKED_LABEL] = false
 
                     questJson.add(newObject)
                     saveJson(this)
@@ -104,7 +105,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.action_json -> {
                 saveJson(this)
-                val jsonFile = File(this.getExternalFilesDir(null), questFileName)
+                val jsonFile = File(this.getExternalFilesDir(null), QUEST_FILE_NAME)
 
                 val jsonUri = FileProvider.getUriForFile(
                         this,
@@ -126,8 +127,8 @@ class MainActivity : AppCompatActivity() {
             R.id.night_no -> {
                 setDayNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
-            R.id.night_auto -> {
-                setDayNightMode(AppCompatDelegate.MODE_NIGHT_AUTO)
+            R.id.battery_auto -> {
+                setDayNightMode(AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY)
             }
         }
 
@@ -136,16 +137,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AppCompatDelegate.setDefaultNightMode(
-            getPreferences(Context.MODE_PRIVATE).getInt(
-                dayNightMode, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM))
+            getPreferences(MODE_PRIVATE).getInt(
+                DAY_NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM))
 
         val questsChannel = NotificationChannel(
-            NotificationActionReceiver.channelId,
-            NotificationActionReceiver.channelId,
+            NotificationActionReceiver.CHANNEL_ID,
+            NotificationActionReceiver.CHANNEL_ID,
             NotificationManager.IMPORTANCE_DEFAULT)
         questsChannel.enableLights(false)
         questsChannel.enableVibration(false)
-        (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+        (getSystemService(NOTIFICATION_SERVICE) as NotificationManager)
             .createNotificationChannel(questsChannel)
 
         super.onCreate(savedInstanceState)
@@ -182,14 +183,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setDayNightMode(newMode: Int) {
-        val sharedPrefs = getPreferences(Context.MODE_PRIVATE)
-        with(sharedPrefs.edit()) {
+        val sharedPrefs = getPreferences(MODE_PRIVATE)
+        sharedPrefs.edit {
             nightMode = newMode
-            putInt(dayNightMode, nightMode)
+            putInt(DAY_NIGHT_MODE, nightMode)
             apply()
         }
         recreate()
     }
 
-    private fun inNightMode() = Companion.inNightMode(this)
+    private fun inNightMode() = inNightMode(this)
 }

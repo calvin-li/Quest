@@ -21,7 +21,8 @@
 
     <CheckBox
         android:id="@+id/element_header_checkbox"
-        style="@style/QuestCheck"/>
+        style="@style/QuestCheck"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <TextView
         style="@style/QuestText"
